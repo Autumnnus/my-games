@@ -15,13 +15,6 @@ export default function MainLayout({
 }: MainLayoutProps) {
   return (
     <>
-      {/* <Box>
-        {HeaderComponent ? <HeaderComponent /> : <></>}
-        <Stack direction={"row"} alignItems={"center"} columnGap={1}>
-          {children}
-        </Stack>
-      </Box>
-      {RightDrawer ? <RightDrawer /> : <></>} */}
       <Box>
         {LeftDrawer ? <LeftDrawer /> : <></>}
         {HeaderComponent ? <HeaderComponent /> : <></>}

@@ -1,62 +1,36 @@
 import { Avatar, Box } from "@mui/material"
 import type { GridColDef } from "@mui/x-data-grid"
-import { DataGrid } from "@mui/x-data-grid"
+import { DataGrid, GridToolbar } from "@mui/x-data-grid"
 
 type RenderCellAvatarData = {
   value?: { avatar?: string; username?: string }
 }
 
-const columns: GridColDef[] = [
-  {
-    field: "game",
-    headerName: "Game",
-    width: 200,
-    renderCell: (params: RenderCellAvatarData) => {
-      return <Avatar src={params.value?.avatar} />
-    }
-  },
-  {
-    field: "firstName",
-    headerName: "First name",
-    width: 150
-  },
-  {
-    field: "lastName",
-    headerName: "Last name",
-    width: 150
-  },
-  {
-    field: "age",
-    headerName: "Age",
-    type: "number",
-    width: 110
-  }
-]
-
-const rows = [
-  {
-    id: 1,
-    game: {
-      avatar:
-        "https://assets.materialup.com/uploads/bebad102-7f40-4941-99cd-54366113003e/avatar-08.png"
-    },
-    lastName: "Snow",
-    firstName: "Jon",
-    age: 14
-  },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 }
-]
 export default function DataTable() {
   return (
-    <Box p={2} sx={{ width: "100%" }}>
+    <Box
+      p={2}
+      sx={{
+        width: "100%",
+        color: "#fff"
+      }}
+    >
       <DataGrid
+        sx={{
+          boxShadow: 2,
+          border: 2,
+          borderColor: "primary.light",
+          color: "white",
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main"
+          },
+          "& .MuiDataGrid-pagination": {
+            color: "white"
+          },
+          "& .MuiDataGrid-pagination .MuiButton-root": {
+            color: "white"
+          }
+        }}
         autoHeight
         rows={rows}
         columns={columns}
@@ -68,11 +42,131 @@ export default function DataTable() {
           }
         }}
         pageSizeOptions={[5, 10, 20, 50, 100]}
-        // slots={{
-        //   toolbar: GridToolbar
-        // }}
+        slots={{
+          toolbar: GridToolbar
+        }}
         disableRowSelectionOnClick
       />
     </Box>
   )
 }
+const columns: GridColDef[] = [
+  {
+    field: "photo",
+    headerName: "",
+    renderCell: (params: RenderCellAvatarData) => {
+      return <Avatar src={params.value?.avatar} />
+    }
+  },
+  {
+    field: "game",
+    headerName: "Oyun"
+  },
+  {
+    field: "score",
+    headerName: "Puan"
+  },
+  {
+    field: "platform",
+    headerName: "Platform",
+    type: "number"
+  },
+  {
+    field: "ss",
+    headerName: "Ekran Görüntüleri"
+  },
+  {
+    field: "lastPlayed",
+    headerName: "Son Oynama"
+  },
+  {
+    field: "status",
+    headerName: "Durum",
+    type: "number"
+  }
+]
+
+const rows = [
+  {
+    id: 1,
+    photo: {
+      avatar:
+        "https://assets.materialup.com/uploads/bebad102-7f40-4941-99cd-54366113003e/avatar-08.png"
+    },
+    game: "Snow",
+    score: "Jon",
+    platform: 14
+  },
+  {
+    id: 2,
+    game: "Lannister",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 3,
+    game: "Lannister",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 4,
+    game: "Stark",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 5,
+    game: "Targaryen",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 6,
+    game: "Melisandre",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 7,
+    game: "Clifford",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 8,
+    game: "Frances",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  },
+  {
+    id: 9,
+    game: "Roxie",
+    score: 9.5,
+    platform: "Steam",
+    ss: 15,
+    lastPlayed: "2021-10-10",
+    status: "Bitilrildi"
+  }
+]
