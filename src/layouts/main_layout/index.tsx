@@ -1,6 +1,4 @@
-import { Box, Container } from "@mui/joy"
-
-import styles from "./styles"
+import { Box } from "@mui/joy"
 
 type MainLayoutProps = {
   children: JSX.Element | JSX.Element[]
@@ -17,27 +15,18 @@ export default function MainLayout({
 }: MainLayoutProps) {
   return (
     <>
-      <Box sx={styles.contextContainer}>
+      {/* <Box>
+        {HeaderComponent ? <HeaderComponent /> : <></>}
+        <Stack direction={"row"} alignItems={"center"} columnGap={1}>
+          {children}
+        </Stack>
+      </Box>
+      {RightDrawer ? <RightDrawer /> : <></>} */}
+      <Box>
         {LeftDrawer ? <LeftDrawer /> : <></>}
-        <Box sx={styles.contentAreaContainer}>
+        <Box>
           {HeaderComponent ? <HeaderComponent /> : <></>}
-          <Box
-            sx={(theme) => ({
-              width: "100%",
-              overflow: "auto!important",
-              flex: 1,
-              flexGrow: 1,
-              padding: theme.spacing(3),
-              // transition: theme.transitions.create("margin", {
-              //   easing: theme.transitions.easing.sharp,
-              //   duration: theme.transitions.duration.leavingScreen
-              // }),
-              marginLeft: 0,
-              p: 0
-            })}
-          >
-            <Container>{children}</Container>
-          </Box>
+          <Box>{children}</Box>
         </Box>
       </Box>
       {RightDrawer ? <RightDrawer /> : <></>}
