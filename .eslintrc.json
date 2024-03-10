@@ -19,7 +19,11 @@
     "project": "./tsconfig.json",
     "tsconfigRootDir": "./"
   },
-  "plugins": ["@typescript-eslint", "react", "import"],
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "import"
+  ],
   "rules": {
     "no-misused-promises": "off",
     "@typescript-eslint/no-misused-promises": "off",
@@ -42,12 +46,18 @@
         "newlines-between": "always"
       }
     ],
-    "quotes": ["error", "double"],
+    "quotes": [
+      "error",
+      "double"
+    ],
     "semi": "off",
     "no-extra-boolean-cast": "off",
     "@typescript-eslint/array-type": [
       2,
-      { "default": "array", "readonly": "generic" }
+      {
+        "default": "array",
+        "readonly": "generic"
+      }
     ],
     "react/react-in-jsx-scope": "off",
     "indent": "off"
@@ -55,7 +65,12 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       },
       "typescript": {}
     }

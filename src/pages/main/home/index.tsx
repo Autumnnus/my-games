@@ -1,4 +1,4 @@
-import { Box, Button, Container, Link, Stack, Typography } from "@mui/joy"
+import { Box, Button, Container, Link, Stack, Typography } from "@mui/material"
 
 export default function HomePage() {
   return (

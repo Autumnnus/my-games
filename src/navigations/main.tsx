@@ -1,16 +1,17 @@
 import type { RouteObject } from "react-router-dom"
 
+import PageHeader from "@components/page_header"
 import MainLayout from "@layouts/main_layout"
 import ErrorPage from "@pages/error"
 import { GamesPage } from "@pages/main/games"
 import HomePage from "@pages/main/home"
-import HomePageHeader from "@pages/main/home/header"
+import UsersPage from "@pages/main/users"
 
 const mainNavigation: RouteObject[] = [
   {
     path: "/",
     element: (
-      <MainLayout HeaderComponent={HomePageHeader}>
+      <MainLayout HeaderComponent={() => <PageHeader />}>
         <HomePage />
       </MainLayout>
     ),
@@ -19,8 +20,8 @@ const mainNavigation: RouteObject[] = [
   {
     path: "/users",
     element: (
-      <MainLayout HeaderComponent={HomePageHeader}>
-        <GamesPage />
+      <MainLayout HeaderComponent={() => <PageHeader />}>
+        <UsersPage />
       </MainLayout>
     ),
     errorElement: <ErrorPage />
@@ -28,7 +29,7 @@ const mainNavigation: RouteObject[] = [
   {
     path: "/games",
     element: (
-      <MainLayout HeaderComponent={HomePageHeader}>
+      <MainLayout HeaderComponent={() => <PageHeader />}>
         <GamesPage />
       </MainLayout>
     ),

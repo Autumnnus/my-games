@@ -1,4 +1,4 @@
-import { Box } from "@mui/joy"
+import { Box } from "@mui/material"
 
 type MainLayoutProps = {
   children: JSX.Element | JSX.Element[]
@@ -24,8 +24,8 @@ export default function MainLayout({
       {RightDrawer ? <RightDrawer /> : <></>} */}
       <Box>
         {LeftDrawer ? <LeftDrawer /> : <></>}
+        {HeaderComponent ? <HeaderComponent /> : <></>}
         <Box>
-          {HeaderComponent ? <HeaderComponent /> : <></>}
           <Box>{children}</Box>
         </Box>
       </Box>

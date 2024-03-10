@@ -1,4 +1,4 @@
-import { CssBaseline, ThemeProvider } from "@mui/joy"
+import { CssBaseline, ThemeProvider } from "@mui/material"
 import { Suspense } from "react"
 import { RouterProvider } from "react-router-dom"
 import { ToastContainer } from "react-toastify"

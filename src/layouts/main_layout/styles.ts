@@ -1,4 +1,4 @@
-import type { SxProps } from "@mui/joy/styles/types"
+import type { SxProps } from "@mui/material"
 
 import { MAIN_PAGE_BG } from "../../constants/colors"
 
