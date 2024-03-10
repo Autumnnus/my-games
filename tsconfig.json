@@ -19,7 +19,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "baseUrl": "./src",
-    "paths": {
+    "paths": {  
       "@assets/*": ["./assets/*"],
       "@components/*": ["./components/*"],
       "@constants/*": ["./constants/*"],
