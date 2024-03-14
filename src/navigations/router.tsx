@@ -1,10 +1,10 @@
 import type { RouteObject } from "react-router-dom"
 import { createBrowserRouter } from "react-router-dom"
 
-import mainNavigation from "@navigations/main"
+import gamesNavigation from "@navigations/games"
 
 const router: RouteObject[] = []
 
-router.push(...mainNavigation)
+router.push(...gamesNavigation)
 
 export default createBrowserRouter(router)

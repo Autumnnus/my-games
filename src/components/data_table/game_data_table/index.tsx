@@ -90,24 +90,6 @@ const rows = games.map((game) =>
     game.gameStatus
   )
 )
-// createData(
-//   "India",
-//   "IN",
-//   1324171354,
-//   "platform",
-//   3287263,
-//   "lastPlayed",
-//   "status"
-// ),
-// createData(
-//   "India",
-//   "IN",
-//   1324171354,
-//   "platform",
-//   3287263,
-//   "lastPlayed",
-//   "status"
-// )
 
 export default function GameDataTable() {
   const [page, setPage] = React.useState(0)
