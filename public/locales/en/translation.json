@@ -1,4 +1,10 @@
 {
   "localeCountry": "US",
-  "game": "Game"
+  "game": "Game",
+  "score": "Score",
+  "platform": "Platform",
+  "ss": "Screenshoots",
+  "total_play": "Total Play",
+  "last_played": "Last Play",
+  "status": "Status"
 }

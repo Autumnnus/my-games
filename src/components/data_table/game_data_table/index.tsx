@@ -9,51 +9,29 @@ import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import { ChangeEvent, useMemo, useState } from "react"
 
+import {
+  TABLE_HEADER_BACKGROUND_COLOR,
+  TABLE_HEADER_COLOR,
+  TABLE_ROW_BACKGROUND_COLOR
+} from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
 import { GamesContextProps } from "context/games"
 
 type Column = {
-  id: "photo" | "game" | "score" | "platform" | "ss" | "lastPlayed" | "status"
+  id:
+    | "photo"
+    | "game"
+    | "score"
+    | "platform"
+    | "ss"
+    | "lastPlayed"
+    | "status"
+    | "totalPlay"
   label: string
   minWidth?: number
   align?: "right"
   format?: (value: number) => string
 }
-
-const columns: ReadonlyArray<Column> = [
-  { id: "photo", label: "", minWidth: 50 },
-  { id: "game", label: "Oyun", minWidth: 100 },
-  {
-    id: "score",
-    label: "Score",
-    minWidth: 170,
-    align: "right"
-  },
-  {
-    id: "platform",
-    label: "Platform",
-    minWidth: 170,
-    align: "right"
-  },
-  {
-    id: "ss",
-    label: "Ekran Görüntüleri",
-    minWidth: 170,
-    align: "right"
-  },
-  {
-    id: "lastPlayed",
-    label: "Son Oynama",
-    minWidth: 170,
-    align: "right"
-  },
-  {
-    id: "status",
-    label: "Durum",
-    minWidth: 170,
-    align: "right"
-  }
-]
 
 function createData(
   photo: string,
@@ -61,30 +39,16 @@ function createData(
   score: number,
   platform: string,
   ss: number,
+  totalPlay: number,
   lastPlayed: string,
   status: string
 ) {
-  return { photo, game, score, platform, ss, lastPlayed, status }
+  return { photo, game, score, platform, ss, totalPlay, lastPlayed, status }
 }
 
 export default function GameDataTable({ games }: GamesContextProps) {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-
-  const { translate } = useTranslate()
-  console.log(translate("game"))
-
-  const rows = games?.map((game) =>
-    createData(
-      game.gamePhoto,
-      game.gameName,
-      game.gameScore,
-      game.gamePlatform,
-      game.screenshots.length,
-      game.gameDate,
-      game.gameStatus
-    )
-  )
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
@@ -95,24 +59,74 @@ export default function GameDataTable({ games }: GamesContextProps) {
     setPage(0)
   }
 
-  const memoizedColumns = useMemo(() => {
+  const { translate } = useTranslate()
+
+  const columns: ReadonlyArray<Column> = useMemo(
+    () => [
+      { id: "photo", label: "", minWidth: 50 },
+      { id: "game", label: translate("game"), minWidth: 100 },
+      { id: "score", label: translate("score"), minWidth: 170, align: "right" },
+      {
+        id: "platform",
+        label: translate("platform"),
+        minWidth: 170,
+        align: "right"
+      },
+      { id: "ss", label: translate("ss"), minWidth: 170, align: "right" },
+      {
+        id: "totalPlay",
+        label: translate("total_play"),
+        minWidth: 170,
+        align: "right"
+      },
+      {
+        id: "lastPlayed",
+        label: translate("last_played"),
+        minWidth: 170,
+        align: "right"
+      },
+      {
+        id: "status",
+        label: translate("status"),
+        minWidth: 170,
+        align: "right"
+      }
+    ],
+    [translate]
+  )
+  const rows = useMemo(() => {
+    return games?.map((game) =>
+      createData(
+        game.gamePhoto,
+        game.gameName,
+        game.gameScore,
+        game.gamePlatform,
+        game.screenshots.length,
+        game.gameTotalTime,
+        game.gameDate,
+        game.gameStatus
+      )
+    )
+  }, [games])
+
+  const MemoizedColumns = useMemo(() => {
     return columns.map((column) => (
       <TableCell
         key={column.id}
         align={column.align}
         style={{
           minWidth: column.minWidth,
-          backgroundColor: "#374151",
-          color: "#9ca3af",
+          backgroundColor: TABLE_HEADER_BACKGROUND_COLOR,
+          color: TABLE_HEADER_COLOR,
           padding: "1rem 2rem 1rem 2rem"
         }}
       >
         {column.label}
       </TableCell>
     ))
-  }, [])
+  }, [columns])
 
-  const memoizedRows = useMemo(() => {
+  const MemoizedRows = useMemo(() => {
     return rows
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((row, index) => {
@@ -127,7 +141,11 @@ export default function GameDataTable({ games }: GamesContextProps) {
                   align={column.align}
                 >
                   {column.id === "photo" ? (
-                    <Avatar src={String(value)} alt={String(value)} />
+                    <Avatar
+                      src={String(value)}
+                      alt={String(value)}
+                      sx={{ width: "60px", height: "60px" }}
+                    />
                   ) : (
                     value
                   )}
@@ -137,22 +155,22 @@ export default function GameDataTable({ games }: GamesContextProps) {
           </TableRow>
         )
       })
-  }, [rows, page, rowsPerPage])
+  }, [rows, page, rowsPerPage, columns])
 
   return (
     <Paper
       sx={{
         width: "100%",
         overflow: "hidden",
-        backgroundColor: "#1f2937"
+        backgroundColor: TABLE_ROW_BACKGROUND_COLOR
       }}
     >
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow sx={{ p: 2 }}>{memoizedColumns}</TableRow>
+            <TableRow sx={{ p: 2 }}>{MemoizedColumns}</TableRow>
           </TableHead>
-          <TableBody>{memoizedRows}</TableBody>
+          <TableBody>{MemoizedRows}</TableBody>
         </Table>
       </TableContainer>
       <TablePagination

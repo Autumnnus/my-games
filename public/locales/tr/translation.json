@@ -1,4 +1,10 @@
 {
   "localeCountry": "TR",
-  "game": "Oyun"
+  "game": "Oyun",
+  "score": "Puan",
+  "platform": "Platform",
+  "ss": "Ekran Görüntüleri",
+  "total_play": "Toplam Oynama",
+  "last_played": "Son Oynama",
+  "status": "Durum"
 }
