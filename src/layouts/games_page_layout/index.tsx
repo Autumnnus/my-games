@@ -1,4 +1,3 @@
-import { Container } from "@mui/material"
 import Box from "@mui/material/Box"
 
 export default function GamesPageLayout({
@@ -30,7 +29,7 @@ export default function GamesPageLayout({
           p: 0
         })}
       >
-        <Container>{children}</Container>
+        {children}
       </Box>
     </ContextProvider>
   )

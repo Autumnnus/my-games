@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable react/jsx-key */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Avatar } from "@mui/material"
 import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
@@ -10,11 +7,12 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
-import * as React from "react"
+import { ChangeEvent, useMemo, useState } from "react"
 
-import { games } from "@components/data_table/game_data_table/dummy"
+import useTranslate from "@hooks/use_translate"
+import { GamesContextProps } from "context/games"
 
-interface Column {
+type Column = {
   id: "photo" | "game" | "score" | "platform" | "ss" | "lastPlayed" | "status"
   label: string
   minWidth?: number
@@ -57,16 +55,6 @@ const columns: ReadonlyArray<Column> = [
   }
 ]
 
-interface Data {
-  photo: string
-  game: string
-  score: number
-  platform: string
-  ss: number
-  lastPlayed: string
-  status: string
-}
-
 function createData(
   photo: string,
   game: string,
@@ -75,36 +63,81 @@ function createData(
   ss: number,
   lastPlayed: string,
   status: string
-): Data {
+) {
   return { photo, game, score, platform, ss, lastPlayed, status }
 }
 
-const rows = games.map((game) =>
-  createData(
-    game.gamePhoto,
-    game.gameName,
-    game.gameScore,
-    game.gamePlatform,
-    game.screenshots.length,
-    game.gameDate,
-    game.gameStatus
-  )
-)
+export default function GameDataTable({ games }: GamesContextProps) {
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
-export default function GameDataTable() {
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const { translate } = useTranslate()
+  console.log(translate("game"))
+
+  const rows = games?.map((game) =>
+    createData(
+      game.gamePhoto,
+      game.gameName,
+      game.gameScore,
+      game.gamePlatform,
+      game.screenshots.length,
+      game.gameDate,
+      game.gameStatus
+    )
+  )
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
   }
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value)
     setPage(0)
   }
+
+  const memoizedColumns = useMemo(() => {
+    return columns.map((column) => (
+      <TableCell
+        key={column.id}
+        align={column.align}
+        style={{
+          minWidth: column.minWidth,
+          backgroundColor: "#374151",
+          color: "#9ca3af",
+          padding: "1rem 2rem 1rem 2rem"
+        }}
+      >
+        {column.label}
+      </TableCell>
+    ))
+  }, [])
+
+  const memoizedRows = useMemo(() => {
+    return rows
+      ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row, index) => {
+        return (
+          <TableRow key={index} hover role="checkbox" tabIndex={-1}>
+            {columns.map((column) => {
+              const value = row[column.id]
+              return (
+                <TableCell
+                  sx={{ color: "white", py: "1rem", px: "2rem" }}
+                  key={column.id}
+                  align={column.align}
+                >
+                  {column.id === "photo" ? (
+                    <Avatar src={String(value)} alt={String(value)} />
+                  ) : (
+                    value
+                  )}
+                </TableCell>
+              )
+            })}
+          </TableRow>
+        )
+      })
+  }, [rows, page, rowsPerPage])
 
   return (
     <Paper
@@ -117,54 +150,15 @@ export default function GameDataTable() {
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{
-                    minWidth: column.minWidth,
-                    backgroundColor: "#374151",
-                    color: "#9ca3af"
-                  }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
+            <TableRow sx={{ p: 2 }}>{memoizedColumns}</TableRow>
           </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1}>
-                    {columns.map((column) => {
-                      const value = row[column.id]
-                      return (
-                        <TableCell
-                          sx={{ color: "white" }}
-                          key={column.id}
-                          align={column.align}
-                        >
-                          {column.id === "photo" ? (
-                            <Avatar src={String(value)} alt="" />
-                          ) : (
-                            value
-                          )}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                )
-              })}
-          </TableBody>
+          <TableBody>{memoizedRows}</TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={rows?.length || 0}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
