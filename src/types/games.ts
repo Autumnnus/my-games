@@ -29,3 +29,19 @@ export type GamesData = {
   userId: string
   id: string
 }
+
+export type DialogGameData = {
+  gameName: string
+  gamePhoto?: string
+  gameDate: string
+  gamePlatform: string
+  gameReview?: string
+  gameScore: number
+  gameStatus: string
+  gameTotalTime: number
+  // screenshoots?: {
+  //   id: string
+  //   ssName?: string
+  //   ssUrl: string
+  // }[]
+}

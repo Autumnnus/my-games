@@ -2,25 +2,28 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 
 import GameDataTable from "@components/data_table/game_data_table"
+import AddGame from "@components/dialogs/add_game"
 import SearchBar from "@components/search_bar"
 import {
   TABLE_HEADER_COLOR,
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
 import { useGamesPageContext } from "context/games"
-import { Translate } from "types/translate"
 
 export default function GamesPage() {
-  const { games, translate } = useGamesPageContext()
+  const { games, isAddGameDialogOpen, setIsAddGameDialogOpen } =
+    useGamesPageContext()
   return (
     <Box px={5} py={2}>
-      <TableHeader translate={translate} />
+      <TableHeader />
       <GameDataTable games={games} />
+      <AddGame isOpen={isAddGameDialogOpen} setClose={setIsAddGameDialogOpen} />
     </Box>
   )
 }
 
-function TableHeader({ translate }: { translate: Translate }) {
+function TableHeader() {
+  const { translate, setIsAddGameDialogOpen } = useGamesPageContext()
   return (
     <Stack
       spacing={2}
@@ -39,7 +42,7 @@ function TableHeader({ translate }: { translate: Translate }) {
         </Typography>
       </Stack>
       <Stack direction={"row"} alignItems={"center"} gap={1}>
-        <IconButton>
+        <IconButton onClick={setIsAddGameDialogOpen}>
           <AddCircleOutlineIcon
             sx={{ width: "40px", height: "40px", color: "white" }}
           />

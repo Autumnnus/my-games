@@ -6,6 +6,7 @@ import {
   useState
 } from "react"
 
+import useToggle from "@hooks/use_toggle"
 import i18next from "@utils/localization"
 import { GamesData } from "types/games"
 
@@ -18,6 +19,12 @@ import {
 export type GamesContextProps = {
   games?: GamesData[]
   setGames?: Dispatch<SetStateAction<GamesData[]>>
+  isAddGameDialogOpen?: boolean
+  setIsAddGameDialogOpen?: () => void
+  isEditGameDialogOpen?: boolean
+  setIsEditGameDialogOpen?: () => void
+  isDeleteGameDialogOpen?: boolean
+  setIsDeleteGameDialogOpen?: () => void
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -34,6 +41,9 @@ export function GamesPageContextProvider(props: {
 }) {
   const { translate } = useAppContext()
 
+  const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
+  const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
+  const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [games, setGames] = useState([
     {
       gameScore: 7.4,
@@ -323,7 +333,13 @@ export function GamesPageContextProvider(props: {
         ...gamesPageDefaultValues,
         translate,
         games,
-        setGames
+        setGames,
+        isAddGameDialogOpen,
+        setIsAddGameDialogOpen,
+        isEditGameDialogOpen,
+        setIsEditGameDialogOpen,
+        isDeleteGameDialogOpen,
+        setIsDeleteGameDialogOpen
       }}
     >
       {props.children}
