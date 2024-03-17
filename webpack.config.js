@@ -13,7 +13,8 @@ module.exports = {
       "@hooks": path.resolve(__dirname, "src/hooks"),
       "@contexts": path.resolve(__dirname, "src/contexts"),
       "@models": path.resolve(__dirname, "src/models"),
-      "@domain": path.resolve(__dirname, "src/domain")
+      "@domain": path.resolve(__dirname, "src/domain"),
+      "@types": path.resolve(__dirname, "src/types"),
     }
   }
 }

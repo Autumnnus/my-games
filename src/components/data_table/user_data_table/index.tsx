@@ -8,7 +8,7 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
-import { ChangeEvent, useCallback, useMemo, useState } from "react"
+import { ChangeEvent, useMemo, useState } from "react"
 
 import {
   TABLE_HEADER_BACKGROUND_COLOR,
@@ -16,19 +16,10 @@ import {
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
-import { GamesContextProps } from "context/games"
+import { UsersContextProps } from "context/users"
 
 type Column = {
-  id:
-    | "photo"
-    | "game"
-    | "score"
-    | "platform"
-    | "ss"
-    | "lastPlayed"
-    | "status"
-    | "totalPlay"
-    | "actions"
+  id: "photo" | "user" | "games" | "completedGames" | "ss" | "actions"
   label: string
   minWidth?: number
   align?: "right"
@@ -37,35 +28,21 @@ type Column = {
 
 function createData(
   photo: string,
-  game: string,
-  score: number,
-  platform: string,
-  ss: number,
-  totalPlay: number,
-  lastPlayed: string,
-  status: string,
-  id: string,
-  gameReview?: string
+  user: string,
+  games: number,
+  completedGames: number,
+  ss: number
 ) {
   return {
     photo,
-    game,
-    score,
-    platform,
-    ss,
-    totalPlay,
-    lastPlayed,
-    status,
-    id,
-    gameReview
+    user,
+    games,
+    completedGames,
+    ss
   }
 }
 
-export default function GameDataTable({
-  games,
-  setSelectedGame,
-  setIsEditGameDialogOpen
-}: GamesContextProps) {
+export default function UserDataTable({ users }: UsersContextProps) {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -83,57 +60,22 @@ export default function GameDataTable({
   const columns: ReadonlyArray<Column> = useMemo(
     () => [
       { id: "photo", label: "", minWidth: 50 },
-      { id: "game", label: translate("game"), minWidth: 100 },
-      { id: "score", label: translate("score"), minWidth: 170, align: "right" },
+      { id: "user", label: translate("member"), minWidth: 100 },
+      { id: "games", label: translate("games"), minWidth: 170, align: "right" },
       {
-        id: "platform",
-        label: translate("platform"),
+        id: "completedGames",
+        label: translate("completed_games"),
         minWidth: 170,
         align: "right"
       },
       { id: "ss", label: translate("ss"), minWidth: 170, align: "right" },
-      {
-        id: "totalPlay",
-        label: translate("total_play"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "lastPlayed",
-        label: translate("last_played"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "status",
-        label: translate("status"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "actions",
-        label: "",
-        align: "right"
-      }
+      { id: "actions", label: "", minWidth: 50, align: "right" }
     ],
     [translate]
   )
   const rows = useMemo(() => {
-    return games?.map((game) =>
-      createData(
-        game.gamePhoto,
-        game.gameName,
-        game.gameScore,
-        game.gamePlatform,
-        game.screenshots.length,
-        game.gameTotalTime,
-        game.gameDate,
-        game.gameStatus,
-        game.id,
-        game.gameReview
-      )
-    )
-  }, [games])
+    return users?.map((user) => createData(user.photoUrl, user.name, 0, 0, 0))
+  }, [users])
 
   const MemoizedColumns = useMemo(() => {
     return columns.map((column) => (
@@ -153,58 +95,17 @@ export default function GameDataTable({
     ))
   }, [columns])
 
-  const handleClick = useCallback(
-    (
-      event: React.MouseEvent<HTMLButtonElement>,
-      row: {
-        photo: string
-        game: string
-        score: number
-        platform: string
-        ss: number
-        totalPlay: number
-        lastPlayed: string
-        status: string
-        id: string
-        gameReview?: string
-      }
-    ) => {
-      setAnchorEl(event.currentTarget)
-
-      //TODO TEMPORARY
-      setIsEditGameDialogOpen?.()
-      setSelectedGame?.({
-        gameName: row.game,
-        gamePhoto: row.photo,
-        gameDate: row.lastPlayed,
-        gamePlatform: row.platform,
-        gameScore: row.score,
-        gameStatus: row.status,
-        gameTotalTime: row.totalPlay,
-        gameReview: row.gameReview,
-        id: row.id
-      })
-      console.log(row)
-    },
-    [setAnchorEl, setIsEditGameDialogOpen, setSelectedGame]
-  )
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    setAnchorEl(event.currentTarget)
+  }
 
   function handleClose() {
     setAnchorEl(null)
   }
 
-  const handleEditGame = useCallback(() => {
+  function handleEditGame() {
     setAnchorEl(null)
-    console.log(setSelectedGame)
-    setSelectedGame?.({
-      gameName: "test",
-      gameDate: "test",
-      gamePlatform: "test",
-      gameScore: 1,
-      gameStatus: "test",
-      gameTotalTime: 1
-    })
-  }, [setAnchorEl, setSelectedGame])
+  }
 
   function handleDeleteGame() {
     setAnchorEl(null)
@@ -238,7 +139,7 @@ export default function GameDataTable({
                     <>
                       <IconButton
                         onClick={(event) => {
-                          handleClick(event, row)
+                          handleClick(event)
                         }}
                       >
                         <MoreVertIcon color="secondary" />
@@ -303,16 +204,7 @@ export default function GameDataTable({
           </TableRow>
         )
       })
-  }, [
-    rows,
-    page,
-    rowsPerPage,
-    columns,
-    anchorEl,
-    translate,
-    handleClick,
-    handleEditGame
-  ])
+  }, [rows, page, rowsPerPage, columns, anchorEl, translate])
 
   return (
     <Paper

@@ -4,11 +4,14 @@ import type { RouteObject } from "react-router-dom"
 import PageHeader from "@components/page_header"
 import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
+import UsersPageLayout from "@layouts/users_page_layout"
 import ErrorPage from "@pages/error"
 import GamesPage from "@pages/main/games"
+import UsersPage from "@pages/main/users"
 import { GamesPageContextProvider } from "context/games"
+import { UsersPageContextProvider } from "context/users"
 
-const gamesNavigation: RouteObject[] = [
+const mainNavigation: RouteObject[] = [
   {
     path: "/",
     element: <GamesNavigationLayout />,
@@ -39,16 +42,16 @@ const gamesNavigation: RouteObject[] = [
       {
         path: "users",
         element: (
-          <GamesPageLayout
+          <UsersPageLayout
             HeaderComponent={() => <PageHeader />}
-            ContextProvider={GamesPageContextProvider}
+            ContextProvider={UsersPageContextProvider}
           >
-            <Box />
-          </GamesPageLayout>
+            <UsersPage />
+          </UsersPageLayout>
         )
       }
     ]
   }
 ]
 
-export default gamesNavigation
+export default mainNavigation

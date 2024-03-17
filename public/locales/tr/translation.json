@@ -31,5 +31,7 @@
   "abondoned": "Bırakıldı",
   "to_be_completed": "Bitirilecek",
   "active_playing": "Aktif Oynanılıyor",
-  "no_options": "Seçenek Yok"
+  "no_options": "Seçenek Yok",
+  "member": "Üye",
+  "completed_games": "Bitirilen Oyunlar"
 }

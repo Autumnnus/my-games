@@ -30,7 +30,8 @@
       "@hooks/*": ["./hooks/*"],
       "@contexts/*": ["./contexts/*"],
       "@models/*": ["./models/*"],
-      "@domain/*": ["./domain/*"]
+      "@domain/*": ["./domain/*"],
+      "@types/*": ["./@types/*"],
     }
   },
   "include": ["./src"]
