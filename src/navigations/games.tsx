@@ -5,7 +5,7 @@ import PageHeader from "@components/page_header"
 import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
 import ErrorPage from "@pages/error"
-import { GamesPage } from "@pages/main/games"
+import GamesPage from "@pages/main/games"
 import { GamesPageContextProvider } from "context/games"
 
 const gamesNavigation: RouteObject[] = [

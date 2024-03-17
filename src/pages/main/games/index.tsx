@@ -1,71 +1,51 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
-import {
-  Box,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack
-} from "@mui/material"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
 
 import GameDataTable from "@components/data_table/game_data_table"
+import SearchBar from "@components/search_bar"
 import {
-  TABLE_HEADER_BACKGROUND_COLOR,
+  TABLE_HEADER_COLOR,
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
 import { useGamesPageContext } from "context/games"
+import { Translate } from "types/translate"
 
-export const GamesPage = () => {
-  const { games } = useGamesPageContext()
+export default function GamesPage() {
+  const { games, translate } = useGamesPageContext()
   return (
     <Box px={5} py={2}>
-      <Stack
-        spacing={2}
-        direction="row"
-        justifyContent="space-between"
-        sx={{ backgroundColor: TABLE_ROW_BACKGROUND_COLOR, p: 2 }}
-      >
-        <Box fontSize={24} fontWeight="bold">
-          Games
-        </Box>
-        <Stack direction={"row"} alignItems={"center"}>
-          <IconButton>
-            <AddCircleOutlineIcon sx={{ width: "40px", height: "40px" }} />
-          </IconButton>
-          <FormControl
-            sx={{
-              m: 1,
-              width: "25ch",
-              background: TABLE_HEADER_BACKGROUND_COLOR
-            }}
-            variant="outlined"
-          >
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
-            <OutlinedInput
-              type="text"
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconButton aria-label="search" edge="start"></IconButton>
-                </InputAdornment>
-              }
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => {}}
-                    edge="end"
-                  ></IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
-        </Stack>
-      </Stack>
+      <TableHeader translate={translate} />
       <GameDataTable games={games} />
     </Box>
+  )
+}
+
+function TableHeader({ translate }: { translate: Translate }) {
+  return (
+    <Stack
+      spacing={2}
+      direction="row"
+      justifyContent="space-between"
+      sx={{ backgroundColor: TABLE_ROW_BACKGROUND_COLOR, p: 2 }}
+    >
+      <Stack justifyContent={"space-around"}>
+        <Typography fontSize={24} fontWeight="bold" color={"white"}>
+          {translate("games")}
+        </Typography>
+        <Typography color={TABLE_HEADER_COLOR} variant="body2">
+          {translate("all_played_games_from_user", {
+            user: "Vector"
+          })}
+        </Typography>
+      </Stack>
+      <Stack direction={"row"} alignItems={"center"} gap={1}>
+        <IconButton>
+          <AddCircleOutlineIcon
+            sx={{ width: "40px", height: "40px", color: "white" }}
+          />
+        </IconButton>
+        <SearchBar translate={translate} />
+      </Stack>
+    </Stack>
   )
 }

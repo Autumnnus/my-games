@@ -1,4 +1,5 @@
 export const PRIMARY = "#157CFC"
+export const SECONDARY = "#E8E8E8"
 
 export const BACKGROUND = ""
 export const TABLE_ROW_BACKGROUND_COLOR = "#1f2937"

@@ -1,10 +1,13 @@
 {
   "localeCountry": "TR",
   "game": "Oyun",
+  "games":"Oyunlar",
   "score": "Puan",
   "platform": "Platform",
   "ss": "Ekran Görüntüleri",
   "total_play": "Toplam Oynama",
   "last_played": "Son Oynama",
-  "status": "Durum"
+  "status": "Durum",
+  "search:": "Ara",
+  "all_played_games_from_user":"{{user}} tarafından oynanılan tüm oyunlar"
 }
