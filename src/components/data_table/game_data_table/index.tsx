@@ -1,4 +1,5 @@
-import { Avatar } from "@mui/material"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
+import { Avatar, Box, IconButton, Popover, Typography } from "@mui/material"
 import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -27,6 +28,7 @@ type Column = {
     | "lastPlayed"
     | "status"
     | "totalPlay"
+    | "actions"
   label: string
   minWidth?: number
   align?: "right"
@@ -41,14 +43,33 @@ function createData(
   ss: number,
   totalPlay: number,
   lastPlayed: string,
-  status: string
+  status: string,
+  id: string,
+  gameReview?: string
 ) {
-  return { photo, game, score, platform, ss, totalPlay, lastPlayed, status }
+  return {
+    photo,
+    game,
+    score,
+    platform,
+    ss,
+    totalPlay,
+    lastPlayed,
+    status,
+    id,
+    gameReview
+  }
 }
 
-export default function GameDataTable({ games }: GamesContextProps) {
+export default function GameDataTable({
+  games,
+  setSelectedGame,
+  setIsEditGameDialogOpen
+}: GamesContextProps) {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const { translate } = useTranslate()
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
@@ -58,8 +79,6 @@ export default function GameDataTable({ games }: GamesContextProps) {
     setRowsPerPage(+event.target.value)
     setPage(0)
   }
-
-  const { translate } = useTranslate()
 
   const columns: ReadonlyArray<Column> = useMemo(
     () => [
@@ -90,6 +109,11 @@ export default function GameDataTable({ games }: GamesContextProps) {
         label: translate("status"),
         minWidth: 170,
         align: "right"
+      },
+      {
+        id: "actions",
+        label: "",
+        align: "right"
       }
     ],
     [translate]
@@ -104,7 +128,9 @@ export default function GameDataTable({ games }: GamesContextProps) {
         game.screenshots.length,
         game.gameTotalTime,
         game.gameDate,
-        game.gameStatus
+        game.gameStatus,
+        game.id,
+        game.gameReview
       )
     )
   }, [games])
@@ -118,13 +144,68 @@ export default function GameDataTable({ games }: GamesContextProps) {
           minWidth: column.minWidth,
           backgroundColor: TABLE_HEADER_BACKGROUND_COLOR,
           color: TABLE_HEADER_COLOR,
-          padding: "1rem 2rem 1rem 2rem"
+          padding: "1rem 2rem 1rem 2rem",
+          border: "none"
         }}
       >
         {column.label}
       </TableCell>
     ))
   }, [columns])
+
+  function handleClick(
+    event: React.MouseEvent<HTMLButtonElement>,
+    row: {
+      photo: string
+      game: string
+      score: number
+      platform: string
+      ss: number
+      totalPlay: number
+      lastPlayed: string
+      status: string
+      id: string
+      gameReview?: string
+    }
+  ) {
+    setAnchorEl(event.currentTarget)
+
+    //TODO TEMPORARY
+    setIsEditGameDialogOpen?.()
+    setSelectedGame?.({
+      gameName: row.game,
+      gamePhoto: row.photo,
+      gameDate: row.lastPlayed,
+      gamePlatform: row.platform,
+      gameScore: row.score,
+      gameStatus: row.status,
+      gameTotalTime: row.totalPlay,
+      gameReview: row.gameReview,
+      id: row.id
+    })
+    console.log(row)
+  }
+
+  function handleClose() {
+    setAnchorEl(null)
+  }
+
+  function handleEditGame() {
+    setAnchorEl(null)
+    console.log(setSelectedGame)
+    setSelectedGame?.({
+      gameName: "test",
+      gameDate: "test",
+      gamePlatform: "test",
+      gameScore: 1,
+      gameStatus: "test",
+      gameTotalTime: 1
+    })
+  }
+
+  function handleDeleteGame() {
+    setAnchorEl(null)
+  }
 
   const MemoizedRows = useMemo(() => {
     return rows
@@ -133,10 +214,14 @@ export default function GameDataTable({ games }: GamesContextProps) {
         return (
           <TableRow key={index} hover role="checkbox" tabIndex={-1}>
             {columns.map((column) => {
-              const value = row[column.id]
+              const value = row[column.id as keyof typeof row]
               return (
                 <TableCell
-                  sx={{ color: "white", py: "1rem", px: "2rem" }}
+                  sx={{
+                    color: "white",
+                    p: "1rem 2rem",
+                    borderBottom: "1px solid #666666"
+                  }}
                   key={column.id}
                   align={column.align}
                 >
@@ -146,16 +231,76 @@ export default function GameDataTable({ games }: GamesContextProps) {
                       alt={String(value)}
                       sx={{ width: "60px", height: "60px" }}
                     />
+                  ) : column.id === "actions" ? (
+                    <>
+                      <IconButton
+                        onClick={(event) => {
+                          handleClick(event, row)
+                        }}
+                      >
+                        <MoreVertIcon color="secondary" />
+                      </IconButton>
+                    </>
                   ) : (
-                    value
+                    <Typography>{value}</Typography>
                   )}
+                  <Popover
+                    open={Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: "center",
+                      horizontal: "left"
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right"
+                    }}
+                    sx={{
+                      "& > *": {
+                        borderRadius: 2.3,
+                        boxShadow: "0px 3px 6px #00000029"
+                      }
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        padding: 1,
+                        pr: 9,
+                        cursor: "pointer",
+                        "&:hover": {
+                          background: "#F1F1F1"
+                        }
+                      }}
+                      onClick={() => {
+                        console.log(row) //TODO fix this
+                        handleEditGame()
+                      }}
+                    >
+                      {translate("edit")}
+                    </Box>
+                    <Box
+                      sx={{
+                        padding: 1,
+                        pr: 9,
+                        cursor: "pointer",
+                        color: "red",
+                        "&:hover": {
+                          background: "#F1F1F1"
+                        }
+                      }}
+                      onClick={handleDeleteGame}
+                    >
+                      {translate("delete")}
+                    </Box>
+                  </Popover>
                 </TableCell>
               )
             })}
           </TableRow>
         )
       })
-  }, [rows, page, rowsPerPage, columns])
+  }, [rows, page, rowsPerPage, columns, anchorEl, translate])
 
   return (
     <Paper
@@ -168,7 +313,9 @@ export default function GameDataTable({ games }: GamesContextProps) {
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow sx={{ p: 2 }}>{MemoizedColumns}</TableRow>
+            <TableRow sx={{ p: 2, borderBottom: "none" }}>
+              {MemoizedColumns}
+            </TableRow>
           </TableHead>
           <TableBody>{MemoizedRows}</TableBody>
         </Table>

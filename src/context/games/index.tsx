@@ -8,7 +8,7 @@ import {
 
 import useToggle from "@hooks/use_toggle"
 import i18next from "@utils/localization"
-import { GamesData } from "types/games"
+import { DialogGameData, GamesData } from "types/games"
 
 import {
   AppContextProps,
@@ -25,6 +25,8 @@ export type GamesContextProps = {
   setIsEditGameDialogOpen?: () => void
   isDeleteGameDialogOpen?: boolean
   setIsDeleteGameDialogOpen?: () => void
+  selectedGame?: DialogGameData | null
+  setSelectedGame?: Dispatch<SetStateAction<DialogGameData | null>>
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -326,6 +328,7 @@ export function GamesPageContextProvider(props: {
       id: "hQZPEnki79lygN6qqgZ2"
     }
   ])
+  const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
 
   return (
     <GamesPageContext.Provider
@@ -339,7 +342,9 @@ export function GamesPageContextProvider(props: {
         isEditGameDialogOpen,
         setIsEditGameDialogOpen,
         isDeleteGameDialogOpen,
-        setIsDeleteGameDialogOpen
+        setIsDeleteGameDialogOpen,
+        selectedGame,
+        setSelectedGame
       }}
     >
       {props.children}

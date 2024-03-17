@@ -39,6 +39,7 @@ export type DialogGameData = {
   gameScore: number
   gameStatus: string
   gameTotalTime: number
+  id?: string
   // screenshoots?: {
   //   id: string
   //   ssName?: string
