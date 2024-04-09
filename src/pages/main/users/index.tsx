@@ -1,13 +1,11 @@
 import { Box } from "@mui/material"
 
 import UserDataTable from "@components/data_table/user_data_table"
-import { useUsersPageContext } from "context/users"
 
 export default function UsersPage() {
-  const { users } = useUsersPageContext()
   return (
     <Box px={5} py={2}>
-      <UserDataTable users={users} />
+      <UserDataTable />
     </Box>
   )
 }

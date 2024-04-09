@@ -1,11 +1,19 @@
 export type UsersData = {
-  createdAt: {
-    seconds: number
-    nanoseconds: number
-  }
+  completedGameSize: number
+  createdAt: Date
   email: string
+  gameSize: number
+  isVerified: boolean
   name: string
-  photoUrl: string
-  role: string
-  uid: string
+  password: string
+  role: "admin" | "user"
+  screenshootSize: number
+  updatedAt: Date
+  verificationExpire: Date
+  verificationToken: string
+  resetPasswordExpire: Date
+  resetPasswordToken: string
+  profileImage: string
+  __v: number
+  _id: string
 }

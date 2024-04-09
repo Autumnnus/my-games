@@ -1,8 +1,10 @@
+import axios, { type AxiosResponse } from "axios"
 import {
   Dispatch,
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useState
 } from "react"
 
@@ -33,34 +35,19 @@ export function UsersPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
   const { translate } = useAppContext()
-
-  const [users, setUsers] = useState([
-    {
-      createdAt: {
-        seconds: 1709844598,
-        nanoseconds: 265000000
-      },
-      email: "prostochasy@gmail.com",
-      name: "Vector",
-      photoUrl:
-        "https://i.pinimg.com/736x/3f/67/87/3f67879f186cfacff6aa3969e76c7cc3.jpg",
-      role: "admin",
-      uid: "TalXJ5g1FSZYyfMwg0wasE7vokg1"
-    },
-    {
-      createdAt: {
-        seconds: 1709844598,
-        nanoseconds: 265000000
-      },
-      email: "aaa@testmq.com",
-      name: "Vecky",
-      photoUrl:
-        "https://i.pinimg.com/736x/3f/67/87/3f67879f186cfacff6aa3969e76c7cc3.jpg",
-      role: "admin",
-      uid: "TalXJ5g1FSZYyfMwg0wasE7vokg1"
-    }
-  ])
-
+  const [users, setUsers] = useState<UsersData[]>([])
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/api/users`)
+      .then((res: AxiosResponse<{ data: UsersData[] }>) => {
+        const data = res.data.data
+        setUsers(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+  console.log(users)
   return (
     <UsersPageContext.Provider
       value={{
