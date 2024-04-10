@@ -1,7 +1,7 @@
 {
   "localeCountry": "US",
   "game": "Game",
-  "games":"Games",
+  "games": "Games",
   "score": "Score",
   "platform": "Platform",
   "ss": "Screenshoots",
@@ -9,7 +9,7 @@
   "last_played": "Last Play",
   "status": "Status",
   "search": "Search",
-  "all_played_games_by_user":"All played games by {{user}}",
+  "all_played_games_by_user": "All played games by {{user}}",
   "game_name": "Game Name",
   "game_photo_url": "Game Photo Url",
   "game_total_play": "Game Total Play",
@@ -33,5 +33,10 @@
   "active_playing": "Active Playing",
   "no_options": "No Options",
   "member": "Member",
-  "completed_games": "Completed Games"
+  "completed_games": "Completed Games",
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "login": "Login",
+  "signup": "Signup"
 }

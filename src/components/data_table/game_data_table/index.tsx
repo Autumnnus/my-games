@@ -184,7 +184,6 @@ export default function GameDataTable({
         gameReview: row.gameReview,
         id: row.id
       })
-      console.log(row)
     },
     [setAnchorEl, setIsEditGameDialogOpen, setSelectedGame]
   )
@@ -195,7 +194,6 @@ export default function GameDataTable({
 
   const handleEditGame = useCallback(() => {
     setAnchorEl(null)
-    console.log(setSelectedGame)
     setSelectedGame?.({
       gameName: "test",
       gameDate: "test",

@@ -47,7 +47,6 @@ export function UsersPageContextProvider(props: {
         console.log(err)
       })
   }, [])
-  console.log(users)
   return (
     <UsersPageContext.Provider
       value={{

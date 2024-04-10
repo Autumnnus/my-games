@@ -1,7 +1,7 @@
 {
   "localeCountry": "TR",
   "game": "Oyun",
-  "games":"Oyunlar",
+  "games": "Oyunlar",
   "score": "Puan",
   "platform": "Platform",
   "ss": "Ekran Görüntüleri",
@@ -9,7 +9,7 @@
   "last_played": "Son Oynama",
   "status": "Durum",
   "search:": "Ara",
-  "all_played_games_by_user":"{{user}} tarafından oynanılan tüm oyunlar",
+  "all_played_games_by_user": "{{user}} tarafından oynanılan tüm oyunlar",
   "game_name": "Oyun Adı",
   "game_photo_url": "Oyun Fotoğraf URL'si",
   "game_total_play": "Toplam Oyun Oynama",
@@ -33,5 +33,10 @@
   "active_playing": "Aktif Oynanılıyor",
   "no_options": "Seçenek Yok",
   "member": "Üye",
-  "completed_games": "Bitirilen Oyunlar"
+  "completed_games": "Bitirilen Oyunlar",
+  "email": "E-Posta",
+  "password": "Şifre",
+  "name": "İsim",
+  "login": "Giriş Yap",
+  "signup": "Kayıt Ol"
 }
