@@ -24,19 +24,18 @@ export default function EditGame({
   const randomNumber = Math.floor(Math.random() * gameNameLabel.length)
 
   const [loading, setLoading] = useState(false)
-
   useEffect(() => {
     reset?.(
       selectedGame
         ? {
-            gameName: selectedGame.gameName,
-            gamePhoto: selectedGame.gamePhoto,
-            gameDate: selectedGame.gameDate,
-            gamePlatform: selectedGame.gamePlatform,
-            gameReview: selectedGame.gameReview,
-            gameScore: selectedGame.gameScore,
-            gameStatus: selectedGame.gameStatus,
-            gameTotalTime: selectedGame.gameTotalTime
+            name: selectedGame.name,
+            photo: selectedGame.photo,
+            lastPlay: selectedGame.lastPlay,
+            platform: selectedGame.platform,
+            review: selectedGame.review,
+            rating: selectedGame.rating,
+            status: selectedGame.status,
+            playTime: selectedGame.playTime
           }
         : {}
     )
@@ -53,7 +52,7 @@ export default function EditGame({
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await sleep(3000)
-    log(`${data.gameName} is added: `, data)
+    log(`${data.name} is added: `, data)
     setLoading(false)
     handleClose()
   }
@@ -81,7 +80,7 @@ export default function EditGame({
       <Stack spacing={2}>
         <TextInput<DialogGameData>
           type="text"
-          name="gameName"
+          name="name"
           control={control}
           label={translate("game_name")}
           placeholder={gameNameLabel[randomNumber]}
@@ -90,7 +89,7 @@ export default function EditGame({
         />
         <TextInput<DialogGameData>
           type="text"
-          name="gamePhoto"
+          name="photo"
           control={control}
           label={translate("game_photo_url")}
           placeholder={
@@ -101,7 +100,7 @@ export default function EditGame({
         <Stack direction={"row"} gap={1}>
           <TextInput<DialogGameData>
             type="number"
-            name="gameTotalTime"
+            name="playTime"
             control={control}
             label={translate("game_total_play")}
             placeholder={"23.5"}
@@ -109,8 +108,7 @@ export default function EditGame({
             required
           />
           <AutoCompleteInput<DialogGameData>
-            type="text"
-            name="gamePlatform"
+            name="platform"
             control={control}
             label={translate("platform")}
             placeholder={translate("required_input_placeholder", {
@@ -121,7 +119,7 @@ export default function EditGame({
               { label: "Epic Games", value: "epicGames" },
               { label: "Ubisoft", value: "ubisoft" },
               { label: "Xbox(Pc)", value: "xboxPc" },
-              { label: "EA Games", value: "eAGames" },
+              { label: "EA Games", value: "eaGames" },
               { label: "Ubisoft", value: "ubisoft" },
               { label: "Torrent", value: "torrent" },
               { label: "Playstation", value: "playstation" },
@@ -140,7 +138,7 @@ export default function EditGame({
         <Stack direction={"row"} gap={1}>
           <TextInput<DialogGameData>
             type="number"
-            name="gameScore"
+            name="rating"
             control={control}
             label={translate("score")}
             placeholder={"8.6"}
@@ -148,7 +146,7 @@ export default function EditGame({
             required
           />
           <AutoCompleteInput<DialogGameData>
-            name="gameStatus"
+            name="status"
             control={control}
             label={translate("game_status")}
             placeholder={translate("required_input_placeholder", {
@@ -166,7 +164,7 @@ export default function EditGame({
         </Stack>
         <TextInput<DialogGameData>
           type="date"
-          name="gameDate"
+          name="lastPlay"
           control={control}
           label={translate("last_play_date")}
           disabled={loading}
@@ -175,7 +173,7 @@ export default function EditGame({
         <TextInput<DialogGameData>
           multiline
           rows={4}
-          name="gameReview"
+          name="review"
           control={control}
           label={translate("game_review")}
           placeholder={translate("optional_input_placeholder", {

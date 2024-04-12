@@ -21,13 +21,13 @@ import { useGamesPageContext } from "context/games"
 type Column = {
   id:
     | "photo"
-    | "game"
-    | "score"
+    | "name"
+    | "rating"
     | "platform"
-    | "ss"
-    | "lastPlayed"
+    | "screenshots"
+    | "lastPlay"
     | "status"
-    | "totalPlay"
+    | "playTime"
     | "actions"
   label: string
   minWidth?: number
@@ -37,27 +37,27 @@ type Column = {
 
 function createData(
   photo: string,
-  game: string,
-  score: number,
+  name: string,
+  rating: number,
   platform: string,
-  ss: number,
-  totalPlay: number,
-  lastPlayed: string,
+  screenshots: number,
+  playTime: number,
+  lastPlay: string,
   status: string,
   id: string,
-  gameReview?: string
+  review?: string
 ) {
   return {
     photo,
-    game,
-    score,
+    name,
+    rating,
     platform,
-    ss,
-    totalPlay,
-    lastPlayed,
+    screenshots,
+    playTime,
+    lastPlay,
     status,
     id,
-    gameReview
+    review
   }
 }
 
@@ -81,23 +81,33 @@ export default function GameDataTable() {
   const columns: ReadonlyArray<Column> = useMemo(
     () => [
       { id: "photo", label: "", minWidth: 50 },
-      { id: "game", label: translate("game"), minWidth: 100 },
-      { id: "score", label: translate("score"), minWidth: 170, align: "right" },
+      { id: "name", label: translate("game"), minWidth: 100 },
+      {
+        id: "rating",
+        label: translate("rating"),
+        minWidth: 170,
+        align: "right"
+      },
       {
         id: "platform",
         label: translate("platform"),
         minWidth: 170,
         align: "right"
       },
-      { id: "ss", label: translate("ss"), minWidth: 170, align: "right" },
       {
-        id: "totalPlay",
+        id: "screenshots",
+        label: translate("screenshots"),
+        minWidth: 170,
+        align: "right"
+      },
+      {
+        id: "playTime",
         label: translate("total_play"),
         minWidth: 170,
         align: "right"
       },
       {
-        id: "lastPlayed",
+        id: "lastPlay",
         label: translate("last_played"),
         minWidth: 170,
         align: "right"
@@ -119,16 +129,16 @@ export default function GameDataTable() {
   const rows = useMemo(() => {
     return games?.map((game) =>
       createData(
-        game.gamePhoto,
-        game.gameName,
-        game.gameScore,
-        game.gamePlatform,
+        game.photo,
+        game.name,
+        game.rating,
+        game.platform,
         game.screenshots.length,
-        game.gameTotalTime,
-        game.gameDate,
-        game.gameStatus,
+        game.playTime,
+        game.lastPlay,
+        game.status,
         game.id,
-        game.gameReview
+        game.review
       )
     )
   }, [games])
@@ -156,12 +166,12 @@ export default function GameDataTable() {
       event: React.MouseEvent<HTMLButtonElement>,
       row: {
         photo: string
-        game: string
-        score: number
+        name: string
+        rating: number
         platform: string
-        ss: number
-        totalPlay: number
-        lastPlayed: string
+        screenshots: number
+        playTime: number
+        lastPlay: string
         status: string
         id: string
         gameReview?: string

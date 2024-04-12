@@ -1,16 +1,13 @@
-import { yupResolver } from "@hookform/resolvers/yup"
 import Stack from "@mui/material/Stack"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
-import * as yup from "yup"
 
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
-import useTranslate from "@hooks/use_translate"
 import { gameNameLabel } from "@utils/arrays/gameNameLabel"
 import sleep from "@utils/functions/sleep"
 import log from "@utils/log"
+import { useGamesPageContext } from "context/games"
 import { DialogGameData } from "types/games"
 
 export default function AddGame({
@@ -20,74 +17,75 @@ export default function AddGame({
   isOpen?: boolean
   setClose?: () => void
 }) {
-  const { translate } = useTranslate()
+  const { translate, reset, handleSubmit, isValid, control } =
+    useGamesPageContext()
   const randomNumber = Math.floor(Math.random() * gameNameLabel.length)
 
-  const schema = yup
-    .object({
-      gameName: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("game_name") })
-        ),
-      gamePhoto: yup.string(),
-      gameDate: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("last_play_date") })
-        ),
-      gamePlatform: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("platform") })
-        ),
-      gameReview: yup.string(),
-      gameScore: yup
-        .number()
-        .typeError(
-          translate("input_is_required", { name: translate("game_total_play") })
-        )
-        .required(translate("input_is_required", { name: translate("score") })),
-      gameStatus: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("game_status") })
-        ),
-      gameTotalTime: yup
-        .number()
-        .typeError(
-          translate("input_is_required", { name: translate("game_total_play") })
-        )
-        .required(
-          translate("input_is_required", { name: translate("game_total_play") })
-        )
-    })
-    .required()
+  // const schema = yup
+  //   .object({
+  //     name: yup
+  //       .string()
+  //       .required(
+  //         translate("input_is_required", { name: translate("game_name") })
+  //       ),
+  //     photo: yup.string(),
+  //     lastPlay: yup
+  //       .string()
+  //       .required(
+  //         translate("input_is_required", { name: translate("last_play_date") })
+  //       ),
+  //     platform: yup
+  //       .string()
+  //       .required(
+  //         translate("input_is_required", { name: translate("platform") })
+  //       ),
+  //     review: yup.string(),
+  //     rating: yup
+  //       .number()
+  //       .typeError(
+  //         translate("input_is_required", { name: translate("game_total_play") })
+  //       )
+  //       .required(translate("input_is_required", { name: translate("score") })),
+  //     status: yup
+  //       .string()
+  //       .required(
+  //         translate("input_is_required", { name: translate("game_status") })
+  //       ),
+  //     playTime: yup
+  //       .number()
+  //       .typeError(
+  //         translate("input_is_required", { name: translate("game_total_play") })
+  //       )
+  //       .required(
+  //         translate("input_is_required", { name: translate("game_total_play") })
+  //       )
+  //   })
+  //   .required()
 
   const [loading, setLoading] = useState(false)
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { isValid }
-  } = useForm<DialogGameData>({
-    resolver: yupResolver(schema),
-    mode: "all"
-  })
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   reset,
+  //   formState: { isValid }
+  // } = useForm<DialogGameData>({
+  //   resolver: yupResolver(schema),
+  //   mode: "all"
+  // })
 
   function handleClose() {
     if (loading) {
       return
     }
     setClose?.()
-    reset()
+    reset?.()
   }
 
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await sleep(3000)
-    log(`${data.gameName} is added: `, data)
+    log(`${data.name} is added: `, data)
     setLoading(false)
     handleClose()
   }
@@ -104,7 +102,7 @@ export default function AddGame({
       rightButton={{
         text: translate("save"),
         color: "primary",
-        onClick: handleSubmit(onSubmit),
+        onClick: handleSubmit?.(onSubmit),
         loading: loading,
         disabled: !isValid
       }}
@@ -115,7 +113,7 @@ export default function AddGame({
       <Stack spacing={2}>
         <TextInput<DialogGameData>
           type="text"
-          name="gameName"
+          name="name"
           control={control}
           label={translate("game_name")}
           placeholder={gameNameLabel[randomNumber]}
@@ -124,7 +122,7 @@ export default function AddGame({
         />
         <TextInput<DialogGameData>
           type="text"
-          name="gamePhoto"
+          name="photo"
           control={control}
           label={translate("game_photo_url")}
           placeholder={
@@ -135,7 +133,7 @@ export default function AddGame({
         <Stack direction={"row"} gap={1}>
           <TextInput<DialogGameData>
             type="number"
-            name="gameTotalTime"
+            name="playTime"
             control={control}
             label={translate("game_total_play")}
             placeholder={"23.5"}
@@ -144,7 +142,7 @@ export default function AddGame({
           />
           <AutoCompleteInput<DialogGameData>
             type="text"
-            name="gamePlatform"
+            name="platform"
             control={control}
             label={translate("platform")}
             placeholder={translate("required_input_placeholder", {
@@ -155,7 +153,7 @@ export default function AddGame({
               { label: "Epic Games", value: "epicGames" },
               { label: "Ubisoft", value: "ubisoft" },
               { label: "Xbox(Pc)", value: "xboxPc" },
-              { label: "EA Games", value: "eAGames" },
+              { label: "EA Games", value: "eaGames" },
               { label: "Ubisoft", value: "ubisoft" },
               { label: "Torrent", value: "torrent" },
               { label: "Playstation", value: "playstation" },
@@ -174,7 +172,7 @@ export default function AddGame({
         <Stack direction={"row"} gap={1}>
           <TextInput<DialogGameData>
             type="number"
-            name="gameScore"
+            name="rating"
             control={control}
             label={translate("score")}
             placeholder={"8.6"}
@@ -182,7 +180,7 @@ export default function AddGame({
             required
           />
           <AutoCompleteInput<DialogGameData>
-            name="gameStatus"
+            name="status"
             control={control}
             label={translate("game_status")}
             placeholder={translate("required_input_placeholder", {
@@ -200,7 +198,7 @@ export default function AddGame({
         </Stack>
         <TextInput<DialogGameData>
           type="date"
-          name="gameDate"
+          name="lastPlay"
           control={control}
           label={translate("last_play_date")}
           disabled={loading}
@@ -209,7 +207,7 @@ export default function AddGame({
         <TextInput<DialogGameData>
           multiline
           rows={4}
-          name="gameReview"
+          name="review"
           control={control}
           label={translate("game_review")}
           placeholder={translate("optional_input_placeholder", {

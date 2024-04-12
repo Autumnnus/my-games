@@ -8,6 +8,7 @@ import {
 } from "react"
 import type {
   Control,
+  Resolver,
   UseFormHandleSubmit,
   UseFormReset
 } from "react-hook-form"
@@ -59,19 +60,19 @@ export function GamesPageContextProvider(props: {
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
-  const [games, setGames] = useState([
+  const [games, setGames] = useState<GamesData[]>([
     {
-      gameScore: 7.4,
-      gameTotalTime: 10,
-      gameStatus: "Bitirildi",
-      gameDate: "2024-03-10",
-      gamePhoto:
+      rating: 7.4,
+      playTime: 10,
+      status: "activePlaying",
+      lastPlay: "2024-03-10",
+      photo:
         "https://image.api.playstation.com/vulcan/ap/rnd/202106/2216/uFqCClqXSIsEFIo3ktJdZm7H.png",
       createdAt: {
         seconds: 1709844598,
         nanoseconds: 265000000
       },
-      gamePlatform: "Epic Games",
+      platform: "epicGames",
       screenshots: [
         {
           id: "kr87nhaqlthpj5re",
@@ -174,8 +175,8 @@ export function GamesPageContextProvider(props: {
           ssUrl: "https://i.imgur.com/aWxJug7.png"
         }
       ],
-      gameName: "A Plague Tale: Innocence",
-      gameReview:
+      name: "A Plague Tale: Innocence",
+      review:
         "Orta çağ Fransasını tema alan ve farelerden oluşan karanlık bir vebayı konu olan bu oyun, oynanılış mekaniği çok iyi olmasa da hikayesi ve atmosferi çok başarılı",
       userId: "TalXJ5g1FSZYyfMwg0wasE7vokg1",
       id: "bI8LqE8DF2GMDNEsoHeY"
@@ -185,10 +186,10 @@ export function GamesPageContextProvider(props: {
         seconds: 1709412155,
         nanoseconds: 473000000
       },
-      gameScore: 8.6,
-      gameName: "Batman: Arkham Knight",
-      gameTotalTime: 18,
-      gamePhoto:
+      rating: 8.6,
+      name: "Batman: Arkham Knight",
+      playTime: 18,
+      photo:
         "https://image.api.playstation.com/cdn/UP1018/CUSA00133_00/due3Vp0T2VSGfBtGsWjVnrL4o882iYVk.png",
       screenshots: [
         {
@@ -282,25 +283,25 @@ export function GamesPageContextProvider(props: {
             "https://steamuserimages-a.akamaihd.net/ugc/2426948806789086501/08151058B6A9A3C85C6484D96504BBC2B4C3F22E/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false"
         }
       ],
-      gameDate: "2024-03-06",
-      gamePlatform: "Steam",
+      lastPlay: "2024-03-06",
+      platform: "steam",
       userId: "TalXJ5g1FSZYyfMwg0wasE7vokg1",
-      gameReview:
+      review:
         "Önceki Batman oyunlara göre çok başarılı bir oyun. Hikayesi harika, mekanikleri harika, açık dünyası güzel. Önceki oyunlarda beklediğim çoğu eksiklikleri fazlasıyla tamamladı. Karakter gelişimi çok güzel renk katmış. Ölmeden önce oynanılması gereken oyunlardan",
-      gameStatus: "Bitirildi",
+      status: "completed",
       id: "LKSMpNl709rZRJX9LgRR"
     },
     {
-      gameDate: "2024-03-02",
+      lastPlay: "2024-03-02",
       createdAt: {
         seconds: 1709153901,
         nanoseconds: 264000000
       },
       userId: "TalXJ5g1FSZYyfMwg0wasE7vokg1",
-      gamePlatform: "Diğer Platformlar",
-      gameName: "The Last of Us Part I",
-      gameTotalTime: 13.1,
-      gameScore: 9.4,
+      platform: "otherPlatforms",
+      name: "The Last of Us Part I",
+      playTime: 13.1,
+      rating: 9.4,
       screenshots: [
         {
           ssUrl: "https://i.imgur.com/gmut2QN.png",
@@ -333,47 +334,46 @@ export function GamesPageContextProvider(props: {
           ssUrl: "https://i.imgur.com/rikHe03.png"
         }
       ],
-      gameStatus: "Bitirildi",
-      gamePhoto:
+      status: "completed",
+      photo:
         "https://image.api.playstation.com/vulcan/ap/rnd/202206/0720/eEczyEMDd2BLa3dtkGJVE9Id.png",
-      gameReview:
+      review:
         "Film tadında efsane ötesi oyun. Oyun hikayesi harika, mekanikleri harika, Türkçe dublaj olması harika. Oyun övgü üzerine övgü hak ediyor fakat tek bir sıkıntı var o da oyunda yaşadığım bug'lardı. O da büyük bir sıkıntı değildi.",
       id: "hQZPEnki79lygN6qqgZ2"
     }
   ])
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
-
   const schema = yup
     .object({
-      gameName: yup
+      name: yup
         .string()
         .required(
           translate("input_is_required", { name: translate("game_name") })
         ),
-      gamePhoto: yup.string(),
-      gameDate: yup
+      photo: yup.string(),
+      lastPlay: yup
         .string()
         .required(
           translate("input_is_required", { name: translate("last_play_date") })
         ),
-      gamePlatform: yup
+      platform: yup
         .string()
         .required(
           translate("input_is_required", { name: translate("platform") })
         ),
-      gameReview: yup.string(),
-      gameScore: yup
+      review: yup.string(),
+      rating: yup
         .number()
         .typeError(
           translate("input_is_required", { name: translate("game_total_play") })
         )
         .required(translate("input_is_required", { name: translate("score") })),
-      gameStatus: yup
+      status: yup
         .string()
         .required(
           translate("input_is_required", { name: translate("game_status") })
         ),
-      gameTotalTime: yup
+      playTime: yup
         .number()
         .typeError(
           translate("input_is_required", { name: translate("game_total_play") })
@@ -390,7 +390,7 @@ export function GamesPageContextProvider(props: {
     reset,
     formState: { isValid }
   } = useForm<DialogGameData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as Resolver<DialogGameData>,
     mode: "all"
   })
 
