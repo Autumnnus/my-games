@@ -1,6 +1,7 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { Avatar, Box, Stack, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
+import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -11,12 +12,13 @@ import { PRIMARY } from "@constants/colors"
 import AuthImageSide from "@pages/main/auth/sub_components/image_side"
 import AuthInputSide from "@pages/main/auth/sub_components/input_side"
 import sleep from "@utils/functions/sleep"
+import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAuthLoginPageContext } from "context/auth/login"
 import { AuthLoginData } from "types/auth"
 
 export default function AuthLoginPage() {
-  const { translate, control, handleSubmit, isValid } =
+  const { translate, control, handleSubmit, isValid, reset } =
     useAuthLoginPageContext()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -26,8 +28,25 @@ export default function AuthLoginPage() {
   }
   async function onSubmit(data: AuthLoginData) {
     setLoading(true)
-    await sleep(3000)
-    log(`${data.email} is added: `, data)
+    await sleep(500)
+    try {
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
+        .then((res) => {
+          reset?.({ email: data.email, password: data.password })
+          log(`${data.email} is added: `, data)
+          localStorage.setItem("my-games-user", JSON.stringify(res.data))
+          showSuccessToast("Login successful")
+          window.location.href = "/"
+        })
+        .catch((err) => {
+          console.error(err)
+          showErrorToast("Login failed" + err)
+        })
+    } catch (error) {
+      console.error(error)
+      showErrorToast("Login failed")
+    }
     setLoading(false)
   }
   return (
@@ -67,29 +86,22 @@ export default function AuthLoginPage() {
             >
               {translate("login")}
             </Button>
-            <Grid gap={5} container>
-              <Grid item xs>
-                <Link
-                  sx={{ cursor: "pointer", color: PRIMARY }}
-                  variant="body2"
-                >
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item xs>
-                <Link
-                  onClick={() => navigatePage("/auth/signup")}
-                  sx={{
-                    cursor: "pointer",
-                    color: PRIMARY,
-                    textAlign: "center"
-                  }}
-                  variant="body2"
-                >
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+            <Stack direction={"row"} justifyContent={"space-between"}>
+              <Link sx={{ cursor: "pointer", color: PRIMARY }} variant="body2">
+                {translate("forgot_password")}
+              </Link>
+              <Link
+                onClick={() => navigatePage("/auth/signup")}
+                sx={{
+                  cursor: "pointer",
+                  color: PRIMARY,
+                  textAlign: "right"
+                }}
+                variant="body2"
+              >
+                {translate("dont_have_account")}
+              </Link>
+            </Stack>
           </Stack>
         </Box>
       </AuthInputSide>

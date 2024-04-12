@@ -1,16 +1,13 @@
-import { yupResolver } from "@hookform/resolvers/yup"
 import Stack from "@mui/material/Stack"
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import * as yup from "yup"
 
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
-import useTranslate from "@hooks/use_translate"
 import { gameNameLabel } from "@utils/arrays/gameNameLabel"
 import sleep from "@utils/functions/sleep"
 import log from "@utils/log"
+import { useGamesPageContext } from "context/games"
 import { DialogGameData } from "types/games"
 
 export default function EditGame({
@@ -22,64 +19,14 @@ export default function EditGame({
   setClose?: () => void
   selectedGame?: DialogGameData | null
 }) {
-  const { translate } = useTranslate()
+  const { translate, reset, handleSubmit, control, isValid } =
+    useGamesPageContext()
   const randomNumber = Math.floor(Math.random() * gameNameLabel.length)
-
-  const schema = yup
-    .object({
-      gameName: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("game_name") })
-        ),
-      gamePhoto: yup.string(),
-      gameDate: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("last_play_date") })
-        ),
-      gamePlatform: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("platform") })
-        ),
-      gameReview: yup.string(),
-      gameScore: yup
-        .number()
-        .typeError(
-          translate("input_is_required", { name: translate("game_total_play") })
-        )
-        .required(translate("input_is_required", { name: translate("score") })),
-      gameStatus: yup
-        .string()
-        .required(
-          translate("input_is_required", { name: translate("game_status") })
-        ),
-      gameTotalTime: yup
-        .number()
-        .typeError(
-          translate("input_is_required", { name: translate("game_total_play") })
-        )
-        .required(
-          translate("input_is_required", { name: translate("game_total_play") })
-        )
-    })
-    .required()
 
   const [loading, setLoading] = useState(false)
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { isValid }
-  } = useForm<DialogGameData>({
-    resolver: yupResolver(schema),
-    mode: "all"
-  })
-
   useEffect(() => {
-    reset(
+    reset?.(
       selectedGame
         ? {
             gameName: selectedGame.gameName,
@@ -100,7 +47,7 @@ export default function EditGame({
       return
     }
     setClose?.()
-    reset()
+    reset?.()
   }
 
   async function onSubmit(data: DialogGameData) {
@@ -123,7 +70,7 @@ export default function EditGame({
       rightButton={{
         text: translate("save"),
         color: "primary",
-        onClick: handleSubmit(onSubmit),
+        onClick: handleSubmit?.(onSubmit),
         loading: loading,
         disabled: !isValid
       }}

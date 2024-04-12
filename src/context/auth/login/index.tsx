@@ -1,9 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import { createContext, useContext } from "react"
-import { type Control, type UseFormHandleSubmit } from "react-hook-form"
+import {
+  UseFormReset,
+  useForm,
+  type Control,
+  type UseFormHandleSubmit
+} from "react-hook-form"
 import * as yup from "yup"
 
-import useControlledForm from "@hooks/use_controlled_form"
 import i18next from "@utils/localization"
 import { AuthLoginData } from "types/auth"
 
@@ -16,6 +20,7 @@ import {
 export type AuthLoginContextProps = {
   control: Control<AuthLoginData>
   handleSubmit?: UseFormHandleSubmit<AuthLoginData>
+  reset?: UseFormReset<AuthLoginData>
   isValid?: boolean
 }
 
@@ -53,8 +58,9 @@ export function AuthLoginPageContextProvider(props: {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { isValid }
-  } = useControlledForm<AuthLoginData>({
+  } = useForm<AuthLoginData>({
     resolver: yupResolver(schema),
     mode: "all"
   })
@@ -65,7 +71,8 @@ export function AuthLoginPageContextProvider(props: {
         translate,
         control,
         handleSubmit,
-        isValid
+        isValid,
+        reset
       }}
     >
       {props.children}

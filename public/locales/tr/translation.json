@@ -38,5 +38,12 @@
   "password": "Şifre",
   "name": "İsim",
   "login": "Giriş Yap",
-  "signup": "Kayıt Ol"
+  "signup": "Kayıt Ol",
+  "home": "Ana sayfa",
+  "users": "Kullanıcılar",
+  "forgot_password": "Şifreni mi unuttun?",
+  "dont_have_account": "Hesabınız yok mu? Kaydol",
+  "already_have_account": "Zaten hesabınız var mı? Giriş yap",
+  "profile": "Profil",
+  "logout": "Çıkış Yap"
 }

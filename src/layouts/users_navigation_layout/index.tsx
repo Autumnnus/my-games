@@ -6,7 +6,7 @@ import { UsersPageContextProvider } from "context/users"
 
 import styles from "./styles"
 
-export default function GamesNavigationLayout() {
+export default function UsersNavigationLayout() {
   return (
     <BaseLayout>
       <UsersPageContextProvider>

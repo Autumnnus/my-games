@@ -16,7 +16,7 @@ import {
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
-import { GamesContextProps } from "context/games"
+import { useGamesPageContext } from "context/games"
 
 type Column = {
   id:
@@ -61,15 +61,13 @@ function createData(
   }
 }
 
-export default function GameDataTable({
-  games,
-  setSelectedGame,
-  setIsEditGameDialogOpen
-}: GamesContextProps) {
+export default function GameDataTable() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const { translate } = useTranslate()
+  const { games, setIsEditGameDialogOpen, setSelectedGame } =
+    useGamesPageContext()
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
@@ -170,22 +168,11 @@ export default function GameDataTable({
       }
     ) => {
       setAnchorEl(event.currentTarget)
-
-      //TODO TEMPORARY
-      setIsEditGameDialogOpen?.()
-      setSelectedGame?.({
-        gameName: row.game,
-        gamePhoto: row.photo,
-        gameDate: row.lastPlayed,
-        gamePlatform: row.platform,
-        gameScore: row.score,
-        gameStatus: row.status,
-        gameTotalTime: row.totalPlay,
-        gameReview: row.gameReview,
-        id: row.id
-      })
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      setSelectedGame?.(row)
     },
-    [setAnchorEl, setIsEditGameDialogOpen, setSelectedGame]
+    [setSelectedGame]
   )
 
   function handleClose() {
@@ -194,15 +181,8 @@ export default function GameDataTable({
 
   const handleEditGame = useCallback(() => {
     setAnchorEl(null)
-    setSelectedGame?.({
-      gameName: "test",
-      gameDate: "test",
-      gamePlatform: "test",
-      gameScore: 1,
-      gameStatus: "test",
-      gameTotalTime: 1
-    })
-  }, [setAnchorEl, setSelectedGame])
+    setIsEditGameDialogOpen?.()
+  }, [setIsEditGameDialogOpen])
 
   function handleDeleteGame() {
     setAnchorEl(null)
@@ -234,83 +214,20 @@ export default function GameDataTable({
                     />
                   ) : column.id === "actions" ? (
                     <>
-                      <IconButton
-                        onClick={(event) => {
-                          handleClick(event, row)
-                        }}
-                      >
+                      <IconButton onClick={(event) => handleClick(event, row)}>
                         <MoreVertIcon color="secondary" />
                       </IconButton>
                     </>
                   ) : (
                     <Typography>{value}</Typography>
                   )}
-                  <Popover
-                    open={Boolean(anchorEl)}
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                      vertical: "center",
-                      horizontal: "left"
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right"
-                    }}
-                    sx={{
-                      "& > *": {
-                        borderRadius: 2.3,
-                        boxShadow: "0px 3px 6px #00000029"
-                      }
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        padding: 1,
-                        pr: 9,
-                        cursor: "pointer",
-                        "&:hover": {
-                          background: "#F1F1F1"
-                        }
-                      }}
-                      onClick={() => {
-                        console.log(row) //TODO fix this
-                        handleEditGame()
-                      }}
-                    >
-                      {translate("edit")}
-                    </Box>
-                    <Box
-                      sx={{
-                        padding: 1,
-                        pr: 9,
-                        cursor: "pointer",
-                        color: "red",
-                        "&:hover": {
-                          background: "#F1F1F1"
-                        }
-                      }}
-                      onClick={handleDeleteGame}
-                    >
-                      {translate("delete")}
-                    </Box>
-                  </Popover>
                 </TableCell>
               )
             })}
           </TableRow>
         )
       })
-  }, [
-    rows,
-    page,
-    rowsPerPage,
-    columns,
-    anchorEl,
-    translate,
-    handleClick,
-    handleEditGame
-  ])
+  }, [rows, page, rowsPerPage, columns, handleClick])
 
   return (
     <Paper
@@ -330,6 +247,53 @@ export default function GameDataTable({
           <TableBody>{MemoizedRows}</TableBody>
         </Table>
       </TableContainer>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: "left"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+        sx={{
+          "& > *": {
+            borderRadius: 2.3,
+            boxShadow: "0px 3px 6px #00000029"
+          }
+        }}
+      >
+        <Box
+          sx={{
+            padding: 1,
+            pr: 9,
+            cursor: "pointer",
+            "&:hover": {
+              background: "#F1F1F1"
+            }
+          }}
+          onClick={handleEditGame}
+        >
+          {translate("edit")}
+        </Box>
+        <Box
+          sx={{
+            padding: 1,
+            pr: 9,
+            cursor: "pointer",
+            color: "red",
+            "&:hover": {
+              background: "#F1F1F1"
+            }
+          }}
+          onClick={handleDeleteGame}
+        >
+          {translate("delete")}
+        </Box>
+      </Popover>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"

@@ -38,5 +38,12 @@
   "password": "Password",
   "name": "Name",
   "login": "Login",
-  "signup": "Signup"
+  "signup": "Signup",
+  "home": "Home",
+  "users": "Users",
+  "forgot_password": "Forgot password?",
+  "dont_have_account": "Don't have an account? Signup",
+  "already_have_account": "Already have an account? Login",
+  "profile": "Profile",
+  "logout": "Logout"
 }

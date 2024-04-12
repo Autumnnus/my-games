@@ -6,7 +6,7 @@ export default function Button(props: LoadingButtonProps) {
   return (
     <LoadingButton
       variant="contained"
-      loadingPosition="start"
+      // loadingPosition="start"
       {...props}
       sx={
         ((theme: Theme) => {

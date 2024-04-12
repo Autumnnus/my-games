@@ -1,4 +1,6 @@
+import AccountCircleSharpIcon from "@mui/icons-material/AccountCircleSharp"
 import MenuIcon from "@mui/icons-material/Menu"
+import { Popover } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
@@ -11,41 +13,25 @@ import ListItemButton from "@mui/material/ListItemButton"
 import ListItemText from "@mui/material/ListItemText"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
-import * as React from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
+
+import { useAppContext } from "context/app_context"
 
 interface Props {
   window?: () => Window
 }
 
 const drawerWidth = 240
-const navItems = [
-  {
-    name: "Home",
-    path: "/"
-  },
-  {
-    name: "Games",
-    path: "/games"
-  },
-  {
-    name: "Users",
-    path: "/users"
-  }
-]
 
 export default function PageHeader(props: Props) {
   const { window } = props
-  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState)
-  }
-  const navigate = useNavigate()
-
-  const navigateToPage = (path: string) => {
-    navigate(path)
-    handleDrawerToggle()
   }
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -54,17 +40,7 @@ export default function PageHeader(props: Props) {
       </Typography>
       <Divider />
       <List>
-        {navItems.map((item) => (
-          <ListItem
-            onClick={() => navigateToPage(item.path)}
-            key={item.name}
-            disablePadding
-          >
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <Navigations handleDrawerToggle={handleDrawerToggle} isDrawer={true} />
       </List>
     </Box>
   )
@@ -88,20 +64,20 @@ export default function PageHeader(props: Props) {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            onClick={() => navigate("/")}
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", sm: "block" },
+              cursor: "pointer"
+            }}
           >
             My Games
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
-              <Button
-                onClick={() => navigateToPage(item.path)}
-                key={item.name}
-                sx={{ color: "#fff" }}
-              >
-                {item.name}
-              </Button>
-            ))}
+            <Navigations
+              handleDrawerToggle={handleDrawerToggle}
+              isDrawer={false}
+            />
           </Box>
         </Toolbar>
       </AppBar>
@@ -127,4 +103,118 @@ export default function PageHeader(props: Props) {
       </nav>
     </Box>
   )
+}
+
+function Navigations({
+  handleDrawerToggle,
+  isDrawer
+}: {
+  handleDrawerToggle: () => void
+  isDrawer: boolean
+}) {
+  const { translate, token } = useAppContext()
+  const navigate = useNavigate()
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+
+  const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    token ? setAnchorEl(event.currentTarget) : navigate("/auth/login")
+  }
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null)
+  }
+  const navigateToPage = useCallback(
+    (path: string) => {
+      navigate(path)
+      handleDrawerToggle()
+    },
+    [navigate, handleDrawerToggle]
+  )
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("my-games-user")
+    navigateToPage("/auth/login")
+  }, [navigateToPage])
+
+  const MemorizedNavigation = useMemo(() => {
+    if (isDrawer) {
+      return (
+        <>
+          <ListItem onClick={() => navigateToPage("/")} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={translate("home")} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem onClick={() => navigateToPage("/games")} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={translate("games")} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem onClick={() => navigateToPage("/users")} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={translate("users")} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            onClick={() => navigateToPage("/auth/login")}
+            disablePadding
+          >
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={translate("login")} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem onClick={handleLogout} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={translate("logout")} />
+            </ListItemButton>
+          </ListItem>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <Button onClick={() => navigateToPage("/")} sx={{ color: "#fff" }}>
+            {translate("home")}
+          </Button>
+          <Button
+            onClick={() => navigateToPage("/games")}
+            sx={{ color: "#fff" }}
+          >
+            {translate("games")}
+          </Button>
+          <Button
+            onClick={() => navigateToPage("/users")}
+            sx={{ color: "#fff" }}
+          >
+            {translate("users")}
+          </Button>
+          <IconButton onClick={(event) => handlePopoverClick(event)}>
+            <AccountCircleSharpIcon sx={{ color: "#fff" }} />
+          </IconButton>
+
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={handlePopoverClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left"
+            }}
+          >
+            <Box onClick={handleLogout} sx={{ p: 1.5, cursor: "pointer" }}>
+              <Typography sx={{ color: "#000" }}>
+                {translate("profile")}
+              </Typography>
+            </Box>
+            <Box onClick={handleLogout} sx={{ p: 1.5, cursor: "pointer" }}>
+              <Typography>{translate("logout")}</Typography>
+            </Box>
+          </Popover>
+        </>
+      )
+    }
+  }, [anchorEl, handleLogout, isDrawer, navigateToPage, translate])
+
+  return MemorizedNavigation
 }

@@ -14,6 +14,7 @@ import {
   TABLE_HEADER_COLOR,
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
+import { useAppContext } from "context/app_context"
 import { useUsersPageContext } from "context/users"
 
 type Column = {
@@ -49,6 +50,7 @@ function createData(
 export default function UserDataTable() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const { users, translate } = useUsersPageContext()
+  const { token } = useAppContext()
   const columns: ReadonlyArray<Column> = useMemo(
     () => [
       { id: "profileImage", label: "", minWidth: 50 },
@@ -116,7 +118,6 @@ export default function UserDataTable() {
   function handleDeleteUser() {
     setAnchorEl(null)
   }
-
   const MemoizedRows = useMemo(() => {
     return rows?.map((row, index) => {
       return (
@@ -139,7 +140,7 @@ export default function UserDataTable() {
                     alt={String(value)}
                     sx={{ width: "60px", height: "60px" }}
                   />
-                ) : column.id === "actions" ? (
+                ) : column.id === "actions" && token?.data.role === "admin" ? (
                   <>
                     <IconButton
                       onClick={(event) => {
@@ -158,7 +159,7 @@ export default function UserDataTable() {
         </TableRow>
       )
     })
-  }, [rows, columns])
+  }, [rows, columns, token])
 
   return (
     <Paper

@@ -83,7 +83,7 @@ export default function AuthSignupPage() {
                   onClick={() => navigatePage("/auth/login")}
                   variant="body2"
                 >
-                  {"Already have an account? Login"}
+                  {translate("already_have_account")}
                 </Link>
               </Grid>
             </Grid>

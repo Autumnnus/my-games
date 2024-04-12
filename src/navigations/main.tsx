@@ -5,6 +5,7 @@ import PageHeader from "@components/page_header"
 import AuthPageLayout from "@layouts/auth_page_layout"
 import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
+import UsersNavigationLayout from "@layouts/users_navigation_layout"
 import UsersPageLayout from "@layouts/users_page_layout"
 import ErrorPage from "@pages/error"
 import AuthLoginPage from "@pages/main/auth/login"
@@ -44,17 +45,7 @@ const mainNavigation: RouteObject[] = [
           </GamesPageLayout>
         )
       },
-      {
-        path: "users",
-        element: (
-          <UsersPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={UsersPageContextProvider}
-          >
-            <UsersPage />
-          </UsersPageLayout>
-        )
-      },
+
       {
         path: "auth/login",
         element: (
@@ -76,6 +67,25 @@ const mainNavigation: RouteObject[] = [
             <AuthSignUp />
           </AuthPageLayout>
         )
+      }
+    ]
+  },
+  {
+    path: "/",
+    element: <UsersNavigationLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "users",
+        element: (
+          <UsersPageLayout
+            HeaderComponent={() => <PageHeader />}
+            ContextProvider={UsersPageContextProvider}
+          >
+            <UsersPage />
+          </UsersPageLayout>
+        ),
+        errorElement: <ErrorPage />
       }
     ]
   }

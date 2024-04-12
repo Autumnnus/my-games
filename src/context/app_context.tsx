@@ -1,11 +1,32 @@
 import type { TFunction } from "i18next"
-import React, { createContext, useContext } from "react"
+import React, { createContext, useContext, useState } from "react"
 
 import useTranslate from "@hooks/use_translate"
 import i18next from "@utils/localization"
 
+type TokenData = {
+  email: string
+  id: string
+  name: string
+  isVerified: boolean
+  role: "user" | "admin"
+}
+
 export type AppContextProps = {
   translate: TFunction<"translation", undefined>
+  token?: {
+    access_token: string
+    data: TokenData
+  }
+  setToken?: React.Dispatch<
+    React.SetStateAction<
+      | {
+          access_token: string
+          data: TokenData
+        }
+      | undefined
+    >
+  >
 }
 
 export const appContextDefaultValues: AppContextProps = {
@@ -19,11 +40,19 @@ export function AppContextProvider(props: {
 }) {
   const { translate } = useTranslate()
 
+  const [token, setToken] = useState<AppContextProps["token"]>(() => {
+    const storedToken = localStorage.getItem("my-games-user")
+    return storedToken
+      ? (JSON.parse(storedToken) as AppContextProps["token"])
+      : undefined
+  })
   return (
     <AppContext.Provider
       value={{
         ...appContextDefaultValues,
-        translate
+        translate,
+        token,
+        setToken
       }}
     >
       {props.children}

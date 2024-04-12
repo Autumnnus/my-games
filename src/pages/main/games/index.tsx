@@ -13,22 +13,16 @@ import { useGamesPageContext } from "context/games"
 
 export default function GamesPage() {
   const {
-    games,
     isAddGameDialogOpen,
     setIsAddGameDialogOpen,
     isEditGameDialogOpen,
     setIsEditGameDialogOpen,
-    selectedGame,
-    setSelectedGame
+    selectedGame
   } = useGamesPageContext()
   return (
     <Box px={5} py={2}>
       <TableHeader />
-      <GameDataTable
-        games={games}
-        setSelectedGame={setSelectedGame}
-        setIsEditGameDialogOpen={setIsEditGameDialogOpen}
-      />
+      <GameDataTable />
       <AddGame isOpen={isAddGameDialogOpen} setClose={setIsAddGameDialogOpen} />
       <EditGame
         isOpen={isEditGameDialogOpen}

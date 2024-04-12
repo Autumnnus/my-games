@@ -8,6 +8,7 @@ import {
   useState
 } from "react"
 
+import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
 import { UsersData } from "types/users"
 
@@ -40,13 +41,14 @@ export function UsersPageContextProvider(props: {
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/users`)
       .then((res: AxiosResponse<{ data: UsersData[] }>) => {
-        const data = res.data.data
-        setUsers(data)
+        setUsers(res.data.data)
       })
       .catch((err) => {
-        console.log(err)
+        showErrorToast("Database Fethcing Error")
+        console.error(err)
       })
   }, [])
+
   return (
     <UsersPageContext.Provider
       value={{
@@ -60,7 +62,6 @@ export function UsersPageContextProvider(props: {
     </UsersPageContext.Provider>
   )
 }
-
 export function useUsersPageContext() {
   const context = useContext(UsersPageContext)
   if (context === undefined) {
