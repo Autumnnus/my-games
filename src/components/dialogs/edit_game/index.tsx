@@ -102,7 +102,7 @@ export default function EditGame({
             type="number"
             name="playTime"
             control={control}
-            label={translate("game_total_play")}
+            label={translate("game_play_time")}
             placeholder={"23.5"}
             disabled={loading}
             required
@@ -127,7 +127,7 @@ export default function EditGame({
               { label: "Nintendo", value: "nintendo" },
               { label: "Mobile", value: "mobile" },
               {
-                label: translate("other_platforms"),
+                label: translate("otherPlatforms"),
                 value: "otherPlatforms"
               }
             ]}
@@ -140,7 +140,7 @@ export default function EditGame({
             type="number"
             name="rating"
             control={control}
-            label={translate("score")}
+            label={translate("rating")}
             placeholder={"8.6"}
             disabled={loading}
             required
@@ -155,8 +155,8 @@ export default function EditGame({
             selectOptions={[
               { label: translate("completed"), value: "completed" },
               { label: translate("abondoned"), value: "abondoned" },
-              { label: translate("to_be_completed"), value: "toBeCompleted" },
-              { label: translate("active_playing"), value: "activePlaying" }
+              { label: translate("toBeCompleted"), value: "toBeCompleted" },
+              { label: translate("activePlaying"), value: "activePlaying" }
             ]}
             disabled={loading}
             required

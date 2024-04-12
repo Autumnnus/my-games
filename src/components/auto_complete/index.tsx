@@ -53,14 +53,7 @@ export default function AutoCompleteInput<T extends FieldValues>(
             >
               <Typography>{props.label}</Typography>
             </InputLabel>
-
             <Autocomplete<{ label: string; value: number | string }>
-              // options={
-              //   toArray(props.selectOptions) as {
-              //     label: string
-              //     value: string
-              //   }[]
-              // }
               options={props.selectOptions || []}
               disabled={props.disabled}
               disableClearable={true as unknown as false}
@@ -72,10 +65,6 @@ export default function AutoCompleteInput<T extends FieldValues>(
               onChange={(_, selectedOption) =>
                 onChange({ target: { value: selectedOption?.value } })
               }
-              // value={toArray(props.selectOptions).find((option) => {
-              //   console.log("Current value in find:", value)
-              //   return option.value === value
-              // })}
               value={toArray(props.selectOptions).find(
                 (option) => option.value === value
               )}

@@ -102,7 +102,7 @@ export default function GameDataTable() {
       },
       {
         id: "playTime",
-        label: translate("total_play"),
+        label: translate("play_time"),
         minWidth: 170,
         align: "right"
       },
@@ -228,6 +228,8 @@ export default function GameDataTable() {
                         <MoreVertIcon color="secondary" />
                       </IconButton>
                     </>
+                  ) : column.id === "status" || column.id === "platform" ? (
+                    <Typography>{translate(value as string)}</Typography>
                   ) : (
                     <Typography>{value}</Typography>
                   )}
@@ -237,7 +239,7 @@ export default function GameDataTable() {
           </TableRow>
         )
       })
-  }, [rows, page, rowsPerPage, columns, handleClick])
+  }, [rows, page, rowsPerPage, columns, translate, handleClick])
 
   return (
     <Paper

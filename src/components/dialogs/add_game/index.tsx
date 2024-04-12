@@ -21,58 +21,7 @@ export default function AddGame({
     useGamesPageContext()
   const randomNumber = Math.floor(Math.random() * gameNameLabel.length)
 
-  // const schema = yup
-  //   .object({
-  //     name: yup
-  //       .string()
-  //       .required(
-  //         translate("input_is_required", { name: translate("game_name") })
-  //       ),
-  //     photo: yup.string(),
-  //     lastPlay: yup
-  //       .string()
-  //       .required(
-  //         translate("input_is_required", { name: translate("last_play_date") })
-  //       ),
-  //     platform: yup
-  //       .string()
-  //       .required(
-  //         translate("input_is_required", { name: translate("platform") })
-  //       ),
-  //     review: yup.string(),
-  //     rating: yup
-  //       .number()
-  //       .typeError(
-  //         translate("input_is_required", { name: translate("game_total_play") })
-  //       )
-  //       .required(translate("input_is_required", { name: translate("score") })),
-  //     status: yup
-  //       .string()
-  //       .required(
-  //         translate("input_is_required", { name: translate("game_status") })
-  //       ),
-  //     playTime: yup
-  //       .number()
-  //       .typeError(
-  //         translate("input_is_required", { name: translate("game_total_play") })
-  //       )
-  //       .required(
-  //         translate("input_is_required", { name: translate("game_total_play") })
-  //       )
-  //   })
-  //   .required()
-
   const [loading, setLoading] = useState(false)
-
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   reset,
-  //   formState: { isValid }
-  // } = useForm<DialogGameData>({
-  //   resolver: yupResolver(schema),
-  //   mode: "all"
-  // })
 
   function handleClose() {
     if (loading) {
@@ -135,7 +84,7 @@ export default function AddGame({
             type="number"
             name="playTime"
             control={control}
-            label={translate("game_total_play")}
+            label={translate("game_play_time")}
             placeholder={"23.5"}
             disabled={loading}
             required
@@ -161,7 +110,7 @@ export default function AddGame({
               { label: "Nintendo", value: "nintendo" },
               { label: "Mobile", value: "mobile" },
               {
-                label: translate("other_platforms"),
+                label: translate("otherPlatforms"),
                 value: "otherPlatforms"
               }
             ]}
@@ -174,7 +123,7 @@ export default function AddGame({
             type="number"
             name="rating"
             control={control}
-            label={translate("score")}
+            label={translate("rating")}
             placeholder={"8.6"}
             disabled={loading}
             required
@@ -189,8 +138,8 @@ export default function AddGame({
             selectOptions={[
               { label: translate("completed"), value: "completed" },
               { label: translate("abondoned"), value: "abondoned" },
-              { label: translate("to_be_completed"), value: "toBeCompleted" },
-              { label: translate("active_playing"), value: "activePlaying" }
+              { label: translate("toBeCompleted"), value: "toBeCompleted" },
+              { label: translate("activePlaying"), value: "activePlaying" }
             ]}
             disabled={loading}
             required

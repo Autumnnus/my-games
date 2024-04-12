@@ -23,7 +23,7 @@ type Column = {
     | "name"
     | "gameSize"
     | "completedGameSize"
-    | "screenshootSize"
+    | "screenshotSize"
     | "actions"
   label: string
   minWidth?: number
@@ -36,14 +36,14 @@ function createData(
   name: string,
   gameSize: number,
   completedGameSize: number,
-  screenshootSize: number
+  screenshotSize: number
 ) {
   return {
     profileImage,
     name,
     gameSize,
     completedGameSize,
-    screenshootSize
+    screenshotSize
   }
 }
 
@@ -68,7 +68,7 @@ export default function UserDataTable() {
         align: "right"
       },
       {
-        id: "screenshootSize",
+        id: "screenshotSize",
         label: translate("ss"),
         minWidth: 170,
         align: "right"
@@ -84,7 +84,7 @@ export default function UserDataTable() {
         user.name,
         user.gameSize,
         user.completedGameSize,
-        user.screenshootSize
+        user.screenshotSize
       )
     )
   }, [users])

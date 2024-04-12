@@ -7,7 +7,7 @@ export type UsersData = {
   name: string
   password: string
   role: "admin" | "user"
-  screenshootSize: number
+  screenshotSize: number
   updatedAt: Date
   verificationExpire: Date
   verificationToken: string

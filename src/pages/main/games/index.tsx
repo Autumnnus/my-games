@@ -34,7 +34,13 @@ export default function GamesPage() {
 }
 
 function TableHeader() {
-  const { translate, setIsAddGameDialogOpen } = useGamesPageContext()
+  const { translate, setIsAddGameDialogOpen, reset } = useGamesPageContext()
+  function handleAddGame() {
+    reset?.({
+      name: ""
+    })
+    setIsAddGameDialogOpen?.()
+  }
   return (
     <Stack
       spacing={2}
@@ -78,7 +84,7 @@ function TableHeader() {
           }
         }}
       >
-        <IconButton onClick={setIsAddGameDialogOpen}>
+        <IconButton onClick={handleAddGame}>
           <AddCircleOutlineIcon
             sx={{ width: "40px", height: "40px", color: "white" }}
           />
