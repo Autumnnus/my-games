@@ -2,6 +2,7 @@ import { Box } from "@mui/material"
 import type { RouteObject } from "react-router-dom"
 
 import PageHeader from "@components/page_header"
+import AuthNavigationLayout from "@layouts/auth_navigation_layout"
 import AuthPageLayout from "@layouts/auth_page_layout"
 import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
@@ -20,7 +21,7 @@ import { UsersPageContextProvider } from "context/users"
 const mainNavigation: RouteObject[] = [
   {
     path: "/",
-    element: <GamesNavigationLayout />,
+    element: <AuthNavigationLayout />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -34,18 +35,6 @@ const mainNavigation: RouteObject[] = [
           </GamesPageLayout>
         )
       },
-      {
-        path: "games",
-        element: (
-          <GamesPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={GamesPageContextProvider}
-          >
-            <GamesPage />
-          </GamesPageLayout>
-        )
-      },
-
       {
         path: "auth/login",
         element: (
@@ -86,6 +75,24 @@ const mainNavigation: RouteObject[] = [
           </UsersPageLayout>
         ),
         errorElement: <ErrorPage />
+      }
+    ]
+  },
+  {
+    path: "/",
+    element: <GamesNavigationLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "games/:id",
+        element: (
+          <GamesPageLayout
+            HeaderComponent={() => <PageHeader />}
+            ContextProvider={GamesPageContextProvider}
+          >
+            <GamesPage />
+          </GamesPageLayout>
+        )
       }
     ]
   }

@@ -16,6 +16,7 @@ import type {
   UseFormReset
 } from "react-hook-form"
 import { useForm } from "react-hook-form"
+import { useLocation } from "react-router-dom"
 import * as yup from "yup"
 
 import useToggle from "@hooks/use_toggle"
@@ -60,16 +61,15 @@ export function GamesPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
   const { translate } = useAppContext()
-
+  const location = useLocation()
+  const id = location.pathname.split("/").pop()
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [games, setGames] = useState<GamesData[]>([])
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/api/games/user/661400f4b4ade3d661e4d847`
-      )
+      .get(`${process.env.REACT_APP_API_URL}/api/games/user/${id}`)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
         setGames(res.data.data)
       })
@@ -77,7 +77,7 @@ export function GamesPageContextProvider(props: {
         showErrorToast("Database Fethcing Error")
         console.error(err)
       })
-  }, [])
+  }, [id])
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
   const schema = yup
     .object({
@@ -121,7 +121,6 @@ export function GamesPageContextProvider(props: {
         )
     })
     .required()
-
   const {
     control,
     handleSubmit,
@@ -131,7 +130,6 @@ export function GamesPageContextProvider(props: {
     resolver: yupResolver(schema) as Resolver<DialogGameData>,
     mode: "all"
   })
-
   return (
     <GamesPageContext.Provider
       value={{

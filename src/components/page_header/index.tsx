@@ -136,7 +136,6 @@ function Navigations({
     localStorage.removeItem("my-games-user")
     navigateToPage("/auth/login")
   }, [navigateToPage])
-
   const MemorizedNavigation = useMemo(() => {
     if (isDrawer) {
       return (
@@ -146,11 +145,16 @@ function Navigations({
               <ListItemText primary={translate("home")} />
             </ListItemButton>
           </ListItem>
-          <ListItem onClick={() => navigateToPage("/games")} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={translate("games")} />
-            </ListItemButton>
-          </ListItem>
+          {token && (
+            <ListItem
+              onClick={() => navigateToPage(`/games/${token?.data.id}`)}
+              disablePadding
+            >
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <ListItemText primary={translate("games")} />
+              </ListItemButton>
+            </ListItem>
+          )}
           <ListItem onClick={() => navigateToPage("/users")} disablePadding>
             <ListItemButton sx={{ textAlign: "center" }}>
               <ListItemText primary={translate("users")} />
@@ -177,12 +181,14 @@ function Navigations({
           <Button onClick={() => navigateToPage("/")} sx={{ color: "#fff" }}>
             {translate("home")}
           </Button>
-          <Button
-            onClick={() => navigateToPage("/games")}
-            sx={{ color: "#fff" }}
-          >
-            {translate("games")}
-          </Button>
+          {token && (
+            <Button
+              onClick={() => navigateToPage(`/games/${token?.data.id}`)}
+              sx={{ color: "#fff" }}
+            >
+              {translate("games")}
+            </Button>
+          )}
           <Button
             onClick={() => navigateToPage("/users")}
             sx={{ color: "#fff" }}
