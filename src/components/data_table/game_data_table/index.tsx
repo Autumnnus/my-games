@@ -44,7 +44,7 @@ function createData(
   playTime: number,
   lastPlay: string,
   status: string,
-  id: string,
+  _id: string,
   review?: string
 ) {
   return {
@@ -56,7 +56,7 @@ function createData(
     playTime,
     lastPlay,
     status,
-    id,
+    _id,
     review
   }
 }
@@ -66,8 +66,12 @@ export default function GameDataTable() {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const { translate } = useTranslate()
-  const { games, setIsEditGameDialogOpen, setSelectedGame } =
-    useGamesPageContext()
+  const {
+    games,
+    setIsEditGameDialogOpen,
+    setSelectedGame,
+    setIsDeleteGameDialogOpen
+  } = useGamesPageContext()
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
@@ -137,7 +141,7 @@ export default function GameDataTable() {
         game.playTime,
         game.lastPlay,
         game.status,
-        game.id,
+        game._id,
         game.review
       )
     )
@@ -173,7 +177,7 @@ export default function GameDataTable() {
         playTime: number
         lastPlay: string
         status: string
-        id: string
+        _id: string
         gameReview?: string
       }
     ) => {
@@ -194,9 +198,10 @@ export default function GameDataTable() {
     setIsEditGameDialogOpen?.()
   }, [setIsEditGameDialogOpen])
 
-  function handleDeleteGame() {
+  const handleDeleteGame = useCallback(() => {
     setAnchorEl(null)
-  }
+    setIsDeleteGameDialogOpen?.()
+  }, [setIsDeleteGameDialogOpen])
 
   const MemoizedRows = useMemo(() => {
     return rows
@@ -230,6 +235,10 @@ export default function GameDataTable() {
                     </>
                   ) : column.id === "status" || column.id === "platform" ? (
                     <Typography>{translate(value as string)}</Typography>
+                  ) : column.id === "lastPlay" ? (
+                    <Typography>
+                      {value && new Date(value).toLocaleDateString()}
+                    </Typography>
                   ) : (
                     <Typography>{value}</Typography>
                   )}

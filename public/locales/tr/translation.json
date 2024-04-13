@@ -55,5 +55,6 @@
   "playstation": "Playstation",
   "xboxSeries": "Xbox Series",
   "nintendo": "Nintendo",
-  "mobile": "Mobile"
+  "mobile": "Mobile",
+  "delete_game_text": "Bu oyunu silmek istediğinizden emin misiniz? Bu eylem geri alınamaz."
 }

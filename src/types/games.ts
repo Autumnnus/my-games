@@ -29,7 +29,7 @@ type Platform =
 type Status = "completed" | "abondoned" | "toBeCompleted" | "activePlaying"
 
 type Screenshot = {
-  id: string
+  _id: string
   ssName: string
   ssUrl: string
 }
@@ -46,7 +46,7 @@ export type GamesData = {
   name: string
   review: string
   userId: string
-  id: string
+  _id: string
 }
 
 export type DialogGameData = {
@@ -58,5 +58,5 @@ export type DialogGameData = {
   rating: number
   status: string
   playTime: number
-  id?: string
+  _id?: string
 }

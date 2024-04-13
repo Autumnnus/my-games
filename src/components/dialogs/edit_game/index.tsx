@@ -1,5 +1,4 @@
 import Stack from "@mui/material/Stack"
-import type { AxiosResponse } from "axios"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
@@ -14,17 +13,18 @@ import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 import { DialogGameData, GamesData } from "types/games"
 
-export default function EditGame({
-  isOpen,
-  setClose,
-  selectedGame
-}: {
-  isOpen?: boolean
-  setClose?: () => void
-  selectedGame?: DialogGameData | null
-}) {
-  const { translate, reset, handleSubmit, control, isValid, setGames } =
-    useGamesPageContext()
+export default function EditGame() {
+  const {
+    translate,
+    reset,
+    handleSubmit,
+    control,
+    isValid,
+    setGames,
+    isEditGameDialogOpen,
+    selectedGame,
+    setIsEditGameDialogOpen
+  } = useGamesPageContext()
   const { token } = useAppContext()
   const [randomNumber, setRandomNumber] = useState<number>(
     Math.floor(Math.random() * gameNameLabel.length)
@@ -36,7 +36,7 @@ export default function EditGame({
         ? {
             name: selectedGame.name,
             photo: selectedGame.photo,
-            lastPlay: selectedGame.lastPlay,
+            lastPlay: selectedGame?.lastPlay.split("T")[0],
             platform: selectedGame.platform,
             review: selectedGame.review,
             rating: selectedGame.rating,
@@ -46,22 +46,21 @@ export default function EditGame({
         : {}
     )
   }, [reset, selectedGame])
-  console.log(selectedGame)
   function handleClose() {
     if (loading) {
       return
     }
-    setClose?.()
+    setIsEditGameDialogOpen?.()
     reset?.()
     setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
   }
 
   async function onSubmit(data: DialogGameData) {
-    setLoading(true)
-    await sleep(1000)
-    axios
-      .put(
-        `${process.env.REACT_APP_API_URL}/api/games/editGame/${selectedGame?.id}`,
+    try {
+      setLoading(true)
+      await sleep(1000)
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/games/editGame/${selectedGame?._id}`,
         data,
         {
           headers: {
@@ -69,28 +68,20 @@ export default function EditGame({
           }
         }
       )
-      .then(() => {
-        log(`${data.name} is edited: `, data)
-        showSuccessToast("Game Edited")
-        reset?.()
-        axios
-          .get(
-            `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
-          )
-          .then((res: AxiosResponse<{ data: GamesData[] }>) => {
-            setGames?.(res.data.data)
-          })
-          .catch((err) => {
-            showErrorToast("Database Fethcing Error")
-            console.error(err)
-          })
-      })
-      .catch((err: Error) => {
-        console.error(err)
-        showErrorToast("Game couldn't be edited" + err.message)
-      })
-    setLoading(false)
-    handleClose()
+      log(`${data.name} is edited: `, data)
+      showSuccessToast("The Game Edited Successfully")
+      reset?.()
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
+      )
+      setGames?.((response.data as { data: GamesData[] }).data)
+      handleClose()
+    } catch (error) {
+      console.error(error)
+      showErrorToast("Game couldn't be edited" + (error as Error).message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -109,7 +100,7 @@ export default function EditGame({
         loading: loading,
         disabled: !isValid
       }}
-      isOpen={!!isOpen}
+      isOpen={!!isEditGameDialogOpen}
       setClose={handleClose}
       size="large"
     >

@@ -3,6 +3,7 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 
 import GameDataTable from "@components/data_table/game_data_table"
 import AddGame from "@components/dialogs/add_game"
+import DeleteGame from "@components/dialogs/delete_game"
 import EditGame from "@components/dialogs/edit_game"
 import SearchBar from "@components/search_bar"
 import {
@@ -12,23 +13,13 @@ import {
 import { useGamesPageContext } from "context/games"
 
 export default function GamesPage() {
-  const {
-    isAddGameDialogOpen,
-    setIsAddGameDialogOpen,
-    isEditGameDialogOpen,
-    setIsEditGameDialogOpen,
-    selectedGame
-  } = useGamesPageContext()
   return (
     <Box px={5} py={2}>
       <TableHeader />
       <GameDataTable />
-      <AddGame isOpen={isAddGameDialogOpen} setClose={setIsAddGameDialogOpen} />
-      <EditGame
-        isOpen={isEditGameDialogOpen}
-        setClose={setIsEditGameDialogOpen}
-        selectedGame={selectedGame}
-      />
+      <AddGame />
+      <EditGame />
+      <DeleteGame />
     </Box>
   )
 }

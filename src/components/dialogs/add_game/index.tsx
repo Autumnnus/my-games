@@ -1,5 +1,4 @@
 import Stack from "@mui/material/Stack"
-import type { AxiosResponse } from "axios"
 import axios from "axios"
 import { useState } from "react"
 
@@ -14,15 +13,17 @@ import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 import { DialogGameData, GamesData } from "types/games"
 
-export default function AddGame({
-  isOpen,
-  setClose
-}: {
-  isOpen?: boolean
-  setClose?: () => void
-}) {
-  const { translate, reset, handleSubmit, isValid, control, setGames } =
-    useGamesPageContext()
+export default function AddGame() {
+  const {
+    translate,
+    reset,
+    handleSubmit,
+    isValid,
+    control,
+    setGames,
+    setIsAddGameDialogOpen,
+    isAddGameDialogOpen
+  } = useGamesPageContext()
   const { token } = useAppContext()
 
   const [randomNumber, setRandomNumber] = useState<number>(
@@ -35,42 +36,40 @@ export default function AddGame({
     if (loading) {
       return
     }
-    setClose?.()
+    setIsAddGameDialogOpen?.()
     reset?.()
     setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
   }
 
   async function onSubmit(data: DialogGameData) {
-    setLoading(true)
-    await sleep(1000)
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/api/games/addNewGame`, data, {
-        headers: {
-          Authorization: `Bearer: ${token?.access_token}`
-        }
-      })
-      .then(() => {
-        log(`${data.name} is added: `, data)
-        reset?.()
-        showSuccessToast("Game Added")
-        axios
-          .get(
-            `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
-          )
-          .then((res: AxiosResponse<{ data: GamesData[] }>) => {
-            setGames?.(res.data.data)
-          })
-          .catch((err) => {
-            showErrorToast("Database Fethcing Error")
-            console.error(err)
-          })
-      })
-      .catch((err: Error) => {
-        console.error(err)
-        showErrorToast("Game couldn't be added" + err.message)
-      })
-    setLoading(false)
-    handleClose()
+    try {
+      setLoading(true)
+      await sleep(1000)
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/api/games/addNewGame`, data, {
+          headers: {
+            Authorization: `Bearer: ${token?.access_token}`
+          }
+        })
+        .then(() => {
+          log(`${data.name} is added: `, data)
+          reset?.()
+          showSuccessToast("Game Added")
+        })
+      log(`${data.name} is added: `, data)
+      showSuccessToast("The Game Added Successfully")
+      reset?.()
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
+      )
+      setGames?.((response.data as { data: GamesData[] }).data)
+      handleClose()
+    } catch (error) {
+      console.error(error)
+      showErrorToast("Game couldn't be edited" + (error as Error).message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -89,7 +88,7 @@ export default function AddGame({
         loading: loading,
         disabled: !isValid
       }}
-      isOpen={!!isOpen}
+      isOpen={!!isAddGameDialogOpen}
       setClose={handleClose}
       size="large"
     >
