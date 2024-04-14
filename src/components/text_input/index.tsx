@@ -83,7 +83,8 @@ export default function TextInput<T extends FieldValues>(
               {...props}
               sx={{
                 " input": {
-                  padding: 2
+                  padding: 2,
+                  color: "#ffffff"
                 },
                 ".MuiFormHelperText-root": {
                   marginLeft: 0
@@ -102,9 +103,17 @@ export default function TextInput<T extends FieldValues>(
                   "-webkit-appearance": "none",
                   margin: 0
                 },
+                backgroundColor: "#4b5563",
+                "& input::placeholder": { color: "#ffffff" },
+                "&-webkit-calendar-picker-indicator": {
+                  color: "red"
+                },
                 ...props?.sx
               }}
               label={undefined}
+              inputProps={{
+                style: { color: "#fff" }
+              }}
             />
           </>
         )}

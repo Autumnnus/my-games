@@ -1,5 +1,12 @@
 import MoreVertIcon from "@mui/icons-material/MoreVert"
-import { Avatar, Box, IconButton, Popover, Typography } from "@mui/material"
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Popover,
+  Stack,
+  Typography
+} from "@mui/material"
 import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -10,14 +17,16 @@ import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import { ChangeEvent, useCallback, useMemo, useState } from "react"
 
+import PlatformIcon from "@assets/platform_icons"
 import {
   TABLE_HEADER_BACKGROUND_COLOR,
   TABLE_HEADER_COLOR,
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
-import { ratingTableColor } from "@utils/functions/ratingTableColor"
+import ratingTableColor from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
+import { Platform } from "types/games"
 
 type Column = {
   id:
@@ -265,14 +274,27 @@ export default function GameDataTable() {
                     {value ? "/10" : translate("not_rated")}
                   </Typography>
                 )
-              } else if (column.id === "lastPlay" || column.id === "platform") {
+              } else if (column.id === "lastPlay") {
                 cellContent = (
                   <Typography sx={{ color: "#9ca3af" }}>
                     {column.id === "lastPlay" &&
                       value &&
                       new Date(value).toLocaleDateString()}
-                    {column.id === "platform" && translate(value as string)}
                   </Typography>
+                )
+              } else if (column.id === "platform") {
+                cellContent = (
+                  <Stack
+                    direction={"row"}
+                    justifyContent={"flex-end"}
+                    alignItems={"center"}
+                    gap={1}
+                  >
+                    <Typography sx={{ color: "#9ca3af" }}>
+                      {column.id === "platform" && translate(value as string)}
+                    </Typography>
+                    <PlatformIcon platform={value as Platform} />
+                  </Stack>
                 )
               } else if (
                 column.id === "playTime" ||

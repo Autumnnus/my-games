@@ -13,7 +13,7 @@ type Timestamp = {
   nanoseconds: number
 }
 
-type Platform =
+export type Platform =
   | "steam"
   | "epicGames"
   | "ubisoft"
@@ -26,7 +26,11 @@ type Platform =
   | "mobile"
   | "otherPlatforms"
 
-type Status = "completed" | "abondoned" | "toBeCompleted" | "activePlaying"
+export type Status =
+  | "completed"
+  | "abondoned"
+  | "toBeCompleted"
+  | "activePlaying"
 
 type Screenshot = {
   _id: string

@@ -4,6 +4,7 @@ import { PRIMARY } from "./colors"
 
 const theme = createTheme({
   palette: {
+    mode: "dark",
     primary: {
       main: PRIMARY
     },

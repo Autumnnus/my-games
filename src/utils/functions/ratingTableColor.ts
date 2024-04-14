@@ -1,4 +1,4 @@
-export function ratingTableColor(rating: number) {
+export default function ratingTableColor(rating: number) {
   if (rating === 10) {
     return "#3b82f6"
   } else if (rating >= 9) {

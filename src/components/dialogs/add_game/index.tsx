@@ -194,6 +194,7 @@ export default function AddGame() {
           placeholder={translate("optional_input_placeholder", {
             name: translate("game_review")
           })}
+          sx={{}}
           disabled={loading}
         />
       </Stack>

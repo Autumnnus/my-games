@@ -7,15 +7,20 @@ import Typography from "@mui/material/Typography"
 import { useId, useState } from "react"
 import { Control, Controller, FieldValues } from "react-hook-form"
 
+import PlatformIcon from "@assets/platform_icons"
 import { TextInputProps } from "@components/text_input"
-import { INPUT_LABEL_BLUR, PRIMARY } from "@constants/colors"
+import { PRIMARY } from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
 import { toArray } from "@utils/functions/to_array"
 
 import styles from "./styles"
 
 type AutoCompleteInputProps = {
-  selectOptions: { label: string; value: number | string }[]
+  selectOptions: {
+    label: string
+    value: number | string
+    icon?: React.ReactNode
+  }[]
 }
 
 export default function AutoCompleteInput<T extends FieldValues>(
@@ -45,7 +50,7 @@ export default function AutoCompleteInput<T extends FieldValues>(
             <InputLabel
               sx={{
                 ...styles.labelContainer,
-                color: isFocus ? PRIMARY : INPUT_LABEL_BLUR
+                color: isFocus ? PRIMARY : "#fff"
               }}
               error={!!error}
               htmlFor={componentId}
@@ -60,7 +65,26 @@ export default function AutoCompleteInput<T extends FieldValues>(
               noOptionsText={translate("no_options")}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
-                <TextField {...params} placeholder={props.placeholder} />
+                <TextField
+                  {...params}
+                  placeholder={props.placeholder}
+                  sx={{ "& input::placeholder": { color: "#ffffff" } }}
+                />
+              )}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "#fff"
+                  }}
+                  {...props}
+                >
+                  <PlatformIcon platform="eaGames" />
+                  {option.label}
+                </Box>
               )}
               onChange={(_, selectedOption) =>
                 onChange({ target: { value: selectedOption?.value } })
@@ -86,6 +110,7 @@ export default function AutoCompleteInput<T extends FieldValues>(
                 ".MuiSelect-select caption": {
                   color: "text.disabled"
                 },
+                backgroundColor: "#4b5563",
                 ...props?.sx
               }}
             />

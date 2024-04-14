@@ -50,7 +50,10 @@ export default function DialogProvider({
         PaperProps={{
           sx: {
             ...styles.dialogPaperProps,
-            width: responsiveWidth[size]
+            width: responsiveWidth[size],
+            backgroundColor: "#374151",
+            backgroundImage: "none",
+            color: "#F9FAFB"
           }
         }}
       >
