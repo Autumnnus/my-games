@@ -23,7 +23,8 @@ export default function EditGame() {
     setGames,
     isEditGameDialogOpen,
     selectedGame,
-    setIsEditGameDialogOpen
+    setIsEditGameDialogOpen,
+    isDirty
   } = useGamesPageContext()
   const { token } = useAppContext()
   const [randomNumber, setRandomNumber] = useState<number>(
@@ -98,7 +99,7 @@ export default function EditGame() {
         color: "primary",
         onClick: handleSubmit?.(onSubmit),
         loading: loading,
-        disabled: !isValid
+        disabled: !isValid || !isDirty
       }}
       isOpen={!!isEditGameDialogOpen}
       setClose={handleClose}
@@ -170,7 +171,6 @@ export default function EditGame() {
             label={translate("rating")}
             placeholder={"8.6"}
             disabled={loading}
-            required
           />
           <AutoCompleteInput<DialogGameData>
             name="status"

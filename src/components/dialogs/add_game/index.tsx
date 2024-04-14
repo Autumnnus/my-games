@@ -159,7 +159,6 @@ export default function AddGame() {
             label={translate("rating")}
             placeholder={"8.6"}
             disabled={loading}
-            required
           />
           <AutoCompleteInput<DialogGameData>
             name="status"

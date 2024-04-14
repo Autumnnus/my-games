@@ -45,6 +45,7 @@ export type GamesContextProps = {
   handleSubmit?: UseFormHandleSubmit<DialogGameData>
   reset?: UseFormReset<DialogGameData>
   isValid?: boolean
+  isDirty?: boolean
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -83,6 +84,13 @@ export function GamesPageContextProvider(props: {
     .object({
       name: yup
         .string()
+        .max(
+          160,
+          translate("max_length_error", {
+            name: translate("game_name"),
+            value: 160
+          })
+        )
         .required(
           translate("input_is_required", { name: translate("game_name") })
         ),
@@ -100,12 +108,17 @@ export function GamesPageContextProvider(props: {
       review: yup.string(),
       rating: yup
         .number()
-        .typeError(
-          translate("input_is_required", { name: translate("game_play_time") })
-        )
-        .required(
-          translate("input_is_required", { name: translate("rating") })
-        ),
+        .transform((value, originalValue): number | undefined => {
+          if (
+            typeof originalValue === "string" &&
+            originalValue.trim() === ""
+          ) {
+            return undefined
+          }
+          return value
+        })
+        .min(0, translate("rating_min_error", { value: 0 }))
+        .max(10, translate("rating_max_error", { value: 10 })),
       status: yup
         .string()
         .required(
@@ -116,6 +129,8 @@ export function GamesPageContextProvider(props: {
         .typeError(
           translate("input_is_required", { name: translate("game_play_time") })
         )
+        .min(0, translate("rating_min_error", { value: 0 }))
+        .max(999999, translate("rating_max_error", { value: 999999 }))
         .required(
           translate("input_is_required", { name: translate("game_play_time") })
         )
@@ -125,7 +140,7 @@ export function GamesPageContextProvider(props: {
     control,
     handleSubmit,
     reset,
-    formState: { isValid }
+    formState: { isValid, isDirty }
   } = useForm<DialogGameData>({
     resolver: yupResolver(schema) as Resolver<DialogGameData>,
     mode: "all"
@@ -148,7 +163,8 @@ export function GamesPageContextProvider(props: {
         control,
         handleSubmit,
         reset,
-        isValid
+        isValid,
+        isDirty
       }}
     >
       {props.children}

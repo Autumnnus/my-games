@@ -16,6 +16,7 @@ import {
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
+import { ratingTableColor } from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
 
 type Column = {
@@ -33,6 +34,30 @@ type Column = {
   minWidth?: number
   align?: "right"
   format?: (value: number) => string
+}
+
+type RowData = {
+  photo: string
+  name: string
+  rating: number
+  platform:
+    | "steam"
+    | "epicGames"
+    | "ubisoft"
+    | "xboxPc"
+    | "eaGames"
+    | "torrent"
+    | "playstation"
+    | "xboxSeries"
+    | "nintendo"
+    | "mobile"
+    | "otherPlatforms"
+  screenshots: number
+  playTime: number
+  lastPlay: string
+  status: "completed" | "abondoned" | "toBeCompleted" | "activePlaying"
+  _id: string
+  gameReview?: string
 }
 
 function createData(
@@ -166,24 +191,8 @@ export default function GameDataTable() {
   }, [columns])
 
   const handleClick = useCallback(
-    (
-      event: React.MouseEvent<HTMLButtonElement>,
-      row: {
-        photo: string
-        name: string
-        rating: number
-        platform: string
-        screenshots: number
-        playTime: number
-        lastPlay: string
-        status: string
-        _id: string
-        gameReview?: string
-      }
-    ) => {
+    (event: React.MouseEvent<HTMLButtonElement>, row: RowData) => {
       setAnchorEl(event.currentTarget)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
       setSelectedGame?.(row)
     },
     [setSelectedGame]
@@ -211,6 +220,79 @@ export default function GameDataTable() {
           <TableRow key={index} hover role="checkbox" tabIndex={-1}>
             {columns.map((column) => {
               const value = row[column.id as keyof typeof row]
+              let cellContent
+              if (column.id === "photo") {
+                cellContent = (
+                  <Avatar
+                    src={String(value)}
+                    alt={String(value)}
+                    sx={{ width: "60px", height: "60px" }}
+                  />
+                )
+              } else if (column.id === "actions") {
+                cellContent = (
+                  <IconButton
+                    onClick={(event) => handleClick(event, row as RowData)}
+                  >
+                    <MoreVertIcon color="secondary" />
+                  </IconButton>
+                )
+              } else if (column.id === "status") {
+                cellContent = (
+                  <Typography
+                    sx={{
+                      color:
+                        value === "toBeCompleted"
+                          ? "#fde047"
+                          : value === "abondoned"
+                            ? "#991b1b"
+                            : value === "completed"
+                              ? "#16a34a"
+                              : "#0ea5e9"
+                    }}
+                  >
+                    {translate(value as string)}
+                  </Typography>
+                )
+              } else if (column.id === "rating") {
+                cellContent = (
+                  <Typography
+                    sx={{
+                      color: ratingTableColor(value as number)
+                    }}
+                  >
+                    {value}
+                    {value ? "/10" : translate("not_rated")}
+                  </Typography>
+                )
+              } else if (column.id === "lastPlay" || column.id === "platform") {
+                cellContent = (
+                  <Typography sx={{ color: "#9ca3af" }}>
+                    {column.id === "lastPlay" &&
+                      value &&
+                      new Date(value).toLocaleDateString()}
+                    {column.id === "platform" && translate(value as string)}
+                  </Typography>
+                )
+              } else if (
+                column.id === "playTime" ||
+                column.id === "screenshots"
+              ) {
+                cellContent = (
+                  <Typography sx={{ color: "#9ca3af" }}>{value}</Typography>
+                )
+              } else {
+                cellContent = (
+                  <Typography
+                    sx={{ ":hover": { color: "#075985" }, cursor: "pointer" }}
+                  >
+                    {typeof value === "string" && value.length > 40
+                      ? value.substring(0, 40) + "..."
+                      : value}
+                  </Typography>
+                )
+              }
+
               return (
                 <TableCell
                   sx={{
@@ -221,27 +303,7 @@ export default function GameDataTable() {
                   key={column.id}
                   align={column.align}
                 >
-                  {column.id === "photo" ? (
-                    <Avatar
-                      src={String(value)}
-                      alt={String(value)}
-                      sx={{ width: "60px", height: "60px" }}
-                    />
-                  ) : column.id === "actions" ? (
-                    <>
-                      <IconButton onClick={(event) => handleClick(event, row)}>
-                        <MoreVertIcon color="secondary" />
-                      </IconButton>
-                    </>
-                  ) : column.id === "status" || column.id === "platform" ? (
-                    <Typography>{translate(value as string)}</Typography>
-                  ) : column.id === "lastPlay" ? (
-                    <Typography>
-                      {value && new Date(value).toLocaleDateString()}
-                    </Typography>
-                  ) : (
-                    <Typography>{value}</Typography>
-                  )}
+                  {cellContent}
                 </TableCell>
               )
             })}

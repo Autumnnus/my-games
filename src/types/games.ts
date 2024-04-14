@@ -55,7 +55,7 @@ export type DialogGameData = {
   lastPlay: string
   platform: Platform
   review?: string
-  rating: number
+  rating?: number
   status: string
   playTime: number
   _id?: string

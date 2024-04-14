@@ -56,5 +56,9 @@
   "xboxSeries": "Xbox Series",
   "nintendo": "Nintendo",
   "mobile": "Mobile",
-  "delete_game_text": "Bu oyunu silmek istediğinizden emin misiniz? Bu eylem geri alınamaz."
+  "delete_game_text": "Bu oyunu silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.",
+  "rating_min_error": "Puan 0'dan küçük olamaz",
+  "rating_max_error": "Puan 10'dan büyük olamaz",
+  "max_length_error": "{{name}} en fazla {{max}} karakter olabilir",
+  "not_rated": "Puanlanmadı"
 }
