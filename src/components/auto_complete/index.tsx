@@ -12,6 +12,7 @@ import { TextInputProps } from "@components/text_input"
 import { PRIMARY } from "@constants/colors"
 import useTranslate from "@hooks/use_translate"
 import { toArray } from "@utils/functions/to_array"
+import { Platform } from "types/games"
 
 import styles from "./styles"
 
@@ -19,7 +20,7 @@ type AutoCompleteInputProps = {
   selectOptions: {
     label: string
     value: number | string
-    icon?: React.ReactNode
+    icon?: Platform
   }[]
 }
 
@@ -58,17 +59,20 @@ export default function AutoCompleteInput<T extends FieldValues>(
             >
               <Typography>{props.label}</Typography>
             </InputLabel>
-            <Autocomplete<{ label: string; value: number | string }>
+            <Autocomplete<{
+              label: string
+              value: number | string
+              icon?: Platform
+            }>
               options={props.selectOptions || []}
               disabled={props.disabled}
               disableClearable={true as unknown as false}
               noOptionsText={translate("no_options")}
-              getOptionLabel={(option) => option.label}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   placeholder={props.placeholder}
-                  sx={{ "& input::placeholder": { color: "#ffffff" } }}
+                  sx={{ "& input::placeholder": { color: "#fff" } }}
                 />
               )}
               renderOption={(props, option) => (
@@ -82,7 +86,7 @@ export default function AutoCompleteInput<T extends FieldValues>(
                   }}
                   {...props}
                 >
-                  <PlatformIcon platform="eaGames" />
+                  {option.icon && <PlatformIcon platform={option.icon} />}
                   {option.label}
                 </Box>
               )}
@@ -101,8 +105,9 @@ export default function AutoCompleteInput<T extends FieldValues>(
                   pl: 0,
                   pb: 0
                 },
-                " input": {
-                  padding: "7px 4px!important"
+                input: {
+                  padding: "7px 4px!important",
+                  color: "#fff"
                 },
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                   borderColor: error ? "#d32f2f" : undefined
@@ -111,6 +116,7 @@ export default function AutoCompleteInput<T extends FieldValues>(
                   color: "text.disabled"
                 },
                 backgroundColor: "#4b5563",
+
                 ...props?.sx
               }}
             />

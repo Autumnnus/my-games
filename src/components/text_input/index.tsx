@@ -108,6 +108,17 @@ export default function TextInput<T extends FieldValues>(
                 "&-webkit-calendar-picker-indicator": {
                   color: "red"
                 },
+                "input[type='date']::-webkit-calendar-picker-indicator": {
+                  opacity: 1,
+                  display: "block",
+                  color: "rgba(255, 255, 255, 0)",
+                  backgroundColor: "white",
+                  borderRadius: "1000px",
+                  width: "20px",
+                  height: "20px",
+                  borderWidth: "thin",
+                  cursor: "pointer"
+                },
                 ...props?.sx
               }}
               label={undefined}

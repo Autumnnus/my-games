@@ -131,20 +131,25 @@ export default function AddGame() {
               name: translate("platform")
             })}
             selectOptions={[
-              { label: "Steam", value: "steam" },
-              { label: "Epic Games", value: "epicGames" },
-              { label: "Ubisoft", value: "ubisoft" },
-              { label: "Xbox(Pc)", value: "xboxPc" },
-              { label: "EA Games", value: "eaGames" },
-              { label: "Ubisoft", value: "ubisoft" },
-              { label: "Torrent", value: "torrent" },
-              { label: "Playstation", value: "playstation" },
-              { label: "Xbox Series", value: "xboxSeries" },
-              { label: "Nintendo", value: "nintendo" },
-              { label: "Mobile", value: "mobile" },
+              { label: "Steam", value: "steam", icon: "steam" },
+              { label: "Epic Games", value: "epicGames", icon: "epicGames" },
+              { label: "Ubisoft", value: "ubisoft", icon: "ubisoft" },
+              { label: "Xbox(Pc)", value: "xboxPc", icon: "xboxPc" },
+              { label: "EA Games", value: "eaGames", icon: "eaGames" },
+              { label: "Ubisoft", value: "ubisoft", icon: "ubisoft" },
+              { label: "Torrent", value: "torrent", icon: "torrent" },
+              {
+                label: "Playstation",
+                value: "playstation",
+                icon: "playstation"
+              },
+              { label: "Xbox Series", value: "xboxSeries", icon: "xboxSeries" },
+              { label: "Nintendo", value: "nintendo", icon: "nintendo" },
+              { label: "Mobile", value: "mobile", icon: "mobile" },
               {
                 label: translate("otherPlatforms"),
-                value: "otherPlatforms"
+                value: "otherPlatforms",
+                icon: "otherPlatforms"
               }
             ]}
             disabled={loading}

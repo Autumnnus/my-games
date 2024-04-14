@@ -27,6 +27,35 @@ const theme = createTheme({
       borderRadius: 1.6
     },
     fontFamily: "Poppins, sans-serif"
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "#6b7280"
+            },
+            "&:hover fieldset": {
+              borderColor: "#6b7280"
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: PRIMARY
+            }
+          }
+        }
+      }
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#000000",
+          "&.Mui-focused": {
+            color: PRIMARY
+          }
+        }
+      }
+    }
   }
 })
 

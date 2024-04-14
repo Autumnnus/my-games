@@ -117,9 +117,16 @@ function Navigations({
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-  const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    token ? setAnchorEl(event.currentTarget) : navigate("/auth/login")
-  }
+  const handlePopoverClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (token) {
+        setAnchorEl(event.currentTarget)
+      } else {
+        navigate("/auth/login")
+      }
+    },
+    [token, setAnchorEl, navigate]
+  )
 
   const handlePopoverClose = () => {
     setAnchorEl(null)
@@ -208,19 +215,46 @@ function Navigations({
               horizontal: "left"
             }}
           >
-            <Box onClick={handleLogout} sx={{ p: 1.5, cursor: "pointer" }}>
-              <Typography sx={{ color: "#000" }}>
-                {translate("profile")}
-              </Typography>
+            <Box
+              onClick={handleLogout}
+              sx={{
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: "#fff",
+                  color: "#000"
+                },
+                p: 1.5,
+                cursor: "pointer"
+              }}
+            >
+              {translate("profile")}
             </Box>
-            <Box onClick={handleLogout} sx={{ p: 1.5, cursor: "pointer" }}>
-              <Typography>{translate("logout")}</Typography>
+            <Box
+              onClick={handleLogout}
+              sx={{
+                p: 1.5,
+                cursor: "pointer",
+                color: "red",
+                "&:hover": {
+                  backgroundColor: "#fff",
+                  color: "red"
+                }
+              }}
+            >
+              {translate("logout")}
             </Box>
           </Popover>
         </>
       )
     }
-  }, [anchorEl, handleLogout, isDrawer, navigateToPage, translate])
-
+  }, [
+    anchorEl,
+    handleLogout,
+    handlePopoverClick,
+    isDrawer,
+    navigateToPage,
+    token,
+    translate
+  ])
   return MemorizedNavigation
 }

@@ -376,8 +376,10 @@ export default function GameDataTable() {
             padding: 1,
             pr: 9,
             cursor: "pointer",
+            color: "#fff",
             "&:hover": {
-              background: "#F1F1F1"
+              background: "#F1F1F1",
+              color: "#000"
             }
           }}
           onClick={handleEditGame}
