@@ -19,10 +19,16 @@ import { ChangeEvent, useCallback, useMemo, useState } from "react"
 
 import PlatformIcon from "@assets/platform_icons"
 import {
+  RATING_0_COLOR,
+  RATING_4_COLOR,
+  RATING_8_COLOR,
+  RATING_9_COLOR,
+  TABLE_GRAY_COLOR,
   TABLE_HEADER_BACKGROUND_COLOR,
   TABLE_HEADER_COLOR,
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
+import { TABLE_TEXT_SIZE } from "@constants/sizes"
 import useTranslate from "@hooks/use_translate"
 import ratingTableColor from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
@@ -226,7 +232,13 @@ export default function GameDataTable() {
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((row, index) => {
         return (
-          <TableRow key={index} hover role="checkbox" tabIndex={-1}>
+          <TableRow
+            sx={{ backgroundColor: TABLE_ROW_BACKGROUND_COLOR }}
+            key={index}
+            hover
+            role="checkbox"
+            tabIndex={-1}
+          >
             {columns.map((column) => {
               const value = row[column.id as keyof typeof row]
               let cellContent
@@ -236,6 +248,7 @@ export default function GameDataTable() {
                     src={String(value)}
                     alt={String(value)}
                     sx={{ width: "60px", height: "60px" }}
+                    variant="square"
                   />
                 )
               } else if (column.id === "actions") {
@@ -252,12 +265,13 @@ export default function GameDataTable() {
                     sx={{
                       color:
                         value === "toBeCompleted"
-                          ? "#fde047"
+                          ? RATING_4_COLOR
                           : value === "abondoned"
-                            ? "#991b1b"
+                            ? RATING_0_COLOR
                             : value === "completed"
-                              ? "#16a34a"
-                              : "#0ea5e9"
+                              ? RATING_8_COLOR
+                              : RATING_9_COLOR,
+                      fontSize: TABLE_TEXT_SIZE
                     }}
                   >
                     {translate(value as string)}
@@ -267,7 +281,8 @@ export default function GameDataTable() {
                 cellContent = (
                   <Typography
                     sx={{
-                      color: ratingTableColor(value as number)
+                      color: ratingTableColor(value as number),
+                      fontSize: TABLE_TEXT_SIZE
                     }}
                   >
                     {value}
@@ -276,7 +291,9 @@ export default function GameDataTable() {
                 )
               } else if (column.id === "lastPlay") {
                 cellContent = (
-                  <Typography sx={{ color: "#9ca3af" }}>
+                  <Typography
+                    sx={{ color: TABLE_GRAY_COLOR, fontSize: TABLE_TEXT_SIZE }}
+                  >
                     {column.id === "lastPlay" &&
                       value &&
                       new Date(value).toLocaleDateString()}
@@ -290,7 +307,12 @@ export default function GameDataTable() {
                     alignItems={"center"}
                     gap={1}
                   >
-                    <Typography sx={{ color: "#9ca3af" }}>
+                    <Typography
+                      sx={{
+                        color: TABLE_GRAY_COLOR,
+                        fontSize: TABLE_TEXT_SIZE
+                      }}
+                    >
                       {column.id === "platform" && translate(value as string)}
                     </Typography>
                     <PlatformIcon platform={value as Platform} />
@@ -301,12 +323,20 @@ export default function GameDataTable() {
                 column.id === "screenshots"
               ) {
                 cellContent = (
-                  <Typography sx={{ color: "#9ca3af" }}>{value}</Typography>
+                  <Typography
+                    sx={{ color: TABLE_GRAY_COLOR, fontSize: TABLE_TEXT_SIZE }}
+                  >
+                    {value}
+                  </Typography>
                 )
               } else {
                 cellContent = (
                   <Typography
-                    sx={{ ":hover": { color: "#075985" }, cursor: "pointer" }}
+                    sx={{
+                      ":hover": { color: "#075985" },
+                      cursor: "pointer",
+                      fontSize: TABLE_TEXT_SIZE
+                    }}
                   >
                     {typeof value === "string" && value.length > 40
                       ? value.substring(0, 40) + "..."
@@ -338,14 +368,18 @@ export default function GameDataTable() {
     <Paper
       sx={{
         width: "100%",
-        overflow: "hidden",
-        backgroundColor: TABLE_ROW_BACKGROUND_COLOR
+        overflow: "hidden"
       }}
     >
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow sx={{ p: 2, borderBottom: "none" }}>
+            <TableRow
+              sx={{
+                p: 2,
+                borderBottom: "none"
+              }}
+            >
               {MemoizedColumns}
             </TableRow>
           </TableHead>

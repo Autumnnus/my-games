@@ -1,27 +1,42 @@
+import {
+  RATING_0_COLOR,
+  RATING_10_COLOR,
+  RATING_1_COLOR,
+  RATING_2_COLOR,
+  RATING_3_COLOR,
+  RATING_4_COLOR,
+  RATING_5_COLOR,
+  RATING_6_COLOR,
+  RATING_7_COLOR,
+  RATING_8_COLOR,
+  RATING_9_COLOR,
+  TABLE_GRAY_COLOR
+} from "@constants/colors"
+
 export default function ratingTableColor(rating: number) {
   if (rating === 10) {
-    return "#3b82f6"
+    return RATING_10_COLOR
   } else if (rating >= 9) {
-    return "#7dd3fc"
+    return RATING_9_COLOR
   } else if (rating >= 8) {
-    return "#15803d"
+    return RATING_8_COLOR
   } else if (rating >= 7) {
-    return "#22c55e"
+    return RATING_7_COLOR
   } else if (rating >= 6) {
-    return "#86efac"
+    return RATING_6_COLOR
   } else if (rating >= 5) {
-    return "#dcfce7"
+    return RATING_5_COLOR
   } else if (rating >= 4) {
-    return "#fde047"
+    return RATING_4_COLOR
   } else if (rating >= 3) {
-    return "#eab308"
+    return RATING_3_COLOR
   } else if (rating >= 2) {
-    return "#fda4af"
+    return RATING_2_COLOR
   } else if (rating >= 1) {
-    return "#f43f5e"
+    return RATING_1_COLOR
   } else if (rating >= 0) {
-    return "#be123c"
+    return RATING_0_COLOR
   } else {
-    return "#fff"
+    return TABLE_GRAY_COLOR
   }
 }

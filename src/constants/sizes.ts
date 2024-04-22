@@ -1,2 +1,1 @@
-export const LEFT_NAV_WIDTH = "3rem"
-export const LEFT_NAV_HEIGHT = "3rem"
+export const TABLE_TEXT_SIZE = "0.875rem"
