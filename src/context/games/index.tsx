@@ -15,10 +15,10 @@ import type {
   UseFormHandleSubmit,
   UseFormReset
 } from "react-hook-form"
-import { useForm } from "react-hook-form"
 import { useLocation } from "react-router-dom"
 import * as yup from "yup"
 
+import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
@@ -46,6 +46,8 @@ export type GamesContextProps = {
   reset?: UseFormReset<DialogGameData>
   isValid?: boolean
   isDirty?: boolean
+  updateGamesTrigger?: boolean
+  setUpdateGamesTrigger?: Dispatch<SetStateAction<boolean>>
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -67,7 +69,9 @@ export function GamesPageContextProvider(props: {
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
+  const [updateGamesTrigger, setUpdateGamesTrigger] = useState(false)
   const [games, setGames] = useState<GamesData[]>([])
+  const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/games/user/${id}`)
@@ -78,8 +82,8 @@ export function GamesPageContextProvider(props: {
         showErrorToast("Database Fethcing Error")
         console.error(err)
       })
-  }, [id])
-  const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
+  }, [id, updateGamesTrigger])
+
   const schema = yup
     .object({
       name: yup
@@ -141,7 +145,7 @@ export function GamesPageContextProvider(props: {
     handleSubmit,
     reset,
     formState: { isValid, isDirty }
-  } = useForm<DialogGameData>({
+  } = useControlledForm<DialogGameData>({
     resolver: yupResolver(schema) as Resolver<DialogGameData>,
     mode: "all"
   })
@@ -164,7 +168,9 @@ export function GamesPageContextProvider(props: {
         handleSubmit,
         reset,
         isValid,
-        isDirty
+        isDirty,
+        updateGamesTrigger,
+        setUpdateGamesTrigger
       }}
     >
       {props.children}

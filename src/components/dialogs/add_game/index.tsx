@@ -1,6 +1,8 @@
+import { Avatar } from "@mui/material"
 import Stack from "@mui/material/Stack"
 import axios from "axios"
 import { useState } from "react"
+import { useWatch } from "react-hook-form"
 
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
@@ -11,7 +13,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
-import { DialogGameData, GamesData } from "types/games"
+import { DialogGameData } from "types/games"
 
 export default function AddGame() {
   const {
@@ -20,11 +22,12 @@ export default function AddGame() {
     handleSubmit,
     isValid,
     control,
-    setGames,
     setIsAddGameDialogOpen,
-    isAddGameDialogOpen
+    isAddGameDialogOpen,
+    setUpdateGamesTrigger
   } = useGamesPageContext()
   const { token } = useAppContext()
+  const imageSrc = useWatch({ control, name: "photo" })
 
   const [randomNumber, setRandomNumber] = useState<number>(
     Math.floor(Math.random() * gameNameLabel.length)
@@ -59,10 +62,7 @@ export default function AddGame() {
       log(`${data.name} is added: `, data)
       showSuccessToast("The Game Added Successfully")
       reset?.()
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
-      )
-      setGames?.((response.data as { data: GamesData[] }).data)
+      setUpdateGamesTrigger?.((prev) => !prev)
       handleClose()
     } catch (error) {
       console.error(error)
@@ -102,16 +102,23 @@ export default function AddGame() {
           disabled={loading}
           required
         />
-        <TextInput<DialogGameData>
-          type="text"
-          name="photo"
-          control={control}
-          label={translate("game_photo_url")}
-          placeholder={
-            "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
-          }
-          disabled={loading}
-        />
+        <Stack direction={"row"} alignItems={"center"} gap={1}>
+          <TextInput<DialogGameData>
+            type="text"
+            name="photo"
+            control={control}
+            label={translate("game_photo_url")}
+            placeholder={
+              "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
+            }
+            TextLeft={
+              imageSrc && (
+                <Avatar sx={{ width: "40px", height: "40px" }} src={imageSrc} />
+              )
+            }
+            disabled={loading}
+          />
+        </Stack>
         <Stack direction={"row"} gap={1}>
           <TextInput<DialogGameData>
             type="number"

@@ -16,6 +16,7 @@ export type TextInputProps<T extends FieldValues> = TextFieldProps & {
   placeholder?: string
   label?: string
   TitleRight?: React.ReactNode
+  TextLeft?: React.ReactNode
 }
 
 export default function TextInput<T extends FieldValues>(
@@ -30,6 +31,14 @@ export default function TextInput<T extends FieldValues>(
     }
 
     return props.TitleRight
+  }, [props])
+
+  const TextLeftMemo = useMemo(() => {
+    if (!props?.TextLeft) {
+      return undefined
+    }
+
+    return props.TextLeft
   }, [props])
 
   function handleOnFocus(
@@ -81,6 +90,9 @@ export default function TextInput<T extends FieldValues>(
               onFocus={handleOnFocus}
               id={componentId}
               {...props}
+              InputProps={{
+                startAdornment: TextLeftMemo
+              }}
               sx={{
                 " input": {
                   padding: 2,

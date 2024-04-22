@@ -2,6 +2,7 @@ export const PRIMARY = "#157CFC"
 export const TABLE_GRAY_COLOR = "#9ca3af"
 
 export const TABLE_ROW_BACKGROUND_COLOR = "#1f2937"
+export const TABLE_ROW_BACKGROUND_COLOR_HOVER = "#303f54"
 export const TABLE_HEADER_BACKGROUND_COLOR = "#374151"
 export const TABLE_HEADER_COLOR = "#9ca3af"
 

@@ -1,6 +1,8 @@
+import { Avatar } from "@mui/material"
 import Stack from "@mui/material/Stack"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useWatch } from "react-hook-form"
 
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
@@ -11,7 +13,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
-import { DialogGameData, GamesData } from "types/games"
+import { DialogGameData } from "types/games"
 
 export default function EditGame() {
   const {
@@ -20,13 +22,14 @@ export default function EditGame() {
     handleSubmit,
     control,
     isValid,
-    setGames,
+    setUpdateGamesTrigger,
     isEditGameDialogOpen,
     selectedGame,
     setIsEditGameDialogOpen,
     isDirty
   } = useGamesPageContext()
   const { token } = useAppContext()
+  const imageSrc = useWatch({ control, name: "photo" })
   const [randomNumber, setRandomNumber] = useState<number>(
     Math.floor(Math.random() * gameNameLabel.length)
   )
@@ -72,10 +75,7 @@ export default function EditGame() {
       log(`${data.name} is edited: `, data)
       showSuccessToast("The Game Edited Successfully")
       reset?.()
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
-      )
-      setGames?.((response.data as { data: GamesData[] }).data)
+      setUpdateGamesTrigger?.((prev) => !prev)
       handleClose()
     } catch (error) {
       console.error(error)
@@ -115,16 +115,23 @@ export default function EditGame() {
           disabled={loading}
           required
         />
-        <TextInput<DialogGameData>
-          type="text"
-          name="photo"
-          control={control}
-          label={translate("game_photo_url")}
-          placeholder={
-            "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
-          }
-          disabled={loading}
-        />
+        <Stack direction={"row"} alignItems={"center"} gap={1}>
+          <TextInput<DialogGameData>
+            type="text"
+            name="photo"
+            control={control}
+            label={translate("game_photo_url")}
+            placeholder={
+              "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
+            }
+            TextLeft={
+              imageSrc && (
+                <Avatar sx={{ width: "40px", height: "40px" }} src={imageSrc} />
+              )
+            }
+            disabled={loading}
+          />
+        </Stack>
         <Stack direction={"row"} gap={1}>
           <TextInput<DialogGameData>
             type="number"
@@ -136,6 +143,7 @@ export default function EditGame() {
             required
           />
           <AutoCompleteInput<DialogGameData>
+            type="text"
             name="platform"
             control={control}
             label={translate("platform")}
@@ -143,20 +151,25 @@ export default function EditGame() {
               name: translate("platform")
             })}
             selectOptions={[
-              { label: "Steam", value: "steam" },
-              { label: "Epic Games", value: "epicGames" },
-              { label: "Ubisoft", value: "ubisoft" },
-              { label: "Xbox(Pc)", value: "xboxPc" },
-              { label: "EA Games", value: "eaGames" },
-              { label: "Ubisoft", value: "ubisoft" },
-              { label: "Torrent", value: "torrent" },
-              { label: "Playstation", value: "playstation" },
-              { label: "Xbox Series", value: "xboxSeries" },
-              { label: "Nintendo", value: "nintendo" },
-              { label: "Mobile", value: "mobile" },
+              { label: "Steam", value: "steam", icon: "steam" },
+              { label: "Epic Games", value: "epicGames", icon: "epicGames" },
+              { label: "Ubisoft", value: "ubisoft", icon: "ubisoft" },
+              { label: "Xbox(Pc)", value: "xboxPc", icon: "xboxPc" },
+              { label: "EA Games", value: "eaGames", icon: "eaGames" },
+              { label: "Ubisoft", value: "ubisoft", icon: "ubisoft" },
+              { label: "Torrent", value: "torrent", icon: "torrent" },
+              {
+                label: "Playstation",
+                value: "playstation",
+                icon: "playstation"
+              },
+              { label: "Xbox Series", value: "xboxSeries", icon: "xboxSeries" },
+              { label: "Nintendo", value: "nintendo", icon: "nintendo" },
+              { label: "Mobile", value: "mobile", icon: "mobile" },
               {
                 label: translate("otherPlatforms"),
-                value: "otherPlatforms"
+                value: "otherPlatforms",
+                icon: "otherPlatforms"
               }
             ]}
             disabled={loading}

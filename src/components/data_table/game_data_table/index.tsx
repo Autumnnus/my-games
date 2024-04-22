@@ -26,7 +26,8 @@ import {
   TABLE_GRAY_COLOR,
   TABLE_HEADER_BACKGROUND_COLOR,
   TABLE_HEADER_COLOR,
-  TABLE_ROW_BACKGROUND_COLOR
+  TABLE_ROW_BACKGROUND_COLOR,
+  TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
 import { TABLE_TEXT_SIZE } from "@constants/sizes"
 import useTranslate from "@hooks/use_translate"
@@ -116,7 +117,6 @@ export default function GameDataTable() {
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
   }
-
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value)
     setPage(0)
@@ -227,15 +227,17 @@ export default function GameDataTable() {
     setIsDeleteGameDialogOpen?.()
   }, [setIsDeleteGameDialogOpen])
 
-  const MemoizedRows = useMemo(() => {
+  const MemorizedRows = useMemo(() => {
     return rows
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((row, index) => {
         return (
           <TableRow
-            sx={{ backgroundColor: TABLE_ROW_BACKGROUND_COLOR }}
+            sx={{
+              backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
+              ":hover": { backgroundColor: TABLE_ROW_BACKGROUND_COLOR_HOVER }
+            }}
             key={index}
-            hover
             role="checkbox"
             tabIndex={-1}
           >
@@ -301,12 +303,7 @@ export default function GameDataTable() {
                 )
               } else if (column.id === "platform") {
                 cellContent = (
-                  <Stack
-                    direction={"row"}
-                    justifyContent={"flex-end"}
-                    alignItems={"center"}
-                    gap={1}
-                  >
+                  <Stack direction={"row"} justifyContent={"flex-end"} gap={1}>
                     <Typography
                       sx={{
                         color: TABLE_GRAY_COLOR,
@@ -335,7 +332,8 @@ export default function GameDataTable() {
                     sx={{
                       ":hover": { color: "#075985" },
                       cursor: "pointer",
-                      fontSize: TABLE_TEXT_SIZE
+                      fontSize: TABLE_TEXT_SIZE,
+                      display: "inline-block"
                     }}
                   >
                     {typeof value === "string" && value.length > 40
@@ -377,13 +375,14 @@ export default function GameDataTable() {
             <TableRow
               sx={{
                 p: 2,
-                borderBottom: "none"
+                borderBottom: "none",
+                borderRadius: 5
               }}
             >
               {MemoizedColumns}
             </TableRow>
           </TableHead>
-          <TableBody>{MemoizedRows}</TableBody>
+          <TableBody>{MemorizedRows}</TableBody>
         </Table>
       </TableContainer>
       <Popover
@@ -443,6 +442,24 @@ export default function GameDataTable() {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+          ".MuiTablePagination-toolbar": {
+            color: "#fff",
+            bgcolor: TABLE_HEADER_BACKGROUND_COLOR
+          },
+          ".MuiList-root-MuiMenu-list": {
+            color: "#fff"
+          }
+        }}
+        SelectProps={{
+          MenuProps: {
+            sx: {
+              ".MuiPaper-root": {
+                color: "#fff"
+              }
+            }
+          }
+        }}
       />
     </Paper>
   )

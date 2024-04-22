@@ -10,7 +10,6 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
-import { GamesData } from "types/games"
 
 export default function DeleteGame() {
   const {
@@ -18,7 +17,7 @@ export default function DeleteGame() {
     setIsDeleteGameDialogOpen,
     isDeleteGameDialogOpen,
     selectedGame,
-    setGames
+    setUpdateGamesTrigger
   } = useGamesPageContext()
   const { token } = useAppContext()
   const [loading, setLoading] = useState(false)
@@ -50,10 +49,7 @@ export default function DeleteGame() {
       )
       log(`Game is deleted ${selectedGame?.name}`, selectedGame ?? "")
       showSuccessToast("The Game Deleted Successfully")
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/games/user/${token?.data.id}`
-      )
-      setGames?.((response.data as { data: GamesData[] }).data)
+      setUpdateGamesTrigger?.((prev) => !prev)
       handleClose()
     } catch (error) {
       console.error(error)
