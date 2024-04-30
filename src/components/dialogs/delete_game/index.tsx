@@ -5,7 +5,6 @@ import { useState } from "react"
 
 import DialogProvider from "@components/dialog_provider"
 import useControlledForm from "@hooks/use_controlled_form"
-import sleep from "@utils/functions/sleep"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
@@ -17,7 +16,7 @@ export default function DeleteGame() {
     setIsDeleteGameDialogOpen,
     isDeleteGameDialogOpen,
     selectedGame,
-    setUpdateGamesTrigger
+    setGames
   } = useGamesPageContext()
   const { token } = useAppContext()
   const [loading, setLoading] = useState(false)
@@ -36,10 +35,9 @@ export default function DeleteGame() {
   }
 
   async function onSubmit() {
-    try {
-      setLoading(true)
-      await sleep(1000)
-      await axios.delete(
+    setLoading(true)
+    await axios
+      .delete(
         `${process.env.REACT_APP_API_URL}/api/games/deleteGame/${selectedGame?._id}`,
         {
           headers: {
@@ -47,16 +45,21 @@ export default function DeleteGame() {
           }
         }
       )
-      log(`Game is deleted ${selectedGame?.name}`, selectedGame ?? "")
-      showSuccessToast("The Game Deleted Successfully")
-      setUpdateGamesTrigger?.((prev) => !prev)
-      handleClose()
-    } catch (error) {
-      console.error(error)
-      showErrorToast("Game couldn't be deleted" + (error as Error).message)
-    } finally {
-      setLoading(false)
-    }
+      .then(() => {
+        log(`Game is deleted ${selectedGame?.name}`, selectedGame ?? "")
+        showSuccessToast("The Game Edited Successfully")
+        setGames?.((prev) =>
+          prev.filter((game) => game._id !== selectedGame?._id)
+        )
+        handleClose()
+      })
+      .catch((error) => {
+        console.error(error)
+        showErrorToast("Game couldn't be deleted" + (error as Error).message)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (

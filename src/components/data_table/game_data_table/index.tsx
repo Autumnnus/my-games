@@ -33,7 +33,7 @@ import { TABLE_TEXT_SIZE } from "@constants/sizes"
 import useTranslate from "@hooks/use_translate"
 import ratingTableColor from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
-import { Platform } from "types/games"
+import { Platform, Status } from "types/games"
 
 type Column = {
   id:
@@ -56,24 +56,13 @@ type RowData = {
   photo: string
   name: string
   rating: number
-  platform:
-    | "steam"
-    | "epicGames"
-    | "ubisoft"
-    | "xboxPc"
-    | "eaGames"
-    | "torrent"
-    | "playstation"
-    | "xboxSeries"
-    | "nintendo"
-    | "mobile"
-    | "otherPlatforms"
+  platform: Platform
   screenshots: number
   playTime: number
   lastPlay: string
-  status: "completed" | "abondoned" | "toBeCompleted" | "activePlaying"
+  status: Status
   _id: string
-  gameReview?: string
+  review: string
 }
 
 function createData(
@@ -171,7 +160,7 @@ export default function GameDataTable() {
     [translate]
   )
   const rows = useMemo(() => {
-    return games?.map((game) =>
+    return games.map((game) =>
       createData(
         game.photo,
         game.name,

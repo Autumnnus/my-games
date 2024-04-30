@@ -37,30 +37,22 @@ type Screenshot = {
   ssName: string
   ssUrl: string
 }
-
 export type GamesData = {
   rating: number
   playTime: number
   status: Status
   lastPlay: string
   photo: string
-  createdAt: Timestamp
   platform: Platform
-  screenshots: Screenshot[]
   name: string
   review: string
-  userId: string
   _id: string
+  userId: string
+  screenshots: Screenshot[]
+  createdAt: Timestamp
 }
 
-export type DialogGameData = {
-  name: string
-  photo?: string
-  lastPlay: string
-  platform: Platform
-  review?: string
-  rating?: number
-  status: string
-  playTime: number
-  _id?: string
-}
+export type DialogGameData = Omit<
+  GamesData,
+  "userId" | "screenshots" | "createdAt"
+>

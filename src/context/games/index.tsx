@@ -31,7 +31,7 @@ import {
 } from "../app_context"
 
 export type GamesContextProps = {
-  games?: GamesData[]
+  games: GamesData[]
   setGames?: Dispatch<SetStateAction<GamesData[]>>
   isAddGameDialogOpen?: boolean
   setIsAddGameDialogOpen?: () => void
@@ -46,8 +46,6 @@ export type GamesContextProps = {
   reset?: UseFormReset<DialogGameData>
   isValid?: boolean
   isDirty?: boolean
-  updateGamesTrigger?: boolean
-  setUpdateGamesTrigger?: Dispatch<SetStateAction<boolean>>
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -55,7 +53,8 @@ export type GamesPageContextProps = AppContextProps & GamesContextProps
 export const gamesPageDefaultValues: GamesPageContextProps = {
   ...appContextDefaultValues,
   translate: i18next.t,
-  control: {} as Control<DialogGameData>
+  control: {} as Control<DialogGameData>,
+  games: []
 }
 
 const GamesPageContext = createContext(gamesPageDefaultValues)
@@ -69,7 +68,6 @@ export function GamesPageContextProvider(props: {
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
-  const [updateGamesTrigger, setUpdateGamesTrigger] = useState(false)
   const [games, setGames] = useState<GamesData[]>([])
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
   useEffect(() => {
@@ -82,7 +80,7 @@ export function GamesPageContextProvider(props: {
         showErrorToast("Database Fethcing Error")
         console.error(err)
       })
-  }, [id, updateGamesTrigger])
+  }, [id])
 
   const schema = yup
     .object({
@@ -146,7 +144,7 @@ export function GamesPageContextProvider(props: {
     reset,
     formState: { isValid, isDirty }
   } = useControlledForm<DialogGameData>({
-    resolver: yupResolver(schema) as Resolver<DialogGameData>,
+    resolver: yupResolver(schema) as unknown as Resolver<DialogGameData>,
     mode: "all"
   })
   return (
@@ -168,9 +166,7 @@ export function GamesPageContextProvider(props: {
         handleSubmit,
         reset,
         isValid,
-        isDirty,
-        updateGamesTrigger,
-        setUpdateGamesTrigger
+        isDirty
       }}
     >
       {props.children}

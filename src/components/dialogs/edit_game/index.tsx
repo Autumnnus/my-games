@@ -1,6 +1,6 @@
 import { Avatar } from "@mui/material"
 import Stack from "@mui/material/Stack"
-import axios from "axios"
+import axios, { type AxiosResponse } from "axios"
 import { useEffect, useState } from "react"
 import { useWatch } from "react-hook-form"
 
@@ -8,12 +8,11 @@ import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
 import { gameNameLabel } from "@utils/arrays/gameNameLabel"
-import sleep from "@utils/functions/sleep"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
-import { DialogGameData } from "types/games"
+import { DialogGameData, GamesData } from "types/games"
 
 export default function EditGame() {
   const {
@@ -22,11 +21,11 @@ export default function EditGame() {
     handleSubmit,
     control,
     isValid,
-    setUpdateGamesTrigger,
     isEditGameDialogOpen,
     selectedGame,
     setIsEditGameDialogOpen,
-    isDirty
+    isDirty,
+    setGames
   } = useGamesPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "photo" })
@@ -60,10 +59,9 @@ export default function EditGame() {
   }
 
   async function onSubmit(data: DialogGameData) {
-    try {
-      setLoading(true)
-      await sleep(1000)
-      await axios.put(
+    setLoading(true)
+    await axios
+      .put(
         `${process.env.REACT_APP_API_URL}/api/games/editGame/${selectedGame?._id}`,
         data,
         {
@@ -72,17 +70,36 @@ export default function EditGame() {
           }
         }
       )
-      log(`${data.name} is edited: `, data)
-      showSuccessToast("The Game Edited Successfully")
-      reset?.()
-      setUpdateGamesTrigger?.((prev) => !prev)
-      handleClose()
-    } catch (error) {
-      console.error(error)
-      showErrorToast("Game couldn't be edited" + (error as Error).message)
-    } finally {
-      setLoading(false)
-    }
+      .then((res: AxiosResponse<{ data: GamesData }>) => {
+        log(`${data.name} is edited: `, data)
+        reset?.()
+        showSuccessToast("The Game Edited Successfully")
+        setGames?.((prev) => [
+          {
+            name: data.name,
+            photo: data.photo,
+            lastPlay: data.lastPlay,
+            platform: data.platform,
+            review: data.review,
+            rating: data.rating,
+            status: data.status,
+            playTime: data.playTime,
+            _id: res.data.data._id,
+            createdAt: res.data.data.createdAt,
+            userId: res.data.data.userId,
+            screenshots: []
+          },
+          ...prev
+        ])
+        handleClose()
+      })
+      .catch((error) => {
+        console.error(error)
+        showErrorToast("Game couldn't be edited" + (error as Error).message)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (
