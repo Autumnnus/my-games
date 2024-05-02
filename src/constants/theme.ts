@@ -12,7 +12,7 @@ const theme = createTheme({
       main: "#E8E8E8"
     },
     text: {
-      primary: "#000000"
+      primary: "#fff"
     }
   },
   spacing: 8,
@@ -49,7 +49,7 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: "#000000",
+          color: "#fff",
           "&.Mui-focused": {
             color: PRIMARY
           }

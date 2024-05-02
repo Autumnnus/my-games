@@ -1,21 +1,23 @@
 import { Box } from "@mui/material"
 import type { RouteObject } from "react-router-dom"
 
-import PageHeader from "@components/page_header"
 import AuthNavigationLayout from "@layouts/auth_navigation_layout"
 import AuthPageLayout from "@layouts/auth_page_layout"
 import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
+import ProfilePageLayout from "@layouts/profile_page_layout"
 import UsersNavigationLayout from "@layouts/users_navigation_layout"
 import UsersPageLayout from "@layouts/users_page_layout"
 import ErrorPage from "@pages/error"
 import AuthLoginPage from "@pages/main/auth/login"
 import AuthSignUp from "@pages/main/auth/signup"
 import GamesPage from "@pages/main/games"
+import ProfilePage from "@pages/main/profile"
 import UsersPage from "@pages/main/users"
 import { AuthLoginPageContextProvider } from "context/auth/login"
 import { AuthSignUpPageContextProvider } from "context/auth/signup"
 import { GamesPageContextProvider } from "context/games"
+import { ProfilePageContextProvider } from "context/profile"
 import { UsersPageContextProvider } from "context/users"
 
 const mainNavigation: RouteObject[] = [
@@ -27,10 +29,7 @@ const mainNavigation: RouteObject[] = [
       {
         path: "/",
         element: (
-          <GamesPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={GamesPageContextProvider}
-          >
+          <GamesPageLayout ContextProvider={GamesPageContextProvider}>
             <Box />
           </GamesPageLayout>
         )
@@ -38,10 +37,7 @@ const mainNavigation: RouteObject[] = [
       {
         path: "auth/login",
         element: (
-          <AuthPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={AuthLoginPageContextProvider}
-          >
+          <AuthPageLayout ContextProvider={AuthLoginPageContextProvider}>
             <AuthLoginPage />
           </AuthPageLayout>
         )
@@ -49,10 +45,7 @@ const mainNavigation: RouteObject[] = [
       {
         path: "auth/signup",
         element: (
-          <AuthPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={AuthSignUpPageContextProvider}
-          >
+          <AuthPageLayout ContextProvider={AuthSignUpPageContextProvider}>
             <AuthSignUp />
           </AuthPageLayout>
         )
@@ -67,10 +60,7 @@ const mainNavigation: RouteObject[] = [
       {
         path: "users",
         element: (
-          <UsersPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={UsersPageContextProvider}
-          >
+          <UsersPageLayout ContextProvider={UsersPageContextProvider}>
             <UsersPage />
           </UsersPageLayout>
         ),
@@ -86,12 +76,24 @@ const mainNavigation: RouteObject[] = [
       {
         path: "games/:id",
         element: (
-          <GamesPageLayout
-            HeaderComponent={() => <PageHeader />}
-            ContextProvider={GamesPageContextProvider}
-          >
+          <GamesPageLayout ContextProvider={GamesPageContextProvider}>
             <GamesPage />
           </GamesPageLayout>
+        )
+      }
+    ]
+  },
+  {
+    path: "/",
+    element: <GamesNavigationLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "profile/:id",
+        element: (
+          <ProfilePageLayout ContextProvider={ProfilePageContextProvider}>
+            <ProfilePage />
+          </ProfilePageLayout>
         )
       }
     ]

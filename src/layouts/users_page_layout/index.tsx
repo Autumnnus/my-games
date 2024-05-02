@@ -1,19 +1,19 @@
 import Box from "@mui/material/Box"
 
+import PageHeader from "@components/page_header"
+
 export default function UsersPageLayout({
   children,
-  HeaderComponent,
   ContextProvider
 }: {
   children: JSX.Element | JSX.Element[]
-  HeaderComponent: () => JSX.Element
   ContextProvider: (props: {
     children: JSX.Element | JSX.Element[]
   }) => JSX.Element
 }) {
   return (
     <ContextProvider>
-      <HeaderComponent />
+      <PageHeader />
       <Box
         sx={(theme) => ({
           width: "100%",

@@ -1,3 +1,4 @@
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
 import {
   Avatar,
@@ -18,6 +19,7 @@ import TableRow from "@mui/material/TableRow"
 import { ChangeEvent, useCallback, useMemo, useState } from "react"
 
 import PlatformIcon from "@assets/platform_icons"
+import SearchBar from "@components/search_bar"
 import {
   RATING_0_COLOR,
   RATING_4_COLOR,
@@ -358,6 +360,7 @@ export default function GameDataTable() {
         overflow: "hidden"
       }}
     >
+      <TableHeader />
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -451,5 +454,67 @@ export default function GameDataTable() {
         }}
       />
     </Paper>
+  )
+}
+
+function TableHeader() {
+  const { translate, setIsAddGameDialogOpen, reset } = useGamesPageContext()
+  function handleAddGame() {
+    reset?.({
+      name: ""
+    })
+    setIsAddGameDialogOpen?.()
+  }
+  return (
+    <Stack
+      spacing={2}
+      justifyContent="space-between"
+      sx={{
+        backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
+        p: 2,
+        width: "100%",
+        flexDirection: {
+          xs: "column",
+          sm: "row"
+        }
+      }}
+    >
+      <Stack
+        justifyContent={"space-around"}
+        sx={{
+          alignItems: {
+            xs: "center",
+            sm: "flex-start"
+          }
+        }}
+      >
+        <Typography fontSize={24} fontWeight="bold" color={"white"}>
+          {translate("games")}
+        </Typography>
+        <Typography color={TABLE_HEADER_COLOR} variant="body2">
+          {translate("all_played_games_by_user", {
+            user: "Vector"
+          })}
+        </Typography>
+      </Stack>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        gap={1}
+        sx={{
+          justifyContent: {
+            xs: "center",
+            sm: "flex-end"
+          }
+        }}
+      >
+        <IconButton onClick={handleAddGame}>
+          <AddCircleOutlineIcon
+            sx={{ width: "40px", height: "40px", color: "white" }}
+          />
+        </IconButton>
+        <SearchBar translate={translate} />
+      </Stack>
+    </Stack>
   )
 }

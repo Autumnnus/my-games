@@ -52,7 +52,6 @@ export default function AddGame() {
         }
       })
       .then((res: AxiosResponse<{ data: GamesData }>) => {
-        console.log(res)
         log(`${data.name} is added: `, data)
         reset?.()
         showSuccessToast("Game Added")

@@ -60,5 +60,6 @@
   "rating_min_error": "Rating must be at least {{value}}",
   "rating_max_error": "Rating must be at most {{value}}",
   "max_length_error": "{{name}} must be at most {{value}} characters",
-  "not_rated": "Not Rated"
+  "not_rated": "Not Rated",
+  "all_members": "All Members"
 }

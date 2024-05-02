@@ -1,5 +1,12 @@
 import MoreVertIcon from "@mui/icons-material/MoreVert"
-import { Avatar, Box, IconButton, Popover, Typography } from "@mui/material"
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Popover,
+  Stack,
+  Typography
+} from "@mui/material"
 import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -12,9 +19,11 @@ import { useMemo, useState } from "react"
 import {
   TABLE_HEADER_BACKGROUND_COLOR,
   TABLE_HEADER_COLOR,
-  TABLE_ROW_BACKGROUND_COLOR
+  TABLE_ROW_BACKGROUND_COLOR,
+  TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
 import { useAppContext } from "context/app_context"
+import { useGamesPageContext } from "context/games"
 import { useUsersPageContext } from "context/users"
 
 type Column = {
@@ -69,7 +78,7 @@ export default function UserDataTable() {
       },
       {
         id: "screenshotSize",
-        label: translate("ss"),
+        label: translate("screenshots"),
         minWidth: 170,
         align: "right"
       },
@@ -121,7 +130,16 @@ export default function UserDataTable() {
   const MemoizedRows = useMemo(() => {
     return rows?.map((row, index) => {
       return (
-        <TableRow key={index} hover role="checkbox" tabIndex={-1}>
+        <TableRow
+          sx={{
+            backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
+            ":hover": { backgroundColor: TABLE_ROW_BACKGROUND_COLOR_HOVER }
+          }}
+          key={index}
+          hover
+          role="checkbox"
+          tabIndex={-1}
+        >
           {columns.map((column) => {
             const value = row[column.id as keyof typeof row]
             return (
@@ -151,7 +169,7 @@ export default function UserDataTable() {
                     </IconButton>
                   </>
                 ) : (
-                  <Typography>{value}</Typography>
+                  <Typography>{value ?? 0}</Typography>
                 )}
               </TableCell>
             )
@@ -165,14 +183,14 @@ export default function UserDataTable() {
     <Paper
       sx={{
         width: "100%",
-        overflow: "hidden",
-        backgroundColor: TABLE_ROW_BACKGROUND_COLOR
+        overflow: "hidden"
       }}
     >
+      <TableHeader />
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow sx={{ p: 2, borderBottom: "none" }}>
+            <TableRow sx={{ p: 2, borderBottom: "none", borderRadius: 5 }}>
               {MemoizedColumns}
             </TableRow>
           </TableHead>
@@ -214,5 +232,39 @@ export default function UserDataTable() {
         </Box>
       </Popover>
     </Paper>
+  )
+}
+
+function TableHeader() {
+  const { translate } = useGamesPageContext()
+
+  return (
+    <Stack
+      spacing={2}
+      justifyContent="space-between"
+      sx={{
+        backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
+        p: 2,
+        width: "100%",
+        flexDirection: {
+          xs: "column",
+          sm: "row"
+        }
+      }}
+    >
+      <Stack
+        justifyContent={"space-around"}
+        sx={{
+          alignItems: {
+            xs: "center",
+            sm: "flex-start"
+          }
+        }}
+      >
+        <Typography fontSize={24} fontWeight="bold" color={"white"}>
+          {translate("all_members")}
+        </Typography>
+      </Stack>
+    </Stack>
   )
 }

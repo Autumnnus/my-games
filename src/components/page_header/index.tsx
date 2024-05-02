@@ -216,7 +216,7 @@ function Navigations({
             }}
           >
             <Box
-              onClick={handleLogout}
+              onClick={() => navigateToPage(`/profile/${token?.data.id}`)}
               sx={{
                 color: "#fff",
                 "&:hover": {

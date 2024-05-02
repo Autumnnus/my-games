@@ -2,7 +2,7 @@ import Box from "@mui/material/Box"
 
 import PageHeader from "@components/page_header"
 
-export default function GamesPageLayout({
+export default function ProfilePageLayout({
   children,
   ContextProvider
 }: {
