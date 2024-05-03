@@ -1,10 +1,10 @@
-import { Box } from "@mui/material"
 import type { RouteObject } from "react-router-dom"
 
 import AuthNavigationLayout from "@layouts/auth_navigation_layout"
 import AuthPageLayout from "@layouts/auth_page_layout"
 import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
+import HomePageLayout from "@layouts/home_page_layout"
 import ProfilePageLayout from "@layouts/profile_page_layout"
 import UsersNavigationLayout from "@layouts/users_navigation_layout"
 import UsersPageLayout from "@layouts/users_page_layout"
@@ -12,6 +12,7 @@ import ErrorPage from "@pages/error"
 import AuthLoginPage from "@pages/main/auth/login"
 import AuthSignUp from "@pages/main/auth/signup"
 import GamesPage from "@pages/main/games"
+import HomePage from "@pages/main/home"
 import ProfilePage from "@pages/main/profile"
 import UsersPage from "@pages/main/users"
 import { AuthLoginPageContextProvider } from "context/auth/login"
@@ -29,9 +30,9 @@ const mainNavigation: RouteObject[] = [
       {
         path: "/",
         element: (
-          <GamesPageLayout ContextProvider={GamesPageContextProvider}>
-            <Box />
-          </GamesPageLayout>
+          <HomePageLayout>
+            <HomePage />
+          </HomePageLayout>
         )
       },
       {

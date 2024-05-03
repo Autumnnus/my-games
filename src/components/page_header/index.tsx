@@ -114,7 +114,6 @@ function Navigations({
 }) {
   const { translate, token } = useAppContext()
   const navigate = useNavigate()
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handlePopoverClick = useCallback(
@@ -127,7 +126,6 @@ function Navigations({
     },
     [token, setAnchorEl, navigate]
   )
-
   const handlePopoverClose = () => {
     setAnchorEl(null)
   }
@@ -138,7 +136,6 @@ function Navigations({
     },
     [navigate, handleDrawerToggle]
   )
-
   const handleLogout = useCallback(() => {
     localStorage.removeItem("my-games-user")
     navigateToPage("/auth/login")

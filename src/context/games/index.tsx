@@ -75,13 +75,13 @@ export function GamesPageContextProvider(props: {
       .get(`${process.env.REACT_APP_API_URL}/api/games/user/${id}`)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
         setGames(res.data.data)
+        console.log(res.data)
       })
       .catch((err) => {
         showErrorToast("Database Fethcing Error")
         console.error(err)
       })
   }, [id])
-
   const schema = yup
     .object({
       name: yup

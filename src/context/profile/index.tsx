@@ -1,12 +1,10 @@
 import type { AxiosResponse } from "axios"
 import axios from "axios"
 import { createContext, useContext, useEffect, useState } from "react"
-import type { Control } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
-import { DialogGameData } from "types/games"
 import { UsersData } from "types/users"
 
 import {
@@ -16,29 +14,29 @@ import {
 } from "../app_context"
 
 export type ProfileContextProps = {
-  control?: Control<DialogGameData>
+  profile?: UsersData
 }
 
-export type GamesPageContextProps = AppContextProps & ProfileContextProps
+export type ProfilePageContextProps = AppContextProps & ProfileContextProps
 
-export const gamesPageDefaultValues: GamesPageContextProps = {
+export const profilePageDefaultValues: ProfilePageContextProps = {
   ...appContextDefaultValues,
   translate: i18next.t
 }
 
-const GamesPageContext = createContext(gamesPageDefaultValues)
+const ProfilePageContext = createContext(profilePageDefaultValues)
 
 export function ProfilePageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
   const { translate } = useAppContext()
   const { id } = useParams()
-  const [profile, setProfile] = useState<UsersData[]>([])
+  const [profile, setProfile] = useState<UsersData>()
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/users/${id}`)
-      .then((res: AxiosResponse<{ data: UsersData[] }>) => {
+      .then((res: AxiosResponse<{ data: UsersData }>) => {
         setProfile(res.data.data)
       })
       .catch((err) => {
@@ -46,24 +44,24 @@ export function ProfilePageContextProvider(props: {
         console.error(err)
       })
   }, [id])
-  console.log(profile)
 
   return (
-    <GamesPageContext.Provider
+    <ProfilePageContext.Provider
       value={{
-        ...gamesPageDefaultValues,
-        translate
+        ...profilePageDefaultValues,
+        translate,
+        profile
       }}
     >
       {props.children}
-    </GamesPageContext.Provider>
+    </ProfilePageContext.Provider>
   )
 }
 
-export function useGamesPageContext() {
-  const context = useContext(GamesPageContext)
+export function useProfilePageContext() {
+  const context = useContext(ProfilePageContext)
   if (context === undefined) {
-    throw new Error("GamesPage Context Error")
+    throw new Error("ProfilePage Context Error")
   }
   return context
 }
