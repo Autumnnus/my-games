@@ -239,7 +239,7 @@ export default function GameDataTable() {
                 cellContent = (
                   <Avatar
                     src={String(value)}
-                    alt={String(value)}
+                    alt={row.name}
                     sx={{ width: "60px", height: "60px" }}
                     variant="square"
                   />

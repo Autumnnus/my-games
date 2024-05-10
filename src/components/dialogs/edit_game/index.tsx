@@ -58,6 +58,7 @@ export default function EditGame() {
     setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
   }
 
+  console.log(selectedGame?._id, "selectedgame id")
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await axios
@@ -71,7 +72,6 @@ export default function EditGame() {
         }
       )
       .then((res: AxiosResponse<{ data: GamesData }>) => {
-        log(`${data.name} is edited: `, data)
         reset?.()
         showSuccessToast("The Game Edited Successfully")
         setGames?.((prev) => [
@@ -92,6 +92,7 @@ export default function EditGame() {
           ...prev
         ])
         handleClose()
+        log(`${data.name} is edited: `, data)
       })
       .catch((error) => {
         console.error(error)
