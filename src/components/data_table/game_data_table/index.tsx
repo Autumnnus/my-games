@@ -294,7 +294,12 @@ export default function GameDataTable() {
                 )
               } else if (column.id === "platform") {
                 cellContent = (
-                  <Stack direction={"row"} justifyContent={"flex-end"} gap={1}>
+                  <Stack
+                    direction={"row"}
+                    justifyContent={"flex-end"}
+                    alignItems={"center"}
+                    gap={1}
+                  >
                     <Typography
                       sx={{
                         color: TABLE_GRAY_COLOR,

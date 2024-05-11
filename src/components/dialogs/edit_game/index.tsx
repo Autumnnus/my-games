@@ -73,24 +73,32 @@ export default function EditGame() {
       )
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         reset?.()
-        showSuccessToast("The Game Edited Successfully")
-        setGames?.((prev) => [
-          {
-            name: data.name,
-            photo: data.photo,
-            lastPlay: data.lastPlay,
-            platform: data.platform,
-            review: data.review,
-            rating: data.rating,
-            status: data.status,
-            playTime: data.playTime,
-            _id: res.data.data._id,
-            createdAt: res.data.data.createdAt,
-            userId: res.data.data.userId,
-            screenshots: []
-          },
-          ...prev
-        ])
+        showSuccessToast(`${data.name} is Edited Successfully`)
+        const responseData = res.data.data
+        console.log(res, "res")
+        setGames?.((prev) => {
+          const updatedGameIndex = prev.findIndex(
+            (game) => game._id === responseData._id
+          )
+          const updatedGames = [...prev]
+          if (updatedGameIndex !== -1) {
+            updatedGames[updatedGameIndex] = {
+              name: responseData.name,
+              photo: responseData.photo,
+              lastPlay: responseData.lastPlay,
+              platform: responseData.platform,
+              review: responseData.review,
+              rating: responseData.rating,
+              status: responseData.status,
+              playTime: responseData.playTime,
+              _id: responseData._id,
+              createdAt: responseData.createdAt,
+              userId: responseData.userId,
+              screenshots: responseData.screenshots || []
+            }
+          }
+          return updatedGames
+        })
         handleClose()
         log(`${data.name} is edited: `, data)
       })

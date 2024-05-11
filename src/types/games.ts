@@ -8,11 +8,6 @@ export type GameTableData = {
   status: string
 }
 
-type Timestamp = {
-  seconds: number
-  nanoseconds: number
-}
-
 export type Platform =
   | "steam"
   | "epicGames"
@@ -49,7 +44,7 @@ export type GamesData = {
   _id: string
   userId: string
   screenshots: Screenshot[]
-  createdAt: Timestamp
+  createdAt: Date
 }
 
 export type DialogGameData = Omit<
