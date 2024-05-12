@@ -15,7 +15,7 @@ import type {
   UseFormHandleSubmit,
   UseFormReset
 } from "react-hook-form"
-import { useLocation } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import * as yup from "yup"
 
 import useControlledForm from "@hooks/use_controlled_form"
@@ -63,8 +63,10 @@ export function GamesPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
   const { translate } = useAppContext()
-  const location = useLocation()
-  const id = location.pathname.split("/").pop()
+  const { id } = useParams()
+  const [searchParams] = useSearchParams()
+  console.log(searchParams.get("sortBy"))
+  console.log(searchParams.get("order"))
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
