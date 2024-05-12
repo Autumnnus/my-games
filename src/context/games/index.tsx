@@ -15,7 +15,7 @@ import type {
   UseFormHandleSubmit,
   UseFormReset
 } from "react-hook-form"
-import { useParams, useSearchParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
 
 import useControlledForm from "@hooks/use_controlled_form"
@@ -46,6 +46,10 @@ export type GamesContextProps = {
   reset?: UseFormReset<DialogGameData>
   isValid?: boolean
   isDirty?: boolean
+  order?: string
+  sortBy?: string
+  setOrder?: Dispatch<SetStateAction<string | undefined>>
+  setSortBy?: Dispatch<SetStateAction<string | undefined>>
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -64,26 +68,36 @@ export function GamesPageContextProvider(props: {
 }) {
   const { translate } = useAppContext()
   const { id } = useParams()
-  const [searchParams] = useSearchParams()
-  console.log(searchParams.get("sortBy"))
-  console.log(searchParams.get("order"))
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [games, setGames] = useState<GamesData[]>([])
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [order, setOrder] = useState<string | undefined>(
+    location.search.split("order=")[1]?.split("&")[0]
+  )
+  const [sortBy, setSortBy] = useState<string | undefined>(
+    location.search.split("sortBy=")[1]?.split("&")[0]
+  )
   useEffect(() => {
+    console.log(order, "context")
+    let url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}`
+    if (sortBy && order) {
+      url += `?sortBy=${sortBy}&order=${order}`
+      navigate(`?sortBy=${sortBy}&order=${order}`)
+    }
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/games/user/${id}`)
+      .get(url)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
         setGames(res.data.data)
-        console.log(res.data)
       })
       .catch((err) => {
         showErrorToast("Database Fethcing Error")
         console.error(err)
       })
-  }, [id])
+  }, [id, order, sortBy])
   const schema = yup
     .object({
       name: yup
@@ -168,7 +182,11 @@ export function GamesPageContextProvider(props: {
         handleSubmit,
         reset,
         isValid,
-        isDirty
+        isDirty,
+        order,
+        sortBy,
+        setOrder,
+        setSortBy
       }}
     >
       {props.children}

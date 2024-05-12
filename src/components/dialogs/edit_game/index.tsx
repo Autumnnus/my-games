@@ -58,7 +58,6 @@ export default function EditGame() {
     setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
   }
 
-  console.log(selectedGame?._id, "selectedgame id")
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await axios

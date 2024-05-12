@@ -1,5 +1,8 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
+import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore"
 import {
   Avatar,
   Box,
@@ -32,11 +35,9 @@ import {
   TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
 import { TABLE_TEXT_SIZE } from "@constants/sizes"
-import useTranslate from "@hooks/use_translate"
 import ratingTableColor from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
 import { Platform, Status } from "types/games"
-
 type Column = {
   id:
     | "photo"
@@ -50,6 +51,7 @@ type Column = {
     | "actions"
   label: string
   minWidth?: number
+  width?: number
   align?: "right"
   format?: (value: number) => string
 }
@@ -97,14 +99,17 @@ export default function GameDataTable() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const { translate } = useTranslate()
   const {
+    translate,
     games,
     setIsEditGameDialogOpen,
     setSelectedGame,
-    setIsDeleteGameDialogOpen
+    setIsDeleteGameDialogOpen,
+    setOrder,
+    setSortBy,
+    order,
+    sortBy
   } = useGamesPageContext()
-
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
   }
@@ -116,7 +121,7 @@ export default function GameDataTable() {
   const columns: ReadonlyArray<Column> = useMemo(
     () => [
       { id: "photo", label: "", minWidth: 50 },
-      { id: "name", label: translate("game"), minWidth: 100 },
+      { id: "name", label: translate("game"), width: 100 },
       {
         id: "rating",
         label: translate("rating"),
@@ -178,6 +183,18 @@ export default function GameDataTable() {
     )
   }, [games])
 
+  const handleSortOrder = useCallback(
+    (sortBy: Column["id"]) => {
+      setSortBy?.(sortBy)
+      setOrder?.((prevOrder) => {
+        if (prevOrder === "asc") return "dsc"
+        if (prevOrder === "dsc") return "asc"
+        return "asc"
+      })
+    },
+    [setOrder, setSortBy]
+  )
+
   const MemoizedColumns = useMemo(() => {
     return columns.map((column) => (
       <TableCell
@@ -191,10 +208,54 @@ export default function GameDataTable() {
           border: "none"
         }}
       >
-        {column.label}
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent={column.id === "name" ? "flex-start" : "flex-end"}
+          gap={1}
+          onClick={() => handleSortOrder(column.id)}
+          sx={{ cursor: "pointer" }}
+        >
+          <Typography>{column.label}</Typography>
+          <UnfoldMoreIcon
+            sx={{
+              display:
+                column.id === "actions" ||
+                column.id === "photo" ||
+                column.id === sortBy
+                  ? "none"
+                  : "block"
+            }}
+            color="inherit"
+          />
+          <KeyboardArrowUpIcon
+            sx={{
+              display:
+                column.id === "actions" ||
+                column.id === "photo" ||
+                column.id !== sortBy ||
+                order === "dsc"
+                  ? "none"
+                  : "block"
+            }}
+            color="inherit"
+          />
+          <KeyboardArrowDownIcon
+            sx={{
+              display:
+                column.id === "actions" ||
+                column.id === "photo" ||
+                column.id !== sortBy ||
+                order === "asc"
+                  ? "none"
+                  : "block"
+            }}
+            color="inherit"
+          />
+        </Stack>
       </TableCell>
     ))
-  }, [columns])
+  }, [columns, handleSortOrder, order, sortBy])
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>, row: RowData) => {
