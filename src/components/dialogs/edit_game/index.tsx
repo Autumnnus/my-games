@@ -75,7 +75,6 @@ export default function EditGame() {
         reset?.()
         showSuccessToast(`${data.name} is Edited Successfully`)
         const responseData = res.data.data
-        console.log(res, "res")
         setGames?.((prev) => {
           const updatedGameIndex = prev.findIndex(
             (game) => game._id === responseData._id

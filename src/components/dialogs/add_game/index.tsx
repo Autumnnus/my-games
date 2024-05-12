@@ -54,7 +54,7 @@ export default function AddGame() {
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         log(`${data.name} is added: `, data)
         reset?.()
-        showSuccessToast("Game Added")
+        showSuccessToast(`${data.name} is added`)
         setGames?.((prev) => [
           {
             name: data.name,
