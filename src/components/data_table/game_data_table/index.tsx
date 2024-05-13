@@ -110,6 +110,10 @@ export default function GameDataTable() {
     order,
     sortBy
   } = useGamesPageContext()
+
+  const sort = useMemo(() => {
+    return location.search.split("sortBy=")[1]?.split("&")[0]
+  }, [location.search])
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
   }
@@ -187,12 +191,12 @@ export default function GameDataTable() {
     (sortBy: Column["id"]) => {
       setSortBy?.(sortBy)
       setOrder?.((prevOrder) => {
-        if (prevOrder === "asc") return "dsc"
-        if (prevOrder === "dsc") return "asc"
+        if (prevOrder === "asc" && sort === sortBy) return "desc"
+        if (prevOrder === "desc" && sort === sortBy) return "asc"
         return "asc"
       })
     },
-    [setOrder, setSortBy]
+    [setOrder, setSortBy, sort]
   )
 
   const MemoizedColumns = useMemo(() => {
@@ -234,7 +238,7 @@ export default function GameDataTable() {
                 column.id === "actions" ||
                 column.id === "photo" ||
                 column.id !== sortBy ||
-                order === "dsc"
+                order === "desc"
                   ? "none"
                   : "block"
             }}
@@ -340,7 +344,7 @@ export default function GameDataTable() {
                     }}
                   >
                     {value}
-                    {value ? "/10" : translate("not_rated")}
+                    {value !== null ? "/10" : translate("not_rated")}
                   </Typography>
                 )
               } else if (column.id === "lastPlay") {

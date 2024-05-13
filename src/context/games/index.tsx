@@ -82,7 +82,6 @@ export function GamesPageContextProvider(props: {
     location.search.split("sortBy=")[1]?.split("&")[0]
   )
   useEffect(() => {
-    console.log(order, "context")
     let url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}`
     if (sortBy && order) {
       url += `?sortBy=${sortBy}&order=${order}`
@@ -97,7 +96,7 @@ export function GamesPageContextProvider(props: {
         showErrorToast("Database Fethcing Error")
         console.error(err)
       })
-  }, [id, order, sortBy])
+  }, [id, navigate, order, sortBy])
   const schema = yup
     .object({
       name: yup
