@@ -12,7 +12,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
-import { DialogGameData, GamesData, Platform, Status } from "types/games"
+import { DialogGameData, GamesData } from "types/games"
 
 export default function AddGame() {
   const {
@@ -23,7 +23,9 @@ export default function AddGame() {
     control,
     setIsAddGameDialogOpen,
     isAddGameDialogOpen,
-    setGames
+    setGames,
+    platformSelectOptions,
+    statusSelectOptions
   } = useGamesPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "photo" })
@@ -148,64 +150,7 @@ export default function AddGame() {
             placeholder={translate("required_input_placeholder", {
               name: translate("platform")
             })}
-            selectOptions={[
-              { label: "Steam", value: Platform.Steam, icon: Platform.Steam },
-              {
-                label: "Epic Games",
-                value: Platform.EpicGames,
-                icon: Platform.EpicGames
-              },
-              {
-                label: "Ubisoft",
-                value: Platform.Ubisoft,
-                icon: Platform.Ubisoft
-              },
-              {
-                label: "Xbox(Pc)",
-                value: Platform.XboxPc,
-                icon: Platform.XboxPc
-              },
-              {
-                label: "EA Games",
-                value: Platform.EaGames,
-                icon: Platform.EaGames
-              },
-              {
-                label: "Ubisoft",
-                value: Platform.Ubisoft,
-                icon: Platform.Ubisoft
-              },
-              {
-                label: "Torrent",
-                value: Platform.Torrent,
-                icon: Platform.Torrent
-              },
-              {
-                label: "Playstation",
-                value: Platform.Playstation,
-                icon: Platform.Playstation
-              },
-              {
-                label: "Xbox Series",
-                value: Platform.XboxSeries,
-                icon: Platform.XboxSeries
-              },
-              {
-                label: "Nintendo",
-                value: Platform.XboxSeries,
-                icon: Platform.XboxSeries
-              },
-              {
-                label: "Mobile",
-                value: Platform.Mobile,
-                icon: Platform.Mobile
-              },
-              {
-                label: translate("otherPlatforms"),
-                value: Platform.OtherPlatforms,
-                icon: Platform.OtherPlatforms
-              }
-            ]}
+            selectOptions={platformSelectOptions}
             disabled={loading}
             required
           />
@@ -226,15 +171,7 @@ export default function AddGame() {
             placeholder={translate("required_input_placeholder", {
               name: translate("game_status")
             })}
-            selectOptions={[
-              { label: translate("completed"), value: Status.Completed },
-              { label: translate("abondoned"), value: Status.Abandoned },
-              {
-                label: translate("toBeCompleted"),
-                value: Status.ToBeCompleted
-              },
-              { label: translate("activePlaying"), value: Status.ActivePlaying }
-            ]}
+            selectOptions={statusSelectOptions}
             disabled={loading}
             required
           />

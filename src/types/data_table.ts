@@ -1,20 +1,11 @@
 import { Platform, Status } from "types/games"
 
 export type DataTableColumnData = {
-  id:
-    | "photo"
-    | "name"
-    | "rating"
-    | "platform"
-    | "screenshots"
-    | "lastPlay"
-    | "status"
-    | "playTime"
-    | "actions"
+  id: DataTableColumnKeys
   label: string
   minWidth?: number
   width?: number
-  align?: "right"
+  align?: "right" | "left" | "center"
   format?: (value: number) => string
 }
 
@@ -30,3 +21,14 @@ export type DataTableRowData = {
   _id: string
   review: string
 }
+
+type DataTableColumnKeys =
+  | "photo"
+  | "name"
+  | "rating"
+  | "platform"
+  | "screenshots"
+  | "lastPlay"
+  | "status"
+  | "playTime"
+  | "actions"

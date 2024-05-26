@@ -1,13 +1,3 @@
-export type GameTableData = {
-  photo: string
-  game: string
-  score: number
-  platform: Platform
-  ss: number
-  lastPlayed: string
-  status: Status
-}
-
 export enum Platform {
   Steam = "steam",
   EpicGames = "epicGames",

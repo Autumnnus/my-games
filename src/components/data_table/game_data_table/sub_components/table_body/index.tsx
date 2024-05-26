@@ -41,7 +41,7 @@ export function GameDataTableBody() {
       setAnchorEl?.(event.currentTarget)
       setSelectedGame?.(row)
     },
-    [setSelectedGame]
+    [setAnchorEl, setSelectedGame]
   )
   const MemorizedRows = useMemo(() => {
     return rows

@@ -60,6 +60,15 @@ export type GamesContextProps = {
   setPage?: Dispatch<SetStateAction<number>>
   rowsPerPage: number
   setRowsPerPage?: Dispatch<SetStateAction<number>>
+  platformSelectOptions: {
+    label: string
+    value: Platform
+    icon: Platform
+  }[]
+  statusSelectOptions: {
+    label: string
+    value: Status
+  }[]
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -72,7 +81,9 @@ export const gamesPageDefaultValues: GamesPageContextProps = {
   columns: [],
   rows: [],
   page: 0,
-  rowsPerPage: 10
+  rowsPerPage: 10,
+  platformSelectOptions: [],
+  statusSelectOptions: []
 }
 
 const GamesPageContext = createContext(gamesPageDefaultValues)
@@ -251,6 +262,74 @@ export function GamesPageContextProvider(props: {
       )
     )
   }, [games])
+
+  const platformSelectOptions = [
+    { label: "Steam", value: Platform.Steam, icon: Platform.Steam },
+    {
+      label: "Epic Games",
+      value: Platform.EpicGames,
+      icon: Platform.EpicGames
+    },
+    {
+      label: "Ubisoft",
+      value: Platform.Ubisoft,
+      icon: Platform.Ubisoft
+    },
+    {
+      label: "Xbox(Pc)",
+      value: Platform.XboxPc,
+      icon: Platform.XboxPc
+    },
+    {
+      label: "EA Games",
+      value: Platform.EaGames,
+      icon: Platform.EaGames
+    },
+    {
+      label: "Ubisoft",
+      value: Platform.Ubisoft,
+      icon: Platform.Ubisoft
+    },
+    {
+      label: "Torrent",
+      value: Platform.Torrent,
+      icon: Platform.Torrent
+    },
+    {
+      label: "Playstation",
+      value: Platform.Playstation,
+      icon: Platform.Playstation
+    },
+    {
+      label: "Xbox Series",
+      value: Platform.XboxSeries,
+      icon: Platform.XboxSeries
+    },
+    {
+      label: "Nintendo",
+      value: Platform.XboxSeries,
+      icon: Platform.XboxSeries
+    },
+    {
+      label: "Mobile",
+      value: Platform.Mobile,
+      icon: Platform.Mobile
+    },
+    {
+      label: translate("otherPlatforms"),
+      value: Platform.OtherPlatforms,
+      icon: Platform.OtherPlatforms
+    }
+  ]
+  const statusSelectOptions = [
+    { label: translate("completed"), value: Status.Completed },
+    { label: translate("abondoned"), value: Status.Abandoned },
+    {
+      label: translate("toBeCompleted"),
+      value: Status.ToBeCompleted
+    },
+    { label: translate("activePlaying"), value: Status.ActivePlaying }
+  ]
   return (
     <GamesPageContext.Provider
       value={{
@@ -282,7 +361,9 @@ export function GamesPageContextProvider(props: {
         page,
         setPage,
         rowsPerPage,
-        setRowsPerPage
+        setRowsPerPage,
+        platformSelectOptions,
+        statusSelectOptions
       }}
     >
       {props.children}

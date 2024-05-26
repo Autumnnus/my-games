@@ -45,12 +45,12 @@ export default function GameDataTable() {
   const handleEditGame = useCallback(() => {
     setAnchorEl?.(null)
     setIsEditGameDialogOpen?.()
-  }, [setIsEditGameDialogOpen])
+  }, [setAnchorEl, setIsEditGameDialogOpen])
 
   const handleDeleteGame = useCallback(() => {
     setAnchorEl?.(null)
     setIsDeleteGameDialogOpen?.()
-  }, [setIsDeleteGameDialogOpen])
+  }, [setAnchorEl, setIsDeleteGameDialogOpen])
 
   return (
     <Paper

@@ -17,6 +17,7 @@ export function GameDataTableTitle() {
 
   const sort = useMemo(() => {
     return location.search.split("sortBy=")[1]?.split("&")[0]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search])
 
   const handleSortOrder = useCallback(
