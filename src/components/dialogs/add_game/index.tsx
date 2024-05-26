@@ -12,7 +12,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
-import { DialogGameData, GamesData } from "types/games"
+import { DialogGameData, GamesData, Platform, Status } from "types/games"
 
 export default function AddGame() {
   const {
@@ -149,25 +149,61 @@ export default function AddGame() {
               name: translate("platform")
             })}
             selectOptions={[
-              { label: "Steam", value: "steam", icon: "steam" },
-              { label: "Epic Games", value: "epicGames", icon: "epicGames" },
-              { label: "Ubisoft", value: "ubisoft", icon: "ubisoft" },
-              { label: "Xbox(Pc)", value: "xboxPc", icon: "xboxPc" },
-              { label: "EA Games", value: "eaGames", icon: "eaGames" },
-              { label: "Ubisoft", value: "ubisoft", icon: "ubisoft" },
-              { label: "Torrent", value: "torrent", icon: "torrent" },
+              { label: "Steam", value: Platform.Steam, icon: Platform.Steam },
+              {
+                label: "Epic Games",
+                value: Platform.EpicGames,
+                icon: Platform.EpicGames
+              },
+              {
+                label: "Ubisoft",
+                value: Platform.Ubisoft,
+                icon: Platform.Ubisoft
+              },
+              {
+                label: "Xbox(Pc)",
+                value: Platform.XboxPc,
+                icon: Platform.XboxPc
+              },
+              {
+                label: "EA Games",
+                value: Platform.EaGames,
+                icon: Platform.EaGames
+              },
+              {
+                label: "Ubisoft",
+                value: Platform.Ubisoft,
+                icon: Platform.Ubisoft
+              },
+              {
+                label: "Torrent",
+                value: Platform.Torrent,
+                icon: Platform.Torrent
+              },
               {
                 label: "Playstation",
-                value: "playstation",
-                icon: "playstation"
+                value: Platform.Playstation,
+                icon: Platform.Playstation
               },
-              { label: "Xbox Series", value: "xboxSeries", icon: "xboxSeries" },
-              { label: "Nintendo", value: "nintendo", icon: "nintendo" },
-              { label: "Mobile", value: "mobile", icon: "mobile" },
+              {
+                label: "Xbox Series",
+                value: Platform.XboxSeries,
+                icon: Platform.XboxSeries
+              },
+              {
+                label: "Nintendo",
+                value: Platform.XboxSeries,
+                icon: Platform.XboxSeries
+              },
+              {
+                label: "Mobile",
+                value: Platform.Mobile,
+                icon: Platform.Mobile
+              },
               {
                 label: translate("otherPlatforms"),
-                value: "otherPlatforms",
-                icon: "otherPlatforms"
+                value: Platform.OtherPlatforms,
+                icon: Platform.OtherPlatforms
               }
             ]}
             disabled={loading}
@@ -191,10 +227,13 @@ export default function AddGame() {
               name: translate("game_status")
             })}
             selectOptions={[
-              { label: translate("completed"), value: "completed" },
-              { label: translate("abondoned"), value: "abondoned" },
-              { label: translate("toBeCompleted"), value: "toBeCompleted" },
-              { label: translate("activePlaying"), value: "activePlaying" }
+              { label: translate("completed"), value: Status.Completed },
+              { label: translate("abondoned"), value: Status.Abandoned },
+              {
+                label: translate("toBeCompleted"),
+                value: Status.ToBeCompleted
+              },
+              { label: translate("activePlaying"), value: Status.ActivePlaying }
             ]}
             disabled={loading}
             required

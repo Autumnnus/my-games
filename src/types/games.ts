@@ -2,30 +2,32 @@ export type GameTableData = {
   photo: string
   game: string
   score: number
-  platform: string
+  platform: Platform
   ss: number
   lastPlayed: string
-  status: string
+  status: Status
 }
 
-export type Platform =
-  | "steam"
-  | "epicGames"
-  | "ubisoft"
-  | "xboxPc"
-  | "eaGames"
-  | "torrent"
-  | "playstation"
-  | "xboxSeries"
-  | "nintendo"
-  | "mobile"
-  | "otherPlatforms"
+export enum Platform {
+  Steam = "steam",
+  EpicGames = "epicGames",
+  Ubisoft = "ubisoft",
+  XboxPc = "xboxPc",
+  EaGames = "eaGames",
+  Torrent = "torrent",
+  Playstation = "playstation",
+  XboxSeries = "xboxSeries",
+  Nintendo = "nintendo",
+  Mobile = "mobile",
+  OtherPlatforms = "otherPlatforms"
+}
 
-export type Status =
-  | "completed"
-  | "abondoned"
-  | "toBeCompleted"
-  | "activePlaying"
+export enum Status {
+  Completed = "completed",
+  Abandoned = "abondoned",
+  ToBeCompleted = "toBeCompleted",
+  ActivePlaying = "activePlaying"
+}
 
 type Screenshot = {
   _id: string

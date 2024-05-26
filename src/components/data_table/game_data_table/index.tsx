@@ -1,427 +1,56 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
-import MoreVertIcon from "@mui/icons-material/MoreVert"
-import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore"
-import {
-  Avatar,
-  Box,
-  IconButton,
-  Popover,
-  Stack,
-  Typography
-} from "@mui/material"
+import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
-import TableBody from "@mui/material/TableBody"
-import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
-import TableHead from "@mui/material/TableHead"
 import TablePagination from "@mui/material/TablePagination"
-import TableRow from "@mui/material/TableRow"
-import { ChangeEvent, useCallback, useMemo, useState } from "react"
+import { ChangeEvent, useCallback } from "react"
 
-import PlatformIcon from "@assets/platform_icons"
+import { GameDataTableBody } from "@components/data_table/game_data_table/sub_components/table_body"
+import { GameDataTableTitle } from "@components/data_table/game_data_table/sub_components/table_titles"
 import SearchBar from "@components/search_bar"
 import {
-  RATING_0_COLOR,
-  RATING_4_COLOR,
-  RATING_8_COLOR,
-  RATING_9_COLOR,
-  TABLE_GRAY_COLOR,
   TABLE_HEADER_BACKGROUND_COLOR,
   TABLE_HEADER_COLOR,
-  TABLE_ROW_BACKGROUND_COLOR,
-  TABLE_ROW_BACKGROUND_COLOR_HOVER
+  TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
-import { TABLE_TEXT_SIZE } from "@constants/sizes"
-import ratingTableColor from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
-import { Platform, Status } from "types/games"
-type Column = {
-  id:
-    | "photo"
-    | "name"
-    | "rating"
-    | "platform"
-    | "screenshots"
-    | "lastPlay"
-    | "status"
-    | "playTime"
-    | "actions"
-  label: string
-  minWidth?: number
-  width?: number
-  align?: "right"
-  format?: (value: number) => string
-}
-
-type RowData = {
-  photo: string
-  name: string
-  rating: number
-  platform: Platform
-  screenshots: number
-  playTime: number
-  lastPlay: string
-  status: Status
-  _id: string
-  review: string
-}
-
-function createData(
-  photo: string,
-  name: string,
-  rating: number,
-  platform: string,
-  screenshots: number,
-  playTime: number,
-  lastPlay: string,
-  status: string,
-  _id: string,
-  review?: string
-) {
-  return {
-    photo,
-    name,
-    rating,
-    platform,
-    screenshots,
-    playTime,
-    lastPlay,
-    status,
-    _id,
-    review
-  }
-}
 
 export default function GameDataTable() {
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const {
     translate,
-    games,
     setIsEditGameDialogOpen,
-    setSelectedGame,
     setIsDeleteGameDialogOpen,
-    setOrder,
-    setSortBy,
-    order,
-    sortBy
+    setAnchorEl,
+    anchorEl,
+    rows,
+    page,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage
   } = useGamesPageContext()
 
-  const sort = useMemo(() => {
-    return location.search.split("sortBy=")[1]?.split("&")[0]
-  }, [location.search])
   const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage)
+    setPage?.(newPage)
   }
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value)
-    setPage(0)
+    setRowsPerPage?.(+event.target.value)
+    setPage?.(0)
   }
 
-  const columns: ReadonlyArray<Column> = useMemo(
-    () => [
-      { id: "photo", label: "", minWidth: 50 },
-      { id: "name", label: translate("game"), width: 100 },
-      {
-        id: "rating",
-        label: translate("rating"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "platform",
-        label: translate("platform"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "screenshots",
-        label: translate("screenshots"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "playTime",
-        label: translate("play_time"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "lastPlay",
-        label: translate("last_played"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "status",
-        label: translate("status"),
-        minWidth: 170,
-        align: "right"
-      },
-      {
-        id: "actions",
-        label: "",
-        align: "right"
-      }
-    ],
-    [translate]
-  )
-  const rows = useMemo(() => {
-    return games.map((game) =>
-      createData(
-        game.photo,
-        game.name,
-        game.rating,
-        game.platform,
-        game.screenshots.length,
-        game.playTime,
-        game.lastPlay,
-        game.status,
-        game._id,
-        game.review
-      )
-    )
-  }, [games])
-
-  const handleSortOrder = useCallback(
-    (sortBy: Column["id"]) => {
-      setSortBy?.(sortBy)
-      setOrder?.((prevOrder) => {
-        if (prevOrder === "asc" && sort === sortBy) return "desc"
-        if (prevOrder === "desc" && sort === sortBy) return "asc"
-        return "asc"
-      })
-    },
-    [setOrder, setSortBy, sort]
-  )
-
-  const MemoizedColumns = useMemo(() => {
-    return columns.map((column) => (
-      <TableCell
-        key={column.id}
-        align={column.align}
-        style={{
-          minWidth: column.minWidth,
-          backgroundColor: TABLE_HEADER_BACKGROUND_COLOR,
-          color: TABLE_HEADER_COLOR,
-          padding: "1rem 2rem 1rem 2rem",
-          border: "none"
-        }}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent={column.id === "name" ? "flex-start" : "flex-end"}
-          gap={1}
-          onClick={() => handleSortOrder(column.id)}
-          sx={{ cursor: "pointer" }}
-        >
-          <Typography>{column.label}</Typography>
-          <UnfoldMoreIcon
-            sx={{
-              display:
-                column.id === "actions" ||
-                column.id === "photo" ||
-                column.id === sortBy
-                  ? "none"
-                  : "block"
-            }}
-            color="inherit"
-          />
-          <KeyboardArrowUpIcon
-            sx={{
-              display:
-                column.id === "actions" ||
-                column.id === "photo" ||
-                column.id !== sortBy ||
-                order === "desc"
-                  ? "none"
-                  : "block"
-            }}
-            color="inherit"
-          />
-          <KeyboardArrowDownIcon
-            sx={{
-              display:
-                column.id === "actions" ||
-                column.id === "photo" ||
-                column.id !== sortBy ||
-                order === "asc"
-                  ? "none"
-                  : "block"
-            }}
-            color="inherit"
-          />
-        </Stack>
-      </TableCell>
-    ))
-  }, [columns, handleSortOrder, order, sortBy])
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>, row: RowData) => {
-      setAnchorEl(event.currentTarget)
-      setSelectedGame?.(row)
-    },
-    [setSelectedGame]
-  )
-
   function handleClose() {
-    setAnchorEl(null)
+    setAnchorEl?.(null)
   }
 
   const handleEditGame = useCallback(() => {
-    setAnchorEl(null)
+    setAnchorEl?.(null)
     setIsEditGameDialogOpen?.()
   }, [setIsEditGameDialogOpen])
 
   const handleDeleteGame = useCallback(() => {
-    setAnchorEl(null)
+    setAnchorEl?.(null)
     setIsDeleteGameDialogOpen?.()
   }, [setIsDeleteGameDialogOpen])
-
-  const MemorizedRows = useMemo(() => {
-    return rows
-      ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      .map((row, index) => {
-        return (
-          <TableRow
-            sx={{
-              backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
-              ":hover": { backgroundColor: TABLE_ROW_BACKGROUND_COLOR_HOVER }
-            }}
-            key={index}
-            role="checkbox"
-            tabIndex={-1}
-          >
-            {columns.map((column) => {
-              const value = row[column.id as keyof typeof row]
-              let cellContent
-              if (column.id === "photo") {
-                cellContent = (
-                  <Avatar
-                    src={String(value)}
-                    alt={row.name}
-                    sx={{ width: "60px", height: "60px" }}
-                    variant="square"
-                  />
-                )
-              } else if (column.id === "actions") {
-                cellContent = (
-                  <IconButton
-                    onClick={(event) => handleClick(event, row as RowData)}
-                  >
-                    <MoreVertIcon color="secondary" />
-                  </IconButton>
-                )
-              } else if (column.id === "status") {
-                cellContent = (
-                  <Typography
-                    sx={{
-                      color:
-                        value === "toBeCompleted"
-                          ? RATING_4_COLOR
-                          : value === "abondoned"
-                            ? RATING_0_COLOR
-                            : value === "completed"
-                              ? RATING_8_COLOR
-                              : RATING_9_COLOR,
-                      fontSize: TABLE_TEXT_SIZE
-                    }}
-                  >
-                    {translate(value as string)}
-                  </Typography>
-                )
-              } else if (column.id === "rating") {
-                cellContent = (
-                  <Typography
-                    sx={{
-                      color: ratingTableColor(value as number),
-                      fontSize: TABLE_TEXT_SIZE
-                    }}
-                  >
-                    {value}
-                    {value !== null ? "/10" : translate("not_rated")}
-                  </Typography>
-                )
-              } else if (column.id === "lastPlay") {
-                cellContent = (
-                  <Typography
-                    sx={{ color: TABLE_GRAY_COLOR, fontSize: TABLE_TEXT_SIZE }}
-                  >
-                    {column.id === "lastPlay" &&
-                      value &&
-                      new Date(value).toLocaleDateString()}
-                  </Typography>
-                )
-              } else if (column.id === "platform") {
-                cellContent = (
-                  <Stack
-                    direction={"row"}
-                    justifyContent={"flex-end"}
-                    alignItems={"center"}
-                    gap={1}
-                  >
-                    <Typography
-                      sx={{
-                        color: TABLE_GRAY_COLOR,
-                        fontSize: TABLE_TEXT_SIZE
-                      }}
-                    >
-                      {column.id === "platform" && translate(value as string)}
-                    </Typography>
-                    <PlatformIcon platform={value as Platform} />
-                  </Stack>
-                )
-              } else if (
-                column.id === "playTime" ||
-                column.id === "screenshots"
-              ) {
-                cellContent = (
-                  <Typography
-                    sx={{ color: TABLE_GRAY_COLOR, fontSize: TABLE_TEXT_SIZE }}
-                  >
-                    {value}
-                  </Typography>
-                )
-              } else {
-                cellContent = (
-                  <Typography
-                    sx={{
-                      ":hover": { color: "#075985" },
-                      cursor: "pointer",
-                      fontSize: TABLE_TEXT_SIZE,
-                      display: "inline-block"
-                    }}
-                  >
-                    {typeof value === "string" && value.length > 40
-                      ? value.substring(0, 40) + "..."
-                      : value}
-                  </Typography>
-                )
-              }
-
-              return (
-                <TableCell
-                  sx={{
-                    color: "white",
-                    p: "1rem 2rem",
-                    borderBottom: "1px solid #666666"
-                  }}
-                  key={column.id}
-                  align={column.align}
-                >
-                  {cellContent}
-                </TableCell>
-              )
-            })}
-          </TableRow>
-        )
-      })
-  }, [rows, page, rowsPerPage, columns, translate, handleClick])
 
   return (
     <Paper
@@ -433,18 +62,8 @@ export default function GameDataTable() {
       <TableHeader />
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow
-              sx={{
-                p: 2,
-                borderBottom: "none",
-                borderRadius: 5
-              }}
-            >
-              {MemoizedColumns}
-            </TableRow>
-          </TableHead>
-          <TableBody>{MemorizedRows}</TableBody>
+          <GameDataTableTitle />
+          <GameDataTableBody />
         </Table>
       </TableContainer>
       <Popover
