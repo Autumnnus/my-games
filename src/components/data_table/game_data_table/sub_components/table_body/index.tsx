@@ -11,6 +11,7 @@ import TableCell from "@mui/material/TableCell"
 import { useCallback, useMemo } from "react"
 
 import PlatformIcon from "@assets/platform_icons"
+import Link from "@components/link"
 import {
   RATING_0_COLOR,
   RATING_4_COLOR,
@@ -43,6 +44,7 @@ export function GameDataTableBody() {
     },
     [setAnchorEl, setSelectedGame]
   )
+
   const MemorizedRows = useMemo(() => {
     return rows
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -147,18 +149,19 @@ export function GameDataTableBody() {
                 )
               } else {
                 cellContent = (
-                  <Typography
+                  <Link
                     sx={{
                       ":hover": { color: "#075985" },
                       cursor: "pointer",
                       fontSize: TABLE_TEXT_SIZE,
                       display: "inline-block"
                     }}
+                    href={`/game/${row._id}`}
                   >
                     {typeof value === "string" && value.length > 40
                       ? value.substring(0, 40) + "..."
                       : value}
-                  </Typography>
+                  </Link>
                 )
               }
 
@@ -180,9 +183,5 @@ export function GameDataTableBody() {
         )
       })
   }, [rows, page, rowsPerPage, columns, translate, handleClick])
-  return (
-    <>
-      <TableBody>{MemorizedRows}</TableBody>
-    </>
-  )
+  return <TableBody>{MemorizedRows}</TableBody>
 }

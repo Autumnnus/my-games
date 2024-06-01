@@ -11,6 +11,7 @@ import UsersPageLayout from "@layouts/users_page_layout"
 import ErrorPage from "@pages/error"
 import AuthLoginPage from "@pages/main/auth/login"
 import AuthSignUp from "@pages/main/auth/signup"
+import GameDetailPage from "@pages/main/game_detail"
 import GamesPage from "@pages/main/games"
 import HomePage from "@pages/main/home"
 import ProfilePage from "@pages/main/profile"
@@ -18,6 +19,7 @@ import UsersPage from "@pages/main/users"
 import { AuthLoginPageContextProvider } from "context/auth/login"
 import { AuthSignUpPageContextProvider } from "context/auth/signup"
 import { GamesPageContextProvider } from "context/games"
+import { GameDetailPageContextProvider } from "context/games/games_detail"
 import { ProfilePageContextProvider } from "context/profile"
 import { UsersPageContextProvider } from "context/users"
 
@@ -79,6 +81,14 @@ const mainNavigation: RouteObject[] = [
         element: (
           <GamesPageLayout ContextProvider={GamesPageContextProvider}>
             <GamesPage />
+          </GamesPageLayout>
+        )
+      },
+      {
+        path: "game/:id",
+        element: (
+          <GamesPageLayout ContextProvider={GameDetailPageContextProvider}>
+            <GameDetailPage />
           </GamesPageLayout>
         )
       }
