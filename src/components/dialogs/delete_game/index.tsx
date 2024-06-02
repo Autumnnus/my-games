@@ -2,6 +2,7 @@ import Stack from "@mui/material/Stack"
 import Typography from "@mui/material/Typography"
 import axios from "axios"
 import { useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 import DialogProvider from "@components/dialog_provider"
 import useControlledForm from "@hooks/use_controlled_form"
@@ -22,7 +23,9 @@ export default function DeleteGame({
   const { translate, selectedGame, setGames } = useGamesPageContext()
   const { token } = useAppContext()
   const [loading, setLoading] = useState(false)
-
+  const navigate = useNavigate()
+  const location = useLocation()
+  const path = location.pathname.split("/")[1]
   const {
     formState: { isValid }
   } = useControlledForm({
@@ -53,6 +56,7 @@ export default function DeleteGame({
         setGames?.((prev) =>
           prev.filter((game) => game._id !== selectedGame?._id)
         )
+        path === "game" && navigate(`/games/${token?.data.id}`)
         handleClose()
       })
       .catch((error) => {

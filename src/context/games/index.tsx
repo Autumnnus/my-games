@@ -81,7 +81,7 @@ export const gamesPageDefaultValues: GamesPageContextProps = {
   columns: [],
   rows: [],
   page: 0,
-  rowsPerPage: 10,
+  rowsPerPage: 25,
   platformSelectOptions: [],
   statusSelectOptions: []
 }
@@ -98,7 +98,9 @@ export function GamesPageContextProvider(props: {
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [games, setGames] = useState<GamesData[]>([])
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [rowsPerPage, setRowsPerPage] = useState(
+    gamesPageDefaultValues.rowsPerPage
+  )
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const location = useLocation()

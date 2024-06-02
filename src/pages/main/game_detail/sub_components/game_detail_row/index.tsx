@@ -18,22 +18,48 @@ export default function GameDetailRow({ title, content }: DetailRowsProps) {
   const stringfied = useMemo(() => String(content), [content])
   const memorizedContent = useMemo(() => {
     if (title === "lastPlay") {
-      return new Date(stringfied).toLocaleDateString()
+      return (
+        <Box component="span" sx={{ color: "gray" }}>
+          {new Date(stringfied).toLocaleDateString()}
+        </Box>
+      )
     }
-    return capitalizeFirstLetter(stringfied)
-  }, [stringfied, title])
+    if (title === "rating") {
+      return (
+        <Box component="span" sx={{ color: "gray" }}>
+          {stringfied}/10
+        </Box>
+      )
+    }
+    if (title === "platform") {
+      return (
+        <Box
+          component="span"
+          sx={{
+            display: "inline-flex",
+            alignItems: "center",
+            color: "gray",
+            gap: 1
+          }}
+        >
+          {translate(stringfied)}
+          <PlatformIcon platform={content as Platform} />
+        </Box>
+      )
+    }
+    return (
+      <Box component="span" sx={{ color: "gray" }}>
+        {capitalizeFirstLetter(stringfied)}
+      </Box>
+    )
+  }, [content, stringfied, title, translate])
   return (
     <Stack direction={"row"} gap={0.5}>
       <Typography>
         <Box component="span" sx={{ fontWeight: "bold", mr: 1 }}>
           {translate(title)}:
         </Box>
-        <Box component="span" sx={{ color: "gray" }}>
-          {memorizedContent}
-          {title === "platform" && (
-            <PlatformIcon platform={content as Platform} />
-          )}
-        </Box>
+        {memorizedContent}
       </Typography>
     </Stack>
   )

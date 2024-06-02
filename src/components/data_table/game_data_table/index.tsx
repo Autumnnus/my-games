@@ -29,7 +29,6 @@ export default function GameDataTable() {
     rowsPerPage,
     setRowsPerPage
   } = useGamesPageContext()
-
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage?.(newPage)
   }
@@ -116,7 +115,7 @@ export default function GameDataTable() {
         </Box>
       </Popover>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[10, 25, 50, 100]}
         component="div"
         count={rows?.length || 0}
         rowsPerPage={rowsPerPage}
