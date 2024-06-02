@@ -64,5 +64,11 @@
   "all_members": "All Members",
   "playTime": "Play Time",
   "lastPlay": "Last Play",
-  "review": "Review"
+  "review": "Review",
+  "screenshot_url": "Screenshot Url",
+  "add_screenshot": "Add Screenshot",
+  "edit_screenshot": "Edit Screenshot",
+  "delete_screenshot": "Delete Screenshot",
+  "add": "Add",
+  "screenshot_name": "Screenshot Name"
 }

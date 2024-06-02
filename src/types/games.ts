@@ -19,10 +19,10 @@ export enum Status {
   ActivePlaying = "activePlaying"
 }
 
-type Screenshot = {
+export type Screenshot = {
   _id: string
-  ssName: string
-  ssUrl: string
+  name: string
+  url: string
 }
 export type GamesData = {
   rating: number

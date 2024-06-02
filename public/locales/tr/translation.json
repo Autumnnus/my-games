@@ -64,5 +64,11 @@
   "all_members": "Tüm Üyeler",
   "playTime": "Toplam Oynama",
   "lastPlay": "Son Oynama",
-  "review": "İnceleme"
+  "review": "İnceleme",
+  "screenshot_url": "Ekran Görüntüsü URL'si",
+  "add_screenshot": "Ekran Görüntüsü Ekle",
+  "edit_screenshot": "Ekran Görüntüsünü Düzenle",
+  "delete_screenshot": "Ekran Görüntüsünü Sil",
+  "add": "Ekle",
+  "screenshot_name": "Ekran Görüntüsünü İsmi"
 }

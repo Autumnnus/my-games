@@ -22,7 +22,13 @@ import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
-import { DialogGameData, GamesData, Platform, Status } from "types/games"
+import {
+  DialogGameData,
+  GamesData,
+  Platform,
+  Screenshot,
+  Status
+} from "types/games"
 
 import {
   AppContextProps,
@@ -31,17 +37,32 @@ import {
 } from "../app_context"
 
 export type GameDetailContextProps = {
-  game: GamesData | null
+  game: GamesData
   setGame?: Dispatch<SetStateAction<GameDetailContextProps["game"]>>
+  screenShots: Screenshot[]
+  setScreenShots?: Dispatch<
+    SetStateAction<GameDetailContextProps["screenShots"]>
+  >
   isEditGameDialogOpen?: boolean
   setIsEditGameDialogOpen?: () => void
   isDeleteGameDialogOpen?: boolean
   setIsDeleteGameDialogOpen?: () => void
+  isAddScreenshotDialogOpen?: boolean
+  setIsAddScreenshotDialogOpen?: () => void
+  isDeleteScreenshotDialogOpen?: boolean
+  setIsDeleteScreenshotDialogOpen?: () => void
+  isEditScreenshotDialogOpen?: boolean
+  setIsEditScreenshotDialogOpen?: () => void
   control: Control<DialogGameData>
   handleSubmit?: UseFormHandleSubmit<DialogGameData>
   reset?: UseFormReset<DialogGameData>
   isValid?: boolean
   isDirty?: boolean
+  screenshotControl: Control<Screenshot>
+  screenshotHandleSubmit?: UseFormHandleSubmit<Screenshot>
+  screenshotReset?: UseFormReset<Screenshot>
+  screenshotIsValid?: boolean
+  screenshotIsDirty?: boolean
 }
 
 export type GameDetailPageContextProps = AppContextProps &
@@ -51,7 +72,9 @@ export const gameDetailPageDefaultValues: GameDetailPageContextProps = {
   ...appContextDefaultValues,
   translate: i18next.t,
   control: {} as Control<DialogGameData>,
-  game: null
+  screenshotControl: {} as Control<Screenshot>,
+  game: {} as GamesData,
+  screenShots: []
 }
 
 const GameDetailPageContext = createContext(gameDetailPageDefaultValues)
@@ -63,7 +86,17 @@ export function GameDetailPageContextProvider(props: {
   const { id } = useParams()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
-  const [game, setGame] = useState<GamesData | null>(null)
+  const [isAddScreenshotDialogOpen, setIsAddScreenshotDialogOpen] = useToggle()
+  const [isEditScreenshotDialogOpen, setIsEditScreenshotDialogOpen] =
+    useToggle()
+  const [isDeleteScreenshotDialogOpen, setIsDeleteScreenshotDialogOpen] =
+    useToggle()
+  const [game, setGame] = useState<GameDetailContextProps["game"]>(
+    {} as GamesData
+  )
+  const [screenShots, setScreenShots] = useState<
+    GameDetailContextProps["screenShots"]
+  >([])
   const navigate = useNavigate()
   const schema = yup
     .object({
@@ -132,12 +165,33 @@ export function GameDetailPageContextProvider(props: {
     resolver: yupResolver(schema) as unknown as Resolver<DialogGameData>,
     mode: "all"
   })
+  console.log(screenShots, "screenShots")
+  const screenshotSchema = yup
+    .object({
+      name: yup.string(),
+      url: yup
+        .string()
+        .required(
+          translate("input_is_required", { name: translate("screenshot_url") })
+        )
+    })
+    .required()
+  const {
+    control: screenshotControl,
+    handleSubmit: screenshotHandleSubmit,
+    reset: screenshotReset,
+    formState: { isValid: screenshotIsValid, isDirty: screenshotIsDirty }
+  } = useControlledForm<Screenshot>({
+    resolver: yupResolver(screenshotSchema) as unknown as Resolver<Screenshot>,
+    mode: "all"
+  })
   useEffect(() => {
     const url = `${process.env.REACT_APP_API_URL}/api/games/game/${id}`
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         setGame(res.data.data)
+        setScreenShots(res.data.data.screenshots)
       })
       .catch((err) => {
         showErrorToast("Error Fetching Game Detail Data")
@@ -161,7 +215,20 @@ export function GameDetailPageContextProvider(props: {
         handleSubmit,
         reset,
         isValid,
-        isDirty
+        isDirty,
+        screenshotControl,
+        screenshotHandleSubmit,
+        screenshotReset,
+        screenshotIsValid,
+        screenshotIsDirty,
+        screenShots,
+        setScreenShots,
+        isAddScreenshotDialogOpen,
+        setIsAddScreenshotDialogOpen,
+        isDeleteScreenshotDialogOpen,
+        setIsDeleteScreenshotDialogOpen,
+        isEditScreenshotDialogOpen,
+        setIsEditScreenshotDialogOpen
       }}
     >
       {props.children}
