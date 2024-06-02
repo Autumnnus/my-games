@@ -19,7 +19,7 @@ import UsersPage from "@pages/main/users"
 import { AuthLoginPageContextProvider } from "context/auth/login"
 import { AuthSignUpPageContextProvider } from "context/auth/signup"
 import { GamesPageContextProvider } from "context/games"
-import { GameDetailPageContextProvider } from "context/games/games_detail"
+import { GameDetailPageContextProvider } from "context/games_detail"
 import { ProfilePageContextProvider } from "context/profile"
 import { UsersPageContextProvider } from "context/users"
 

@@ -61,5 +61,8 @@
   "rating_max_error": "Rating must be at most {{value}}",
   "max_length_error": "{{name}} must be at most {{value}} characters",
   "not_rated": "Not Rated",
-  "all_members": "All Members"
+  "all_members": "All Members",
+  "playTime": "Play Time",
+  "lastPlay": "Last Play",
+  "review": "Review"
 }

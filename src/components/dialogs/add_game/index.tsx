@@ -14,15 +14,21 @@ import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 import { DialogGameData, GamesData } from "types/games"
 
-export default function AddGame() {
+type AddGameProps = {
+  isAddGameDialogOpen?: boolean
+  setIsAddGameDialogOpen?: () => void
+}
+
+export default function AddGame({
+  isAddGameDialogOpen,
+  setIsAddGameDialogOpen
+}: AddGameProps) {
   const {
     translate,
     reset,
     handleSubmit,
     isValid,
     control,
-    setIsAddGameDialogOpen,
-    isAddGameDialogOpen,
     setGames,
     platformSelectOptions,
     statusSelectOptions

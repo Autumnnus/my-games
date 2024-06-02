@@ -6,7 +6,7 @@ import { Platform } from "types/games"
 export default function PlatformIcon({ platform }: { platform: Platform }) {
   const PlatformIcon = useMemo(() => {
     switch (platform) {
-      case "steam":
+      case Platform.Steam:
         return (
           <svg
             role="img"
@@ -20,7 +20,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "epicGames":
+      case Platform.EpicGames:
         return (
           <svg
             role="img"
@@ -34,7 +34,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "ubisoft":
+      case Platform.Ubisoft:
         return (
           <svg
             role="img"
@@ -48,7 +48,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "xboxPc":
+      case Platform.XboxPc:
         return (
           <svg
             role="img"
@@ -62,7 +62,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "eaGames":
+      case Platform.EaGames:
         return (
           <svg
             role="img"
@@ -76,7 +76,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "torrent":
+      case Platform.Torrent:
         return (
           <svg
             role="img"
@@ -90,7 +90,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "playstation":
+      case Platform.Playstation:
         return (
           <svg
             role="img"
@@ -104,7 +104,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "xboxSeries":
+      case Platform.XboxSeries:
         return (
           <svg
             role="img"
@@ -118,7 +118,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "nintendo":
+      case Platform.Nintendo:
         return (
           <svg
             role="img"
@@ -132,7 +132,7 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "mobile":
+      case Platform.Mobile:
         return (
           <svg
             role="img"
@@ -146,18 +146,26 @@ export default function PlatformIcon({ platform }: { platform: Platform }) {
             />
           </svg>
         )
-      case "otherPlatforms":
+      case Platform.OtherPlatforms:
         return (
           <svg
-            role="img"
-            viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
+            xmlSpace="preserve"
+            id="Icons"
+            width={256}
+            height={256}
+            fill="#fff"
+            stroke="#fff"
+            viewBox="-0.96 -0.96 33.92 33.92"
           >
-            <title>Humble Bundle</title>
-            <path
-              fill="white"
-              d="M17.895 19.341c-3.384 0 1.826-19.186 1.826-19.186L16.233.151s-1.427 4.515-2.37 9.533h-3.005c.078-1.032.116-2.076.099-3.114-.135-8.26-4.974-6.73-7.14-4.835C1.758 3.538.033 6.962 0 9.6c.328-.016 1.624-.022 1.624-.022S2.702 4.66 6.086 4.66c3.385 0-1.834 19.187-1.834 19.187l3.49.002s1.803-5.136 2.7-10.872l2.87-.017c-.167 1.485-.22 3.124-.196 4.646.136 8.26 4.956 6.488 7.122 4.593 2.166-1.896 3.782-5.9 3.762-7.822.002-.002-1.645.013-1.665.013.006.152-1.056 4.951-4.44 4.951z"
-            />
+            <g id="SVGRepo_iconCarrier">
+              <style>
+                {
+                  ".st0{fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}"
+                }
+              </style>
+              <path d="M23 7H9c-5 0-9 4-9 9s4 9 9 9h14c5 0 9-4 9-9s-4-9-9-9zM8 17H7v1c0 .6-.4 1-1 1s-1-.4-1-1v-1H4c-.6 0-1-.4-1-1s.4-1 1-1h1v-1c0-.6.4-1 1-1s1 .4 1 1v1h1c.6 0 1 .4 1 1s-.4 1-1 1zm14 4c0 .6-.4 1-1 1H11c-.6 0-1-.4-1-1V11c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v10zm3.1-7.4c.1-.1.1-.2.2-.3.4-.4 1-.4 1.4 0 .2.2.3.4.3.7 0 .3-.1.5-.3.7-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.1 0-.3.1-.4zM24 17c-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.3.1-.5.3-.7.1-.1.2-.2.3-.2.4-.1.8-.1 1.1.2.2.2.3.4.3.7 0 .3-.1.5-.3.7-.2.2-.4.3-.7.3zm2.7 1.7c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.1 0-.3.1-.4.1-.1.1-.2.2-.3.4-.4 1-.4 1.4 0 .1.1.2.2.2.3 0 .1.1.3.1.4 0 .3-.1.5-.3.7zm2-2c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.3.1-.5.3-.7.4-.4 1-.4 1.4 0 .2.2.3.4.3.7 0 .3-.1.5-.3.7z" />
+            </g>
           </svg>
         )
     }

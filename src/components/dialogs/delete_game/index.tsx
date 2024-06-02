@@ -10,14 +10,16 @@ import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 
-export default function DeleteGame() {
-  const {
-    translate,
-    setIsDeleteGameDialogOpen,
-    isDeleteGameDialogOpen,
-    selectedGame,
-    setGames
-  } = useGamesPageContext()
+type DeleteGameProps = {
+  isDeleteGameDialogOpen?: boolean
+  setIsDeleteGameDialogOpen?: () => void
+}
+
+export default function DeleteGame({
+  isDeleteGameDialogOpen,
+  setIsDeleteGameDialogOpen
+}: DeleteGameProps) {
+  const { translate, selectedGame, setGames } = useGamesPageContext()
   const { token } = useAppContext()
   const [loading, setLoading] = useState(false)
 

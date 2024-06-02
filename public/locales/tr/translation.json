@@ -61,5 +61,8 @@
   "rating_max_error": "Puan 10'dan büyük olamaz",
   "max_length_error": "{{name}} en fazla {{max}} karakter olabilir",
   "not_rated": "Puanlanmadı",
-  "all_members": "Tüm Üyeler"
+  "all_members": "Tüm Üyeler",
+  "playTime": "Toplam Oynama",
+  "lastPlay": "Son Oynama",
+  "review": "İnceleme"
 }

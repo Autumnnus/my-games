@@ -14,16 +14,22 @@ import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 import { DialogGameData, GamesData } from "types/games"
 
-export default function EditGame() {
+type EditGameProps = {
+  isEditGameDialogOpen?: boolean
+  setIsEditGameDialogOpen?: () => void
+}
+
+export default function EditGame({
+  isEditGameDialogOpen,
+  setIsEditGameDialogOpen
+}: EditGameProps) {
   const {
     translate,
     reset,
     handleSubmit,
     control,
     isValid,
-    isEditGameDialogOpen,
     selectedGame,
-    setIsEditGameDialogOpen,
     isDirty,
     setGames,
     platformSelectOptions,
