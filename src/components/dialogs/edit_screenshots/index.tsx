@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import DialogProvider from "@components/dialog_provider"
@@ -10,7 +10,7 @@ import { useAppContext } from "context/app_context"
 import { useGameDetailPageContext } from "context/games_detail"
 import { Screenshot } from "types/games"
 
-export default function AddScreenShot() {
+export default function EditScreenShot() {
   const {
     translate,
     setScreenShots,
@@ -19,12 +19,19 @@ export default function AddScreenShot() {
     screenshotIsValid,
     screenshotReset,
     isEditScreenshotDialogOpen,
-    setIsEditScreenshotDialogOpen
+    setIsEditScreenshotDialogOpen,
+    selectedSS
   } = useGameDetailPageContext()
   const { token } = useAppContext()
   const { id } = useParams()
 
   const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    screenshotReset?.({
+      name: selectedSS?.name,
+      url: selectedSS?.url
+    })
+  }, [screenshotReset, selectedSS])
 
   function handleClose() {
     if (loading) {
@@ -41,7 +48,7 @@ export default function AddScreenShot() {
     }
     await axios
       .put(
-        `${process.env.REACT_APP_API_URL}/api/games/${id}/editSS/665c834d8a5b70d260dae3f1`,
+        `${process.env.REACT_APP_API_URL}/api/games/${id}/editSS/${selectedSS?._id}`,
         requestData,
         {
           headers: {

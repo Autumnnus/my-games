@@ -63,6 +63,11 @@ export type GameDetailContextProps = {
   screenshotReset?: UseFormReset<Screenshot>
   screenshotIsValid?: boolean
   screenshotIsDirty?: boolean
+  anchorEl: HTMLButtonElement | null
+  setAnchorEl?: Dispatch<SetStateAction<HTMLButtonElement | null>>
+  handleClosePopover?: () => void
+  selectedSS?: Screenshot
+  setSelectedSS?: Dispatch<SetStateAction<GameDetailContextProps["selectedSS"]>>
 }
 
 export type GameDetailPageContextProps = AppContextProps &
@@ -74,7 +79,8 @@ export const gameDetailPageDefaultValues: GameDetailPageContextProps = {
   control: {} as Control<DialogGameData>,
   screenshotControl: {} as Control<Screenshot>,
   game: {} as GamesData,
-  screenShots: []
+  screenShots: [],
+  anchorEl: null
 }
 
 const GameDetailPageContext = createContext(gameDetailPageDefaultValues)
@@ -84,6 +90,10 @@ export function GameDetailPageContextProvider(props: {
 }) {
   const { translate } = useAppContext()
   const { id } = useParams()
+  const [anchorEl, setAnchorEl] =
+    useState<GameDetailContextProps["anchorEl"]>(null)
+  const [selectedSS, setSelectedSS] =
+    useState<GameDetailContextProps["selectedSS"]>()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [isAddScreenshotDialogOpen, setIsAddScreenshotDialogOpen] = useToggle()
@@ -165,7 +175,6 @@ export function GameDetailPageContextProvider(props: {
     resolver: yupResolver(schema) as unknown as Resolver<DialogGameData>,
     mode: "all"
   })
-  console.log(screenShots, "screenShots")
   const screenshotSchema = yup
     .object({
       name: yup.string(),
@@ -200,6 +209,10 @@ export function GameDetailPageContextProvider(props: {
         throw new Error(err)
       })
   }, [id, navigate])
+
+  function handleClosePopover() {
+    setAnchorEl(null)
+  }
   return (
     <GameDetailPageContext.Provider
       value={{
@@ -228,7 +241,12 @@ export function GameDetailPageContextProvider(props: {
         isDeleteScreenshotDialogOpen,
         setIsDeleteScreenshotDialogOpen,
         isEditScreenshotDialogOpen,
-        setIsEditScreenshotDialogOpen
+        setIsEditScreenshotDialogOpen,
+        anchorEl,
+        setAnchorEl,
+        handleClosePopover,
+        selectedSS,
+        setSelectedSS
       }}
     >
       {props.children}

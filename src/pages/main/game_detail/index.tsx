@@ -5,7 +5,9 @@ import { Box, Button, Stack, Typography } from "@mui/material"
 
 import AddScreenShot from "@components/dialogs/add_screenshots"
 import DeleteGame from "@components/dialogs/delete_game"
+import DeleteScreenshot from "@components/dialogs/delete_screenshots"
 import EditGame from "@components/dialogs/edit_game"
+import EditScreenShot from "@components/dialogs/edit_screenshots"
 import GameDetailRow from "@pages/main/game_detail/sub_components/game_detail_row"
 import Screenshots from "@pages/main/game_detail/sub_components/screenshots"
 import { useGameDetailPageContext } from "context/games_detail"
@@ -35,6 +37,8 @@ export default function GameDetailPage() {
         setIsDeleteGameDialogOpen={setIsDeleteGameDialogOpen}
       />
       <AddScreenShot />
+      <EditScreenShot />
+      <DeleteScreenshot />
     </Box>
   )
 }

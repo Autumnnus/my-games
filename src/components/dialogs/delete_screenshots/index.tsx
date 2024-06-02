@@ -9,18 +9,16 @@ import useControlledForm from "@hooks/use_controlled_form"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
-import { useGamesPageContext } from "context/games"
+import { useGameDetailPageContext } from "context/games_detail"
 
-type DeleteGameProps = {
-  isDeleteGameDialogOpen?: boolean
-  setIsDeleteGameDialogOpen?: () => void
-}
-
-export default function DeleteGame({
-  isDeleteGameDialogOpen,
-  setIsDeleteGameDialogOpen
-}: DeleteGameProps) {
-  const { translate, selectedGame, setGames } = useGamesPageContext()
+export default function DeleteScreenshot() {
+  const {
+    translate,
+    selectedSS,
+    isDeleteScreenshotDialogOpen,
+    setIsDeleteScreenshotDialogOpen,
+    setScreenShots
+  } = useGameDetailPageContext()
   const { token } = useAppContext()
   const { id } = useParams()
   const [loading, setLoading] = useState(false)
@@ -35,14 +33,14 @@ export default function DeleteGame({
     if (loading) {
       return
     }
-    setIsDeleteGameDialogOpen?.()
+    setIsDeleteScreenshotDialogOpen?.()
   }
 
   async function onSubmit() {
     setLoading(true)
     await axios
       .delete(
-        `${process.env.REACT_APP_API_URL}/api/games/${id}/deleteSS/${selectedGame?._id}`,
+        `${process.env.REACT_APP_API_URL}/api/games/${id}/deleteSS/${selectedSS?._id}`,
         {
           headers: {
             Authorization: `Bearer: ${token?.access_token}`
@@ -50,10 +48,10 @@ export default function DeleteGame({
         }
       )
       .then(() => {
-        log(`Screenshot is deleted ${selectedGame?.name}`, selectedGame ?? "")
+        log(`Screenshot is deleted ${selectedSS?.name}`, selectedSS ?? "")
         showSuccessToast("The Screenshot Deleted Successfully")
-        setGames?.((prev) =>
-          prev.filter((game) => game._id !== selectedGame?._id)
+        setScreenShots?.((prev) =>
+          prev.filter((item) => item._id !== selectedSS?._id)
         )
         handleClose()
       })
@@ -70,7 +68,7 @@ export default function DeleteGame({
 
   return (
     <DialogProvider
-      title={translate("delete_game")}
+      title={translate("delete_screenshot")}
       leftButton={{
         text: translate("cancel"),
         color: "secondary",
@@ -84,12 +82,14 @@ export default function DeleteGame({
         loading: loading,
         disabled: !isValid
       }}
-      isOpen={!!isDeleteGameDialogOpen}
+      isOpen={!!isDeleteScreenshotDialogOpen}
       setClose={handleClose}
       size="small"
     >
       <Stack justifyContent={"center"} alignItems={"center"} flex={1}>
-        <Typography align="center">{translate("delete_game_text")}</Typography>
+        <Typography align="center">
+          {translate("delete_screenshot_text")}
+        </Typography>
       </Stack>
     </DialogProvider>
   )
