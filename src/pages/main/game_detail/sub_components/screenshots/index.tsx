@@ -25,7 +25,8 @@ export default function Screenshots() {
     handleClosePopover,
     setIsDeleteScreenshotDialogOpen,
     setIsEditScreenshotDialogOpen,
-    setSelectedSS
+    setSelectedSS,
+    setIsPreviewScreenshotOpen
   } = useGameDetailPageContext()
 
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -53,6 +54,10 @@ export default function Screenshots() {
     setSelectedSS?.(item)
     setClickedItemId(item._id)
   }
+  function handleClickImage(item: Screenshot) {
+    setIsPreviewScreenshotOpen?.()
+    setSelectedSS?.(item)
+  }
 
   if (!currentScreenshots.length) return null
 
@@ -74,10 +79,12 @@ export default function Screenshots() {
               component={"img"}
               src={item.url}
               alt={item.name}
+              onClick={() => handleClickImage(item)}
               sx={{
                 objectFit: "fill",
                 position: "relative",
                 width: "100%",
+                cursor: "pointer",
                 height: "100%"
               }}
             />

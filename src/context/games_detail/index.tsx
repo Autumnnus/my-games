@@ -68,6 +68,8 @@ export type GameDetailContextProps = {
   handleClosePopover?: () => void
   selectedSS?: Screenshot
   setSelectedSS?: Dispatch<SetStateAction<GameDetailContextProps["selectedSS"]>>
+  isPreviewScreenshotOpen?: boolean
+  setIsPreviewScreenshotOpen?: () => void
 }
 
 export type GameDetailPageContextProps = AppContextProps &
@@ -95,6 +97,7 @@ export function GameDetailPageContextProvider(props: {
   const [selectedSS, setSelectedSS] =
     useState<GameDetailContextProps["selectedSS"]>()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
+  const [isPreviewScreenshotOpen, setIsPreviewScreenshotOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [isAddScreenshotDialogOpen, setIsAddScreenshotDialogOpen] = useToggle()
   const [isEditScreenshotDialogOpen, setIsEditScreenshotDialogOpen] =
@@ -194,6 +197,7 @@ export function GameDetailPageContextProvider(props: {
     resolver: yupResolver(screenshotSchema) as unknown as Resolver<Screenshot>,
     mode: "all"
   })
+
   useEffect(() => {
     const url = `${process.env.REACT_APP_API_URL}/api/games/game/${id}`
     axios
@@ -246,7 +250,9 @@ export function GameDetailPageContextProvider(props: {
         setAnchorEl,
         handleClosePopover,
         selectedSS,
-        setSelectedSS
+        setSelectedSS,
+        isPreviewScreenshotOpen,
+        setIsPreviewScreenshotOpen
       }}
     >
       {props.children}

@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup"
 import axios, { type AxiosResponse } from "axios"
 import {
   Dispatch,
@@ -5,12 +6,23 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState
 } from "react"
+import {
+  Control,
+  Resolver,
+  UseFormHandleSubmit,
+  UseFormReset
+} from "react-hook-form"
+import * as yup from "yup"
 
+import useControlledForm from "@hooks/use_controlled_form"
+import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
-import { UsersData } from "types/users"
+import { UserDataTableColumnData, UserDataTableRowData } from "types/data_table"
+import { EditUserDialogData, UsersData } from "types/users"
 
 import {
   AppContextProps,
@@ -19,15 +31,32 @@ import {
 } from "../app_context"
 
 export type UsersContextProps = {
-  users?: UsersData[]
-  setUsers?: Dispatch<SetStateAction<UsersData[]>>
+  users: UsersData[]
+  setUsers?: Dispatch<SetStateAction<UsersContextProps["users"]>>
+  selectedUser?: UsersData | null
+  setSelectedUser?: Dispatch<SetStateAction<UsersContextProps["selectedUser"]>>
+  columns: ReadonlyArray<UserDataTableColumnData>
+  rows: ReadonlyArray<UserDataTableRowData>
+  anchorEl?: HTMLButtonElement | null
+  setAnchorEl?: Dispatch<SetStateAction<HTMLButtonElement | null>>
+  isEditUserDialogOpen?: boolean
+  setIsEditUserDialogOpen?: () => void
+  control: Control<EditUserDialogData>
+  handleSubmit?: UseFormHandleSubmit<EditUserDialogData>
+  reset?: UseFormReset<EditUserDialogData>
+  isValid?: boolean
+  isDirty?: boolean
 }
 
 export type UsersPageContextProps = AppContextProps & UsersContextProps
 
 export const usersPageDefaultValues: UsersPageContextProps = {
   ...appContextDefaultValues,
-  translate: i18next.t
+  translate: i18next.t,
+  columns: [],
+  rows: [],
+  users: [],
+  control: {} as Control<EditUserDialogData>
 }
 
 const UsersPageContext = createContext(usersPageDefaultValues)
@@ -35,8 +64,12 @@ const UsersPageContext = createContext(usersPageDefaultValues)
 export function UsersPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const { translate } = useAppContext()
-  const [users, setUsers] = useState<UsersData[]>([])
+  const [users, setUsers] = useState<UsersContextProps["users"]>([])
+  const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useToggle()
+  const [selectedUser, setSelectedUser] =
+    useState<UsersContextProps["selectedUser"]>(null)
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/users`)
@@ -49,13 +82,82 @@ export function UsersPageContextProvider(props: {
       })
   }, [])
 
+  const schema = yup
+    .object({
+      email: yup.string(),
+      password: yup.string().min(6, "Password must be at least 8 characters"),
+      profileImage: yup.string()
+    })
+    .required()
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isValid, isDirty }
+  } = useControlledForm<EditUserDialogData>({
+    resolver: yupResolver(schema) as unknown as Resolver<EditUserDialogData>,
+    mode: "all"
+  })
+
+  const rows = useMemo(() => {
+    return users.map((user) =>
+      createData(
+        user.profileImage,
+        user.name,
+        user.gameSize,
+        user.completedGameSize,
+        user.screenshotSize
+      )
+    )
+  }, [users])
+
+  const columns: ReadonlyArray<UserDataTableColumnData> = useMemo(
+    () => [
+      { id: "profileImage", label: "", minWidth: 50 },
+      { id: "name", label: translate("member"), minWidth: 100 },
+      {
+        id: "gameSize",
+        label: translate("games"),
+        minWidth: 170,
+        align: "right"
+      },
+      {
+        id: "completedGameSize",
+        label: translate("completed_games"),
+        minWidth: 170,
+        align: "right"
+      },
+      {
+        id: "screenshotSize",
+        label: translate("screenshots"),
+        minWidth: 170,
+        align: "right"
+      },
+      { id: "actions", label: "", minWidth: 50, align: "right" }
+    ],
+    [translate]
+  )
+
   return (
     <UsersPageContext.Provider
       value={{
         ...usersPageDefaultValues,
         translate,
         users,
-        setUsers
+        setUsers,
+        selectedUser,
+        setSelectedUser,
+        columns,
+        rows,
+        anchorEl,
+        setAnchorEl,
+        isEditUserDialogOpen,
+        setIsEditUserDialogOpen,
+        control,
+        handleSubmit,
+        reset,
+        isValid,
+        isDirty
       }}
     >
       {props.children}
@@ -68,4 +170,20 @@ export function useUsersPageContext() {
     throw new Error("UsersPage Context Error")
   }
   return context
+}
+
+function createData(
+  profileImage: string,
+  name: string,
+  gameSize: number,
+  completedGameSize: number,
+  screenshotSize: number
+) {
+  return {
+    profileImage,
+    name,
+    gameSize,
+    completedGameSize,
+    screenshotSize
+  }
 }

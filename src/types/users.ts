@@ -17,3 +17,9 @@ export type UsersData = {
   __v: number
   _id: string
 }
+
+export type EditUserDialogData = {
+  email: string
+  password: string
+  profileImage: string
+}

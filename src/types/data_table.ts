@@ -1,11 +1,18 @@
 import { Platform, Status } from "types/games"
 
 export type DataTableColumnData = {
-  id: DataTableColumnKeys
+  id: GameDataTableColumnKeys
   label: string
   minWidth?: number
   width?: number
   align?: "right" | "left" | "center"
+  format?: (value: number) => string
+}
+export type UserDataTableColumnData = {
+  id: UserDataTableColumnKeys
+  label: string
+  minWidth?: number
+  align?: "right"
   format?: (value: number) => string
 }
 
@@ -21,8 +28,15 @@ export type DataTableRowData = {
   _id: string
   review: string
 }
+export type UserDataTableRowData = {
+  profileImage: string
+  name: string
+  gameSize: number
+  completedGameSize: number
+  screenshotSize: number
+}
 
-type DataTableColumnKeys =
+type GameDataTableColumnKeys =
   | "photo"
   | "name"
   | "rating"
@@ -31,4 +45,11 @@ type DataTableColumnKeys =
   | "lastPlay"
   | "status"
   | "playTime"
+  | "actions"
+type UserDataTableColumnKeys =
+  | "profileImage"
+  | "name"
+  | "gameSize"
+  | "completedGameSize"
+  | "screenshotSize"
   | "actions"
