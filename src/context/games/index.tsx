@@ -91,7 +91,7 @@ const GamesPageContext = createContext(gamesPageDefaultValues)
 export function GamesPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, token } = useAppContext()
   const { id } = useParams()
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
@@ -99,7 +99,7 @@ export function GamesPageContextProvider(props: {
   const [games, setGames] = useState<GamesData[]>([])
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(
-    gamesPageDefaultValues.rowsPerPage
+    Number(localStorage.getItem("rowsPerPage"))
   )
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -121,6 +121,7 @@ export function GamesPageContextProvider(props: {
     const queryString = queryParams.toString()
     const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
     navigate(`?${queryString}`)
+    console.log(url)
 
     axios
       .get(url)
@@ -365,7 +366,8 @@ export function GamesPageContextProvider(props: {
         rowsPerPage,
         setRowsPerPage,
         platformSelectOptions,
-        statusSelectOptions
+        statusSelectOptions,
+        token
       }}
     >
       {props.children}

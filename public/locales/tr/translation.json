@@ -12,7 +12,7 @@
   "all_played_games_by_user": "{{user}} tarafından oynanılan tüm oyunlar",
   "game_name": "Oyun Adı",
   "game_photo_url": "Oyun Fotoğraf URL'si",
-  "game_play_time": "Toplam Oyun Oynama",
+  "game_play_time": "Toplam Oyun Saati",
   "game_status": "Oyun Durumu",
   "last_play_date": "Son Oynama Tarihi",
   "game_review": "Oyun İncelemesi",

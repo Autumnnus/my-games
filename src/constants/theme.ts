@@ -41,7 +41,8 @@ const theme = createTheme({
             },
             "&.Mui-focused fieldset": {
               borderColor: PRIMARY
-            }
+            },
+            color: "#000"
           }
         }
       }
@@ -49,7 +50,7 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: "#fff",
+          color: "#000",
           "&.Mui-focused": {
             color: PRIMARY
           }

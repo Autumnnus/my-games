@@ -29,7 +29,7 @@ const ProfilePageContext = createContext(profilePageDefaultValues)
 export function ProfilePageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, token } = useAppContext()
   const { id } = useParams()
   const [profile, setProfile] = useState<UsersData>()
 
@@ -50,6 +50,7 @@ export function ProfilePageContextProvider(props: {
       value={{
         ...profilePageDefaultValues,
         translate,
+        token,
         profile
       }}
     >

@@ -1,6 +1,6 @@
 import AccountCircleSharpIcon from "@mui/icons-material/AccountCircleSharp"
 import MenuIcon from "@mui/icons-material/Menu"
-import { Popover } from "@mui/material"
+import { Popover, Stack } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography"
 import { useCallback, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import useTranslate from "@hooks/use_translate"
 import { useAppContext } from "context/app_context"
 
 interface Props {
@@ -112,7 +113,8 @@ function Navigations({
   handleDrawerToggle: () => void
   isDrawer: boolean
 }) {
-  const { translate, token } = useAppContext()
+  const { token } = useAppContext()
+  const { translate, changeLanguage, currentLanguage } = useTranslate()
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -226,6 +228,40 @@ function Navigations({
             >
               {translate("profile")}
             </Box>
+            <Stack direction={"row"}>
+              <Box
+                onClick={() => changeLanguage("en")}
+                sx={{
+                  width: "100%",
+                  cursor: "pointer",
+                  backgroundColor: currentLanguage === "en" ? "#fff" : "",
+                  color: currentLanguage === "en" ? "#000" : "",
+                  ":hover": {
+                    backgroundColor: "#fff",
+                    color: "#000"
+                  },
+                  p: 1.5
+                }}
+              >
+                <Typography align="center">EN</Typography>
+              </Box>
+              <Box
+                onClick={() => changeLanguage("tr")}
+                sx={{
+                  width: "100%",
+                  cursor: "pointer",
+                  backgroundColor: currentLanguage === "tr" ? "#fff" : "",
+                  color: currentLanguage === "tr" ? "#000" : "",
+                  ":hover": {
+                    backgroundColor: "#fff",
+                    color: "#000"
+                  },
+                  p: 1.5
+                }}
+              >
+                <Typography align="center">TR</Typography>
+              </Box>
+            </Stack>
             <Box
               onClick={handleLogout}
               sx={{

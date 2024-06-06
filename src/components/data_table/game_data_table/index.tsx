@@ -4,7 +4,9 @@ import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
 import TableContainer from "@mui/material/TableContainer"
 import TablePagination from "@mui/material/TablePagination"
+import axios, { type AxiosResponse } from "axios"
 import { ChangeEvent, useCallback } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 
 import { GameDataTableBody } from "@components/data_table/game_data_table/sub_components/table_body"
 import { GameDataTableTitle } from "@components/data_table/game_data_table/sub_components/table_titles"
@@ -15,7 +17,9 @@ import {
   TABLE_HEADER_COLOR,
   TABLE_ROW_BACKGROUND_COLOR
 } from "@constants/colors"
+import { showErrorToast } from "@utils/functions/toast"
 import { useGamesPageContext } from "context/games"
+import { GamesData } from "types/games"
 
 export default function GameDataTable() {
   const {
@@ -35,6 +39,7 @@ export default function GameDataTable() {
   }
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage?.(+event.target.value)
+    localStorage.setItem("rowsPerPage", event.target.value)
     setPage?.(0)
   }
 
@@ -147,12 +152,32 @@ export default function GameDataTable() {
 }
 
 function TableHeader() {
-  const { translate, setIsAddGameDialogOpen, reset } = useGamesPageContext()
+  const { translate, setIsAddGameDialogOpen, reset, setGames } =
+    useGamesPageContext()
+  const { id } = useParams()
+  const navigate = useNavigate()
   function handleAddGame() {
     reset?.({
       name: ""
     })
     setIsAddGameDialogOpen?.()
+  }
+  const queryParams = new URLSearchParams()
+  const handleSearch = (search: string) => {
+    if (search) queryParams.append("search", search)
+    const queryString = queryParams.toString()
+    const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
+    navigate(`?${queryString}`)
+    console.log(url, "url")
+    axios
+      .get(url)
+      .then((res: AxiosResponse<{ data: GamesData[] }>) => {
+        setGames?.(res.data.data)
+      })
+      .catch((err) => {
+        showErrorToast("Database Fetching Error")
+        console.error(err)
+      })
   }
   return (
     <Stack
@@ -202,7 +227,7 @@ function TableHeader() {
             sx={{ width: "40px", height: "40px", color: "white" }}
           />
         </IconButton>
-        <SearchBar />
+        <SearchBar onClick={(search: string) => handleSearch(search)} />
       </Stack>
     </Stack>
   )

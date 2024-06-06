@@ -90,7 +90,7 @@ const GameDetailPageContext = createContext(gameDetailPageDefaultValues)
 export function GameDetailPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, token } = useAppContext()
   const { id } = useParams()
   const [anchorEl, setAnchorEl] =
     useState<GameDetailContextProps["anchorEl"]>(null)
@@ -252,7 +252,8 @@ export function GameDetailPageContextProvider(props: {
         selectedSS,
         setSelectedSS,
         isPreviewScreenshotOpen,
-        setIsPreviewScreenshotOpen
+        setIsPreviewScreenshotOpen,
+        token
       }}
     >
       {props.children}
