@@ -22,4 +22,5 @@ export type EditUserDialogData = {
   email: string
   password: string
   profileImage: string
+  name: string
 }

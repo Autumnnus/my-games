@@ -6,7 +6,6 @@ import { useWatch } from "react-hook-form"
 
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
-import { gameNameLabel } from "@utils/arrays/gameNameLabel"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
@@ -28,9 +27,6 @@ export default function EditUser() {
   } = useUsersPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "profileImage" })
-  const [randomNumber, setRandomNumber] = useState<number>(
-    Math.floor(Math.random() * gameNameLabel.length)
-  )
   const [loading, setLoading] = useState(false)
   console.log(selectedUser, "selectedUser")
   useEffect(() => {
@@ -49,7 +45,6 @@ export default function EditUser() {
     }
     setIsEditUserDialogOpen?.()
     reset?.()
-    setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
   }
 
   async function onSubmit(data: EditUserDialogData) {
@@ -59,6 +54,7 @@ export default function EditUser() {
         `${process.env.REACT_APP_API_URL}/api/auth/edit`,
         {
           email: data.email ? data.email : undefined,
+          name: data.name ? data.name : undefined,
           profileImage: data.profileImage ? data.profileImage : undefined,
           password: data.password ? data.password : undefined
         },
@@ -109,7 +105,7 @@ export default function EditUser() {
 
   return (
     <DialogProvider
-      title={translate("edit_game")}
+      title={translate("edit_your_profile")}
       leftButton={{
         text: translate("cancel"),
         color: "secondary",
@@ -132,17 +128,25 @@ export default function EditUser() {
           type="text"
           name="email"
           control={control}
-          label={translate("game_name")}
-          placeholder={gameNameLabel[randomNumber]}
+          label={translate("email")}
+          placeholder="abc@gmail.com"
           disabled={loading}
           required
+        />
+        <TextInput<EditUserDialogData>
+          type="text"
+          name="name"
+          control={control}
+          label={translate("username")}
+          placeholder={translate("your_username")}
+          disabled={loading}
         />
         <Stack direction={"row"} alignItems={"center"} gap={1}>
           <TextInput<EditUserDialogData>
             type="text"
             name="profileImage"
             control={control}
-            label={translate("game_photo_url")}
+            label={translate("photo")}
             placeholder={
               "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
             }
@@ -158,8 +162,8 @@ export default function EditUser() {
           type="text"
           name="password"
           control={control}
-          label={translate("game_name")}
-          placeholder={gameNameLabel[randomNumber]}
+          label={translate("password")}
+          placeholder="********"
           disabled={loading}
           required
         />

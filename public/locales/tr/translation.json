@@ -71,5 +71,11 @@
   "delete_screenshot": "Ekran Görüntüsünü Sil",
   "add": "Ekle",
   "screenshot_name": "Ekran Görüntüsünü İsmi",
-  "delete_screenshot_text": "Bu ekran görüntüsünü silmek istediğinizden emin misiniz? Bu eylem geri alınamaz."
+  "delete_screenshot_text": "Bu ekran görüntüsünü silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.",
+  "edit_your_profile": "Profilinizi Düzenleyin",
+  "edit_profile": "Profili Düzenle",
+  "photo": "Fotoğraf",
+  "username": "Kullanıcı Adı",
+  "your_username": "Kullanıcı Adınız",
+  "email_invalid": "Geçersiz e-posta adresi"
 }

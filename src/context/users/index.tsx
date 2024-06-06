@@ -37,8 +37,6 @@ export type UsersContextProps = {
   setSelectedUser?: Dispatch<SetStateAction<UsersContextProps["selectedUser"]>>
   columns: ReadonlyArray<UserDataTableColumnData>
   rows: ReadonlyArray<UserDataTableRowData>
-  anchorEl?: HTMLButtonElement | null
-  setAnchorEl?: Dispatch<SetStateAction<HTMLButtonElement | null>>
   isEditUserDialogOpen?: boolean
   setIsEditUserDialogOpen?: () => void
   control: Control<EditUserDialogData>
@@ -64,7 +62,6 @@ const UsersPageContext = createContext(usersPageDefaultValues)
 export function UsersPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const { translate } = useAppContext()
   const [users, setUsers] = useState<UsersContextProps["users"]>([])
   const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useToggle()
@@ -84,7 +81,13 @@ export function UsersPageContextProvider(props: {
 
   const schema = yup
     .object({
-      email: yup.string(),
+      email: yup
+        .string()
+        .matches(
+          /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
+          translate("email_invalid")
+        ),
+      name: yup.string(),
       password: yup.string().min(6, "Password must be at least 8 characters"),
       profileImage: yup.string()
     })
@@ -114,26 +117,28 @@ export function UsersPageContextProvider(props: {
   const columns: ReadonlyArray<UserDataTableColumnData> = useMemo(
     () => [
       { id: "profileImage", label: "", minWidth: 50 },
-      { id: "name", label: translate("member"), minWidth: 100 },
+      { id: "name", label: translate("member") },
       {
         id: "gameSize",
         label: translate("games"),
-        minWidth: 170,
         align: "right"
       },
       {
         id: "completedGameSize",
         label: translate("completed_games"),
-        minWidth: 170,
         align: "right"
       },
       {
         id: "screenshotSize",
         label: translate("screenshots"),
-        minWidth: 170,
         align: "right"
       },
-      { id: "actions", label: "", minWidth: 50, align: "right" }
+      {
+        id: "actions",
+        label: "",
+        align: "right",
+        minWidth: 50
+      }
     ],
     [translate]
   )
@@ -149,8 +154,6 @@ export function UsersPageContextProvider(props: {
         setSelectedUser,
         columns,
         rows,
-        anchorEl,
-        setAnchorEl,
         isEditUserDialogOpen,
         setIsEditUserDialogOpen,
         control,

@@ -8,6 +8,7 @@ import { ChangeEvent, useCallback } from "react"
 
 import { GameDataTableBody } from "@components/data_table/game_data_table/sub_components/table_body"
 import { GameDataTableTitle } from "@components/data_table/game_data_table/sub_components/table_titles"
+import Loading from "@components/loading"
 import SearchBar from "@components/search_bar"
 import {
   TABLE_HEADER_BACKGROUND_COLOR,
@@ -50,7 +51,7 @@ export default function GameDataTable() {
     setAnchorEl?.(null)
     setIsDeleteGameDialogOpen?.()
   }, [setAnchorEl, setIsDeleteGameDialogOpen])
-
+  if (rows.length === 0) return <Loading />
   return (
     <Paper
       sx={{
@@ -181,7 +182,7 @@ function TableHeader() {
         </Typography>
         <Typography color={TABLE_HEADER_COLOR} variant="body2">
           {translate("all_played_games_by_user", {
-            user: "Vector"
+            user: "xcz"
           })}
         </Typography>
       </Stack>
@@ -201,7 +202,7 @@ function TableHeader() {
             sx={{ width: "40px", height: "40px", color: "white" }}
           />
         </IconButton>
-        <SearchBar translate={translate} />
+        <SearchBar />
       </Stack>
     </Stack>
   )

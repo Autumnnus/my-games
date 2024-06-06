@@ -1,26 +1,18 @@
-import { Box, Popover, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import Paper from "@mui/material/Paper"
 import Table from "@mui/material/Table"
 import TableContainer from "@mui/material/TableContainer"
 
+import Button from "@components/button"
 import { UserDataTableBody } from "@components/data_table/user_data_table/sub_components/table_body"
 import { UserDataTableTitle } from "@components/data_table/user_data_table/sub_components/table_titles"
+import Loading from "@components/loading"
 import { TABLE_ROW_BACKGROUND_COLOR } from "@constants/colors"
 import { useUsersPageContext } from "context/users"
 
 export default function UserDataTable() {
-  const { anchorEl, translate, setAnchorEl, setIsEditUserDialogOpen } =
-    useUsersPageContext()
-  function handleClose() {
-    setAnchorEl?.(null)
-  }
-  function handleEditUser() {
-    setIsEditUserDialogOpen?.()
-    setAnchorEl?.(null)
-  }
-  function handleDeleteUser() {
-    setAnchorEl?.(null)
-  }
+  const { rows } = useUsersPageContext()
+  if (rows.length === 0) return <Loading />
   return (
     <Paper
       sx={{
@@ -35,65 +27,19 @@ export default function UserDataTable() {
           <UserDataTableBody />
         </Table>
       </TableContainer>
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "left"
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
-        sx={{
-          "& > *": {
-            borderRadius: 2.3,
-            boxShadow: "0px 3px 6px #00000029"
-          }
-        }}
-      >
-        <Box
-          sx={{
-            padding: 1,
-            pr: 9,
-            cursor: "pointer",
-            color: "white",
-            "&:hover": {
-              background: "#F1F1F1",
-              color: "black"
-            }
-          }}
-          onClick={handleEditUser}
-        >
-          {translate("edit")}
-        </Box>
-        <Box
-          sx={{
-            padding: 1,
-            pr: 9,
-            cursor: "pointer",
-            color: "red",
-            "&:hover": {
-              background: "#F1F1F1"
-            }
-          }}
-          onClick={handleDeleteUser}
-        >
-          {translate("delete")}
-        </Box>
-      </Popover>
     </Paper>
   )
 }
 
 function TableHeader() {
-  const { translate } = useUsersPageContext()
-
+  const { translate, setIsEditUserDialogOpen } = useUsersPageContext()
+  function handleEditUser() {
+    setIsEditUserDialogOpen?.()
+  }
   return (
     <Stack
       spacing={2}
+      direction={"row"}
       justifyContent="space-between"
       sx={{
         backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
@@ -118,6 +64,7 @@ function TableHeader() {
           {translate("all_members")}
         </Typography>
       </Stack>
+      <Button onClick={handleEditUser}>{translate("edit_profile")}</Button>
     </Stack>
   )
 }

@@ -8,6 +8,7 @@ import DeleteGame from "@components/dialogs/delete_game"
 import DeleteScreenshot from "@components/dialogs/delete_screenshots"
 import EditGame from "@components/dialogs/edit_game"
 import EditScreenShot from "@components/dialogs/edit_screenshots"
+import Loading from "@components/loading"
 import PreviewScreenShot from "@components/preview_screenshot"
 import GameDetailRow from "@pages/main/game_detail/sub_components/game_detail_row"
 import Screenshots from "@pages/main/game_detail/sub_components/screenshots"
@@ -22,7 +23,7 @@ export default function GameDetailPage() {
     setIsEditGameDialogOpen,
     setIsDeleteGameDialogOpen
   } = useGameDetailPageContext()
-  if (!game) return null
+  if (!game) return <Loading />
   return (
     <Stack gap={1.5} px={10} py={5}>
       <GameDetailTitle game={game} />

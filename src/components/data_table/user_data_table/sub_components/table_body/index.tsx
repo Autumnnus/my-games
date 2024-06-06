@@ -1,31 +1,15 @@
-import MoreVertIcon from "@mui/icons-material/MoreVert"
-import {
-  Avatar,
-  IconButton,
-  TableBody,
-  TableRow,
-  Typography
-} from "@mui/material"
+import { Avatar, TableBody, TableRow, Typography } from "@mui/material"
 import TableCell from "@mui/material/TableCell"
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 
 import {
   TABLE_ROW_BACKGROUND_COLOR,
   TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
-import { useAppContext } from "context/app_context"
 import { useUsersPageContext } from "context/users"
 
 export function UserDataTableBody() {
-  const { columns, rows, setAnchorEl } = useUsersPageContext()
-  const { token } = useAppContext()
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl?.(event.currentTarget)
-    },
-    [setAnchorEl]
-  )
+  const { columns, rows } = useUsersPageContext()
 
   const MemorizedRows = useMemo(() => {
     return rows?.map((row, index) => {
@@ -58,18 +42,10 @@ export function UserDataTableBody() {
                     alt={String(value)}
                     sx={{ width: "60px", height: "60px" }}
                   />
-                ) : column.id === "actions" && token?.data.role === "admin" ? (
-                  <>
-                    <IconButton
-                      onClick={(event) => {
-                        handleClick(event)
-                      }}
-                    >
-                      <MoreVertIcon color="secondary" />
-                    </IconButton>
-                  </>
                 ) : (
-                  <Typography>{value ?? 0}</Typography>
+                  <Typography>
+                    {column.id === "actions" ? null : value || 0}
+                  </Typography>
                 )}
               </TableCell>
             )
@@ -77,6 +53,6 @@ export function UserDataTableBody() {
         </TableRow>
       )
     })
-  }, [rows, columns, token, handleClick])
+  }, [rows, columns])
   return <TableBody>{MemorizedRows}</TableBody>
 }

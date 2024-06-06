@@ -1,9 +1,10 @@
 import SearchIcon from "@mui/icons-material/Search"
 import { IconButton, InputAdornment, TextField } from "@mui/material"
 
-import { Translate } from "types/translate"
+import useTranslate from "@hooks/use_translate"
 
-export default function SearchBar({ translate }: { translate: Translate }) {
+export default function SearchBar() {
+  const { translate } = useTranslate()
   return (
     <TextField
       label={translate("search")}
@@ -18,7 +19,7 @@ export default function SearchBar({ translate }: { translate: Translate }) {
               onClick={() => {}}
               edge="end"
             >
-              <SearchIcon />
+              <SearchIcon sx={{ color: "black" }} />
             </IconButton>
           </InputAdornment>
         )
