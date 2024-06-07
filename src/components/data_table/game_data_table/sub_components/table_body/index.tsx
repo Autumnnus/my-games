@@ -104,7 +104,9 @@ export function GameDataTableBody() {
                     }}
                   >
                     {value}
-                    {value !== null ? "/10" : translate("not_rated")}
+                    {value !== null && value !== undefined
+                      ? "/10"
+                      : translate("not_rated")}
                   </Typography>
                 )
               } else if (column.id === "lastPlay") {

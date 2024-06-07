@@ -28,7 +28,7 @@
   "input_is_required": "{{name}} is required",
   "otherPlatforms": "Other Platforms",
   "completed": "Completed",
-  "abondoned": "Abondoned",
+  "abandoned": "Abandoned",
   "toBeCompleted": "To be Completed",
   "activePlaying": "Active Playing",
   "no_options": "No Options",

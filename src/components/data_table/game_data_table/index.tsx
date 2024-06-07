@@ -34,6 +34,7 @@ export default function GameDataTable() {
     rowsPerPage,
     setRowsPerPage
   } = useGamesPageContext()
+
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage?.(newPage)
   }
@@ -168,7 +169,6 @@ function TableHeader() {
     const queryString = queryParams.toString()
     const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
     navigate(`?${queryString}`)
-    console.log(url, "url")
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {

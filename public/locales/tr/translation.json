@@ -28,7 +28,7 @@
   "input_is_required": "{{name}} gereklidir",
   "otherPlatforms": "Diğer Platformlar",
   "completed": "Tamamlandı",
-  "abondoned": "Bırakıldı",
+  "abandoned": "Bırakıldı",
   "toBeCompleted": "Bitirilecek",
   "activePlaying": "Aktif Oynanılıyor",
   "no_options": "Seçenek Yok",

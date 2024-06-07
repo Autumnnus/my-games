@@ -14,7 +14,7 @@ export enum Platform {
 
 export enum Status {
   Completed = "completed",
-  Abandoned = "abondoned",
+  Abandoned = "abandoned",
   ToBeCompleted = "toBeCompleted",
   ActivePlaying = "activePlaying"
 }

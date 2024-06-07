@@ -99,7 +99,7 @@ export function GamesPageContextProvider(props: {
   const [games, setGames] = useState<GamesData[]>([])
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(
-    Number(localStorage.getItem("rowsPerPage"))
+    Number(localStorage.getItem("rowsPerPage")) || 25
   )
   const [selectedGame, setSelectedGame] = useState<DialogGameData | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -112,6 +112,7 @@ export function GamesPageContextProvider(props: {
     location.search.split("sortBy=")[1]?.split("&")[0]
   )
   const search = location.search.split("search=")[1]?.split("&")[0]
+  console.log(games, "games")
   useEffect(() => {
     const queryParams = new URLSearchParams()
     if (sortBy) queryParams.append("sortBy", sortBy)
@@ -121,7 +122,6 @@ export function GamesPageContextProvider(props: {
     const queryString = queryParams.toString()
     const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
     navigate(`?${queryString}`)
-    console.log(url)
 
     axios
       .get(url)
@@ -326,7 +326,7 @@ export function GamesPageContextProvider(props: {
   ]
   const statusSelectOptions = [
     { label: translate("completed"), value: Status.Completed },
-    { label: translate("abondoned"), value: Status.Abandoned },
+    { label: translate("abandoned"), value: Status.Abandoned },
     {
       label: translate("toBeCompleted"),
       value: Status.ToBeCompleted
