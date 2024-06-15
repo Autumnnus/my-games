@@ -26,6 +26,7 @@ export default function GameDetailPage() {
   if (!game) return <Loading />
   return (
     <Stack gap={1.5} px={10} py={5}>
+      <img src="2fa4711a8dbd05b62a850c99758973c969ce215f39708186a22f122d30865ea0.png"></img>
       <GameDetailTitle game={game} />
       <Screenshots />
       <EditGame

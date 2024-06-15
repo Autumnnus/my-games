@@ -66,7 +66,40 @@ export default function AddScreenShot() {
         setLoading(false)
       })
   }
+  const [selectedImages, setSelectedImages] = useState<File[]>([])
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    setSelectedImages(files)
+  }
+  const handleSubmit = () => {
+    if (selectedImages.length > 0) {
+      const formData = new FormData()
+      selectedImages.forEach((file) => {
+        formData.append("uploadImages", file)
+      })
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/screenshot/addScreenshot/66635b86b99ae1e4ca6ebcd6`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token?.access_token}`
+            }
+          }
+        )
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((error) => {
+          showErrorToast(String(error))
+          console.error(error)
+        })
+    } else {
+      console.log("No file selected")
+    }
+  }
   return (
     <DialogProvider
       title={translate("add_screenshot")}
@@ -88,6 +121,13 @@ export default function AddScreenShot() {
       size="large"
     >
       <>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        <button onClick={handleSubmit}>submit</button>
         <TextInput<Screenshot>
           type="text"
           name="name"
