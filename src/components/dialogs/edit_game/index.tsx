@@ -70,7 +70,7 @@ export default function EditGame({
     setLoading(true)
     await axios
       .put(
-        `${process.env.REACT_APP_API_URL}/api/games/editGame/${selectedGame?._id}`,
+        `${process.env.REACT_APP_API_URL}/api/games/edit/${selectedGame?._id}`,
         data,
         {
           headers: {

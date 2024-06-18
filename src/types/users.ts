@@ -6,7 +6,7 @@ export type UsersData = {
   isVerified: boolean
   name: string
   password: string
-  role: "admin" | "user"
+  role: "admin" | "user" | "vip"
   screenshotSize: number
   updatedAt: Date
   verificationExpire: Date

@@ -28,7 +28,6 @@ export default function EditUser() {
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "profileImage" })
   const [loading, setLoading] = useState(false)
-  console.log(selectedUser, "selectedUser")
   useEffect(() => {
     reset?.(
       selectedUser

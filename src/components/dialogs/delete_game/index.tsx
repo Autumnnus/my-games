@@ -43,7 +43,7 @@ export default function DeleteGame({
     setLoading(true)
     await axios
       .delete(
-        `${process.env.REACT_APP_API_URL}/api/games/deleteGame/${selectedGame?._id}`,
+        `${process.env.REACT_APP_API_URL}/api/games/delete/${selectedGame?._id}`,
         {
           headers: {
             Authorization: `Bearer: ${token?.access_token}`

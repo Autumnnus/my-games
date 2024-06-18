@@ -54,7 +54,7 @@ export default function AddGame({
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/api/games/addNewGame`, data, {
+      .post(`${process.env.REACT_APP_API_URL}/api/games/add`, data, {
         headers: {
           Authorization: `Bearer: ${token?.access_token}`
         }

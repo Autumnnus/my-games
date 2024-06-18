@@ -3,13 +3,14 @@ import React, { createContext, useContext, useState } from "react"
 
 import useTranslate from "@hooks/use_translate"
 import i18next from "@utils/localization"
+import { UsersData } from "types/users"
 
 type TokenData = {
   email: string
   id: string
   name: string
   isVerified: boolean
-  role: "user" | "admin"
+  role: UsersData["role"]
 }
 
 export type AppContextProps = {

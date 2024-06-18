@@ -1,3 +1,5 @@
+import { Screenshot } from "types/screenshot"
+
 export enum Platform {
   Steam = "steam",
   EpicGames = "epicGames",
@@ -19,11 +21,6 @@ export enum Status {
   ActivePlaying = "activePlaying"
 }
 
-export type Screenshot = {
-  _id: string
-  name: string
-  url: string
-}
 export type GamesData = {
   rating: number
   playTime: number

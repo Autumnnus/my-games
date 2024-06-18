@@ -13,7 +13,9 @@ import {
   Control,
   Resolver,
   UseFormHandleSubmit,
-  UseFormReset
+  UseFormReset,
+  UseFormSetValue,
+  UseFormTrigger
 } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
@@ -22,13 +24,8 @@ import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
-import {
-  DialogGameData,
-  GamesData,
-  Platform,
-  Screenshot,
-  Status
-} from "types/games"
+import { DialogGameData, GamesData, Platform, Status } from "types/games"
+import { Screenshot, ScreenshotType } from "types/screenshot"
 
 import {
   AppContextProps,
@@ -70,6 +67,8 @@ export type GameDetailContextProps = {
   setSelectedSS?: Dispatch<SetStateAction<GameDetailContextProps["selectedSS"]>>
   isPreviewScreenshotOpen?: boolean
   setIsPreviewScreenshotOpen?: () => void
+  setScreenshotValue?: UseFormSetValue<Screenshot>
+  screenshotTrigger?: UseFormTrigger<Screenshot>
 }
 
 export type GameDetailPageContextProps = AppContextProps &
@@ -181,21 +180,58 @@ export function GameDetailPageContextProvider(props: {
   const screenshotSchema = yup
     .object({
       name: yup.string(),
-      url: yup
+      type: yup
         .string()
+        .oneOf(Object.values(ScreenshotType))
         .required(
-          translate("input_is_required", { name: translate("screenshot_url") })
-        )
+          translate("input_is_required", { name: translate("screenshot_type") })
+        ),
+      url: yup.string().when("type", {
+        is: (val: ScreenshotType) => val === ScreenshotType.Text,
+        then: (schema) =>
+          schema.required(
+            translate("input_is_required", {
+              name: translate("screenshot_url")
+            })
+          )
+      }),
+      images: yup
+        .array()
+        .of(yup.mixed())
+        .when("type", {
+          is: (val: ScreenshotType) => val === ScreenshotType.Image,
+          then: (schema) =>
+            schema
+              .min(
+                1,
+                translate("min_length_error", {
+                  name: translate("screenshot_images"),
+                  value: 1
+                })
+              )
+              .max(
+                50,
+                translate("max_length_error", {
+                  name: translate("screenshot_images"),
+                  value: 50
+                })
+              )
+        })
     })
     .required()
   const {
     control: screenshotControl,
     handleSubmit: screenshotHandleSubmit,
     reset: screenshotReset,
+    setValue: setScreenshotValue,
+    trigger: screenshotTrigger,
     formState: { isValid: screenshotIsValid, isDirty: screenshotIsDirty }
   } = useControlledForm<Screenshot>({
     resolver: yupResolver(screenshotSchema) as unknown as Resolver<Screenshot>,
-    mode: "all"
+    mode: "all",
+    defaultValues: {
+      type: ScreenshotType.Text
+    }
   })
 
   useEffect(() => {
@@ -253,7 +289,9 @@ export function GameDetailPageContextProvider(props: {
         setSelectedSS,
         isPreviewScreenshotOpen,
         setIsPreviewScreenshotOpen,
-        token
+        token,
+        setScreenshotValue,
+        screenshotTrigger
       }}
     >
       {props.children}

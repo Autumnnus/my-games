@@ -112,7 +112,6 @@ export function GamesPageContextProvider(props: {
     location.search.split("sortBy=")[1]?.split("&")[0]
   )
   const search = location.search.split("search=")[1]?.split("&")[0]
-  console.log(games, "games")
   useEffect(() => {
     const queryParams = new URLSearchParams()
     if (sortBy) queryParams.append("sortBy", sortBy)

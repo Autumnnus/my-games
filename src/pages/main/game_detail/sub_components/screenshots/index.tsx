@@ -12,7 +12,7 @@ import {
 import { useState } from "react"
 
 import { useGameDetailPageContext } from "context/games_detail"
-import { Screenshot } from "types/games"
+import { Screenshot } from "types/screenshot"
 
 const screenshotsPerPage = 15
 

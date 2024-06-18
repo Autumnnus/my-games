@@ -77,5 +77,7 @@
   "photo": "Fotoğraf",
   "username": "Kullanıcı Adı",
   "your_username": "Kullanıcı Adınız",
-  "email_invalid": "Geçersiz e-posta adresi"
+  "email_invalid": "Geçersiz e-posta adresi",
+  "screenshot_type": "Ekran Görüntüsü Türü",
+  "select_screenshots": "Ekran Görüntüleri Seç"
 }

@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from "axios"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useWatch } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
 import DialogProvider from "@components/dialog_provider"
@@ -8,7 +9,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGameDetailPageContext } from "context/games_detail"
-import { Screenshot } from "types/games"
+import { Screenshot, ScreenshotType } from "types/screenshot"
 
 export default function EditScreenShot() {
   const {
@@ -20,10 +21,13 @@ export default function EditScreenShot() {
     screenshotReset,
     isEditScreenshotDialogOpen,
     setIsEditScreenshotDialogOpen,
-    selectedSS
+    selectedSS,
+    setScreenshotValue,
+    screenshotTrigger
   } = useGameDetailPageContext()
   const { token } = useAppContext()
   const { id } = useParams()
+  const type = useWatch({ control: screenshotControl, name: "type" })
 
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -70,7 +74,9 @@ export default function EditScreenShot() {
             updateScreenshot[updatedScreenshotIndex] = {
               _id: responseData._id,
               name: responseData.name,
-              url: responseData.url
+              url: responseData.url,
+              type: responseData.type,
+              images: responseData.images
             }
           }
           return updateScreenshot
@@ -87,6 +93,45 @@ export default function EditScreenShot() {
         setLoading(false)
       })
   }
+
+  const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || [])
+      setSelectedImages(files)
+      setScreenshotValue?.("images", files)
+      screenshotTrigger?.("images")
+    },
+    [screenshotTrigger, setScreenshotValue]
+  )
+
+  console.log(selectedImages)
+  const memorizedTypeInput = useMemo(() => {
+    if (type === ScreenshotType.Image) {
+      return (
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+      )
+    } else {
+      return (
+        <TextInput<Screenshot>
+          type="text"
+          name="url"
+          control={screenshotControl}
+          label={translate("screenshot_url")}
+          placeholder={
+            "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
+          }
+          required
+          disabled={loading}
+        />
+      )
+    }
+  }, [type, handleFileChange, screenshotControl, translate, loading])
 
   return (
     <DialogProvider
@@ -117,17 +162,7 @@ export default function EditScreenShot() {
           placeholder={translate("screenshot_name")}
           disabled={loading}
         />
-        <TextInput<Screenshot>
-          type="text"
-          name="url"
-          control={screenshotControl}
-          label={translate("screenshot_url")}
-          placeholder={
-            "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
-          }
-          required
-          disabled={loading}
-        />
+        {memorizedTypeInput}
       </>
     </DialogProvider>
   )
