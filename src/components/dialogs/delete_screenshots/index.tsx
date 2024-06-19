@@ -10,6 +10,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGameDetailPageContext } from "context/games_detail"
+import { AxiosErrorMessage } from "types/axios"
 
 export default function DeleteScreenshot() {
   const {
@@ -55,10 +56,10 @@ export default function DeleteScreenshot() {
         )
         handleClose()
       })
-      .catch((error) => {
+      .catch((error: AxiosErrorMessage) => {
         console.error(error)
         showErrorToast(
-          "Screenshot couldn't be deleted" + (error as Error).message
+          "Screenshot couldn't be deleted" + error.response?.data.message
         )
       })
       .finally(() => {

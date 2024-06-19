@@ -19,6 +19,7 @@ import {
 } from "@constants/colors"
 import { showErrorToast } from "@utils/functions/toast"
 import { useGamesPageContext } from "context/games"
+import { AxiosErrorMessage } from "types/axios"
 import { GamesData } from "types/games"
 
 export default function GameDataTable() {
@@ -32,7 +33,9 @@ export default function GameDataTable() {
     page,
     setPage,
     rowsPerPage,
-    setRowsPerPage
+    setRowsPerPage,
+    loadingGames,
+    token
   } = useGamesPageContext()
 
   const handleChangePage = (_: unknown, newPage: number) => {
@@ -57,7 +60,7 @@ export default function GameDataTable() {
     setAnchorEl?.(null)
     setIsDeleteGameDialogOpen?.()
   }, [setAnchorEl, setIsDeleteGameDialogOpen])
-  if (rows.length === 0) return <Loading />
+  if (loadingGames) return <Loading />
   return (
     <Paper
       sx={{
@@ -66,12 +69,27 @@ export default function GameDataTable() {
       }}
     >
       <TableHeader />
-      <TableContainer>
+      <TableContainer sx={{ display: token ? "block" : "none" }}>
         <Table stickyHeader aria-label="sticky table">
           <GameDataTableTitle />
           <GameDataTableBody />
         </Table>
       </TableContainer>
+      <Stack
+        sx={{
+          display: token ? "none" : "flex",
+          height: "60vh",
+          p: 2,
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          color: "#fff",
+          backgroundColor: TABLE_ROW_BACKGROUND_COLOR,
+          borderTop: "1px solid #303f54"
+        }}
+      >
+        <Typography>{translate("games_not_found")}</Typography>
+      </Stack>
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -130,6 +148,7 @@ export default function GameDataTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
+          display: token ? "block" : "none",
           ".MuiTablePagination-toolbar": {
             color: "#fff",
             bgcolor: TABLE_HEADER_BACKGROUND_COLOR
@@ -153,7 +172,7 @@ export default function GameDataTable() {
 }
 
 function TableHeader() {
-  const { translate, setIsAddGameDialogOpen, reset, setGames } =
+  const { translate, setIsAddGameDialogOpen, reset, setGames, token } =
     useGamesPageContext()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -174,9 +193,11 @@ function TableHeader() {
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
         setGames?.(res.data.data)
       })
-      .catch((err) => {
-        showErrorToast("Database Fetching Error")
-        console.error(err)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Database Fetching Error: " + error.response?.data.message
+        )
       })
   }
   return (
@@ -222,7 +243,10 @@ function TableHeader() {
           }
         }}
       >
-        <IconButton onClick={handleAddGame}>
+        <IconButton
+          sx={{ display: token ? "block" : "none" }}
+          onClick={handleAddGame}
+        >
           <AddCircleOutlineIcon
             sx={{ width: "40px", height: "40px", color: "white" }}
           />

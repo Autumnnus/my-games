@@ -10,6 +10,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
+import { AxiosErrorMessage } from "types/axios"
 
 type DeleteGameProps = {
   isDeleteGameDialogOpen?: boolean
@@ -59,9 +60,11 @@ export default function DeleteGame({
         path === "game" && navigate(`/games/${token?.data.id}`)
         handleClose()
       })
-      .catch((error) => {
-        console.error(error)
-        showErrorToast("Game couldn't be deleted" + (error as Error).message)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error.response?.data.message)
+        showErrorToast(
+          "Game couldn't be deleted: " + error.response?.data.message
+        )
       })
       .finally(() => {
         setLoading(false)

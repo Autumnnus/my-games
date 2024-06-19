@@ -11,6 +11,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGameDetailPageContext } from "context/games_detail"
+import { AxiosErrorMessage } from "types/axios"
 import { Screenshot, ScreenshotType } from "types/screenshot"
 
 export default function EditScreenShot() {
@@ -75,7 +76,6 @@ export default function EditScreenShot() {
           screenshotReset?.()
           showSuccessToast("Screenshot is added")
           const responseData = res.data.data
-          console.log("responseData", responseData.url)
           setScreenShots?.((prev) => {
             const updatedScreenshots = prev.map((game) => {
               if (game._id === responseData._id) {
@@ -98,10 +98,10 @@ export default function EditScreenShot() {
           })
           handleClose()
         })
-        .catch((error) => {
+        .catch((error: AxiosErrorMessage) => {
           console.error(error)
           showErrorToast(
-            "Screenshot couldn't be added" + (error as Error).message
+            "Screenshot couldn't be added" + error.response?.data.message
           )
         })
         .finally(() => {
@@ -141,10 +141,10 @@ export default function EditScreenShot() {
           })
           handleClose()
         })
-        .catch((error) => {
+        .catch((error: AxiosErrorMessage) => {
           console.error(error)
           showErrorToast(
-            "Screenshot couldn't be edited" + (error as Error).message
+            "Screenshot couldn't be edited" + error.response?.data.message
           )
         })
         .finally(() => {

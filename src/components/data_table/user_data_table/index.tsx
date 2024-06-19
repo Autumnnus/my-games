@@ -32,7 +32,7 @@ export default function UserDataTable() {
 }
 
 function TableHeader() {
-  const { translate, setIsEditUserDialogOpen } = useUsersPageContext()
+  const { translate, setIsEditUserDialogOpen, token } = useUsersPageContext()
   function handleEditUser() {
     setIsEditUserDialogOpen?.()
   }
@@ -64,7 +64,12 @@ function TableHeader() {
           {translate("all_members")}
         </Typography>
       </Stack>
-      <Button onClick={handleEditUser}>{translate("edit_profile")}</Button>
+      <Button
+        sx={{ display: token ? "block" : "none" }}
+        onClick={handleEditUser}
+      >
+        {translate("edit_profile")}
+      </Button>
     </Stack>
   )
 }

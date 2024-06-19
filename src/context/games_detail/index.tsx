@@ -24,6 +24,7 @@ import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
+import { AxiosErrorMessage } from "types/axios"
 import { DialogGameData, GamesData, Platform, Status } from "types/games"
 import { Screenshot, ScreenshotType } from "types/screenshot"
 
@@ -183,6 +184,8 @@ export function GameDetailPageContextProvider(props: {
       type: yup
         .string()
         .oneOf(Object.values(ScreenshotType))
+
+        .default(ScreenshotType.Text)
         .required(
           translate("input_is_required", { name: translate("screenshot_type") })
         ),
@@ -233,7 +236,11 @@ export function GameDetailPageContextProvider(props: {
       type: ScreenshotType.Text
     }
   })
-
+  useEffect(() => {
+    screenshotReset({
+      type: ScreenshotType.Text
+    })
+  }, [])
   useEffect(() => {
     const gameUrl = `${process.env.REACT_APP_API_URL}/api/games/game/${id}`
     const ssUrl = `${process.env.REACT_APP_API_URL}/api/screenshot/${id}`
@@ -242,23 +249,22 @@ export function GameDetailPageContextProvider(props: {
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         setGame(res.data.data)
       })
-      .catch((err) => {
-        showErrorToast("Error Fetching Game Detail Data")
-        console.error(err)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        throw new Error(err)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Error Fetching Game Detail Data: " + error.response?.data.message
+        )
       })
     axios
       .get(ssUrl)
       .then((res: AxiosResponse<{ data: Screenshot[] }>) => {
         setScreenShots(res.data.data)
-        console.log("res.data.data", res.data.data)
       })
-      .catch((err) => {
-        showErrorToast("Error Fetching Screenshot Data")
-        console.error(err)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        throw new Error(err)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Error Fetching Screenshot Data: " + error.response?.data.message
+        )
       })
   }, [id, navigate])
 

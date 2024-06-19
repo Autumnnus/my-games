@@ -2,10 +2,12 @@ import { Avatar, TableBody, TableRow, Typography } from "@mui/material"
 import TableCell from "@mui/material/TableCell"
 import { useMemo } from "react"
 
+import Link from "@components/link"
 import {
   TABLE_ROW_BACKGROUND_COLOR,
   TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
+import { TABLE_TEXT_SIZE } from "@constants/sizes"
 import { useUsersPageContext } from "context/users"
 
 export function UserDataTableBody() {
@@ -42,6 +44,20 @@ export function UserDataTableBody() {
                     alt={String(value)}
                     sx={{ width: "60px", height: "60px" }}
                   />
+                ) : column.id === "name" ? (
+                  <Link
+                    sx={{
+                      ":hover": { color: "#075985" },
+                      cursor: "pointer",
+                      fontSize: TABLE_TEXT_SIZE,
+                      display: "inline-block"
+                    }}
+                    href={`/games/${row._id}`}
+                  >
+                    {typeof value === "string" && value.length > 40
+                      ? value.substring(0, 40) + "..."
+                      : value}
+                  </Link>
                 ) : (
                   <Typography>
                     {column.id === "actions" ? null : value || 0}

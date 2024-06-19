@@ -82,5 +82,6 @@
   "screenshot_type": "Screenshot Type",
   "select_screenshots": "Select Screenshots",
   "switch_upload_type": "Switch Upload Type",
-  "screenshot_images": "Screenshot Images"
+  "screenshot_images": "Screenshot Images",
+  "games_not_found": "Games not found"
 }

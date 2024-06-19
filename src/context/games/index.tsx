@@ -23,6 +23,7 @@ import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
+import { AxiosErrorMessage } from "types/axios"
 import { DataTableColumnData, DataTableRowData } from "types/data_table"
 import { DialogGameData, GamesData, Platform, Status } from "types/games"
 
@@ -69,6 +70,7 @@ export type GamesContextProps = {
     label: string
     value: Status
   }[]
+  loadingGames: boolean
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -83,7 +85,8 @@ export const gamesPageDefaultValues: GamesPageContextProps = {
   page: 0,
   rowsPerPage: 25,
   platformSelectOptions: [],
-  statusSelectOptions: []
+  statusSelectOptions: [],
+  loadingGames: true
 }
 
 const GamesPageContext = createContext(gamesPageDefaultValues)
@@ -97,6 +100,7 @@ export function GamesPageContextProvider(props: {
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
   const [games, setGames] = useState<GamesData[]>([])
+  const [loadingGames, setLoadingGames] = useState<boolean>(true)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(
     Number(localStorage.getItem("rowsPerPage")) || 25
@@ -121,16 +125,19 @@ export function GamesPageContextProvider(props: {
     const queryString = queryParams.toString()
     const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
     navigate(`?${queryString}`)
-
+    setLoadingGames(true)
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
         setGames(res.data.data)
       })
-      .catch((err) => {
-        showErrorToast("Database Fetching Error")
-        console.error(err)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Database Fetching Error: " + error.response?.data.message
+        )
       })
+      .finally(() => setLoadingGames(false))
   }, [id, sortBy, order, search, navigate, setGames])
   const schema = yup
     .object({
@@ -369,7 +376,8 @@ export function GamesPageContextProvider(props: {
         setRowsPerPage,
         platformSelectOptions,
         statusSelectOptions,
-        token
+        token,
+        loadingGames
       }}
     >
       {props.children}

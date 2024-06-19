@@ -11,6 +11,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGameDetailPageContext } from "context/games_detail"
+import { AxiosErrorMessage } from "types/axios"
 import { Screenshot, ScreenshotType } from "types/screenshot"
 
 export default function AddScreenShot() {
@@ -85,10 +86,10 @@ export default function AddScreenShot() {
           })
           handleClose()
         })
-        .catch((error) => {
+        .catch((error: AxiosErrorMessage) => {
           console.error(error)
           showErrorToast(
-            "Screenshot couldn't be added" + (error as Error).message
+            "Screenshot couldn't be added: " + error.response?.data.message
           )
         })
         .finally(() => {
@@ -117,19 +118,21 @@ export default function AddScreenShot() {
           setScreenShots?.((prev) => [...(prev ?? []), res.data.data])
           handleClose()
         })
-        .catch((error) => {
+        .catch((error: AxiosErrorMessage) => {
           console.error(error)
           showErrorToast(
-            "Screenshot couldn't be added" + (error as Error).message
+            "Screenshot couldn't be added" + error.response?.data.message
           )
         })
         .finally(() => {
           setLoading(false)
         })
     } else {
+      setLoading(false)
       showErrorToast("Please select image or url")
     }
   }
+
   const [selectedImages, setSelectedImages] = useState<File[]>([])
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

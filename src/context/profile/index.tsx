@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
+import { AxiosErrorMessage } from "types/axios"
 import { UsersData } from "types/users"
 
 import {
@@ -39,9 +40,11 @@ export function ProfilePageContextProvider(props: {
       .then((res: AxiosResponse<{ data: UsersData }>) => {
         setProfile(res.data.data)
       })
-      .catch((err) => {
-        showErrorToast("Database Fethcing Error")
-        console.error(err)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Database Fetching Error: " + error.response?.data.message
+        )
       })
   }, [id])
 

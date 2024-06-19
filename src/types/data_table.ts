@@ -33,6 +33,7 @@ export type UserDataTableRowData = {
   name: string
   gameSize: number
   completedGameSize: number
+  _id: string
   screenshotSize: number
 }
 

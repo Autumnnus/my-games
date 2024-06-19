@@ -10,6 +10,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useUsersPageContext } from "context/users"
+import { AxiosErrorMessage } from "types/axios"
 import { EditUserDialogData, UsersData } from "types/users"
 
 export default function EditUser() {
@@ -93,9 +94,9 @@ export default function EditUser() {
         handleClose()
         log("Profile edited: ", data)
       })
-      .catch((error) => {
+      .catch((error: AxiosErrorMessage) => {
         console.error(error)
-        showErrorToast("Game couldn't be edited" + (error as Error).message)
+        showErrorToast("Game couldn't be edited" + error.response?.data.message)
       })
       .finally(() => {
         setLoading(false)

@@ -16,6 +16,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAuthLoginPageContext } from "context/auth/login"
 import { AuthLoginData } from "types/auth"
+import { AxiosErrorMessage } from "types/axios"
 
 export default function AuthLoginPage() {
   const { translate, control, handleSubmit, isValid, reset } =
@@ -29,24 +30,20 @@ export default function AuthLoginPage() {
   async function onSubmit(data: AuthLoginData) {
     setLoading(true)
     await sleep(500)
-    try {
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
-        .then((res) => {
-          reset?.({ email: data.email, password: data.password })
-          log(`${data.email} is added: `, data)
-          localStorage.setItem("my-games-user", JSON.stringify(res.data))
-          showSuccessToast("Login successful")
-          window.location.href = "/"
-        })
-        .catch((err) => {
-          console.error(err)
-          showErrorToast("Login failed" + err)
-        })
-    } catch (error) {
-      console.error(error)
-      showErrorToast("Login failed")
-    }
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
+      .then((res) => {
+        reset?.({ email: data.email, password: data.password })
+        log(`${data.email} is added: `, data)
+        localStorage.setItem("my-games-user", JSON.stringify(res.data))
+        showSuccessToast("Login successful")
+        window.location.href = "/"
+      })
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast("Login failed: " + error.response?.data.message)
+      })
+
     setLoading(false)
   }
   return (

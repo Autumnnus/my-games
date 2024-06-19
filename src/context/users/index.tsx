@@ -21,6 +21,7 @@ import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
+import { AxiosErrorMessage } from "types/axios"
 import { UserDataTableColumnData, UserDataTableRowData } from "types/data_table"
 import { EditUserDialogData, UsersData } from "types/users"
 
@@ -73,9 +74,11 @@ export function UsersPageContextProvider(props: {
       .then((res: AxiosResponse<{ data: UsersData[] }>) => {
         setUsers(res.data.data)
       })
-      .catch((err) => {
-        showErrorToast("Database Fethcing Error")
-        console.error(err)
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Database Fetching Error: " + error.response?.data.message
+        )
       })
   }, [])
 
@@ -109,7 +112,8 @@ export function UsersPageContextProvider(props: {
         user.name,
         user.gameSize,
         user.completedGameSize,
-        user.screenshotSize
+        user.screenshotSize,
+        user._id
       )
     )
   }, [users])
@@ -181,13 +185,15 @@ function createData(
   name: string,
   gameSize: number,
   completedGameSize: number,
-  screenshotSize: number
+  screenshotSize: number,
+  _id: string
 ) {
   return {
     profileImage,
     name,
     gameSize,
     completedGameSize,
-    screenshotSize
+    screenshotSize,
+    _id
   }
 }

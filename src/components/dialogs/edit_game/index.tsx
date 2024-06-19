@@ -12,6 +12,7 @@ import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
+import { AxiosErrorMessage } from "types/axios"
 import { DialogGameData, GamesData } from "types/games"
 
 type EditGameProps = {
@@ -108,9 +109,9 @@ export default function EditGame({
         handleClose()
         log(`${data.name} is edited: `, data)
       })
-      .catch((error) => {
+      .catch((error: AxiosErrorMessage) => {
         console.error(error)
-        showErrorToast("Game couldn't be edited" + (error as Error).message)
+        showErrorToast("Game couldn't be edited" + error.response?.data.message)
       })
       .finally(() => {
         setLoading(false)

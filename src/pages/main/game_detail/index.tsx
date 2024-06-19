@@ -49,7 +49,8 @@ function GameDetailTitle({ game }: { game: GamesData }) {
   const {
     setIsEditGameDialogOpen,
     setIsDeleteGameDialogOpen,
-    setIsAddScreenshotDialogOpen
+    setIsAddScreenshotDialogOpen,
+    token
   } = useGameDetailPageContext()
   return (
     <Stack direction={"row"} gap={3}>
@@ -71,7 +72,7 @@ function GameDetailTitle({ game }: { game: GamesData }) {
           gap={2}
         >
           <Typography variant="h3">{game?.name}</Typography>
-          <Stack direction={"row"} gap={1}>
+          <Stack display={token ? "flex" : "none"} direction={"row"} gap={1}>
             <Button onClick={setIsAddScreenshotDialogOpen} variant="contained">
               <PhotoSizeSelectActualIcon />
             </Button>
