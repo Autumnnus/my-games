@@ -1,5 +1,3 @@
-import { Screenshot } from "types/screenshot"
-
 export enum Platform {
   Steam = "steam",
   EpicGames = "epicGames",
@@ -32,11 +30,11 @@ export type GamesData = {
   review: string
   _id: string
   userId: string
-  screenshots: Screenshot[]
+  screenshotSize: number
   createdAt: Date
 }
 
 export type DialogGameData = Omit<
   GamesData,
-  "userId" | "screenshots" | "createdAt"
+  "userId" | "screenshotSize" | "createdAt"
 >

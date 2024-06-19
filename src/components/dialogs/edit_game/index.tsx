@@ -100,7 +100,7 @@ export default function EditGame({
               _id: responseData._id,
               createdAt: responseData.createdAt,
               userId: responseData.userId,
-              screenshots: responseData.screenshots || []
+              screenshotSize: responseData.screenshotSize
             }
           }
           return updatedGames

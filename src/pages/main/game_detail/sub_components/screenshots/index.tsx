@@ -33,14 +33,7 @@ export default function Screenshots() {
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null)
   const [clickedItemId, setClickedItemId] = useState<string | null>(null)
 
-  if (!screenShots) return null
-
   const pageCount = Math.ceil(screenShots.length / screenshotsPerPage)
-  const startIndex = (currentPage - 1) * screenshotsPerPage
-  const currentScreenshots = screenShots.slice(
-    startIndex,
-    startIndex + screenshotsPerPage
-  )
 
   function handlePageChange(_: unknown, value: number) {
     setCurrentPage(value)
@@ -59,13 +52,11 @@ export default function Screenshots() {
     setSelectedSS?.(item)
   }
 
-  if (!currentScreenshots.length) return null
-
   return (
-    <Box>
+    <>
       <Typography variant="h4">{`${translate("screenshots")} (${screenShots.length})`}</Typography>
       <ImageList cols={5} gap={8}>
-        {currentScreenshots.map((item) => (
+        {screenShots.map((item) => (
           <ImageListItem
             onPointerEnter={() => setHoveredItemId(item._id)}
             onPointerLeave={() => {
@@ -176,6 +167,6 @@ export default function Screenshots() {
         variant="outlined"
         color="standard"
       />
-    </Box>
+    </>
   )
 }

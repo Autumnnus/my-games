@@ -4,6 +4,11 @@ export type Screenshot = {
   url: string
   type: ScreenshotType
   images: File[]
+  key?: string
+  user: string
+  game: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export enum ScreenshotType {

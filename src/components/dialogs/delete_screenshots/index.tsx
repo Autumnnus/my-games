@@ -40,7 +40,7 @@ export default function DeleteScreenshot() {
     setLoading(true)
     await axios
       .delete(
-        `${process.env.REACT_APP_API_URL}/api/games/${id}/deleteSS/${selectedSS?._id}`,
+        `${process.env.REACT_APP_API_URL}/api/screenshot/delete/${id}/${selectedSS?._id}`,
         {
           headers: {
             Authorization: `Bearer: ${token?.access_token}`

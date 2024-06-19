@@ -235,15 +235,27 @@ export function GameDetailPageContextProvider(props: {
   })
 
   useEffect(() => {
-    const url = `${process.env.REACT_APP_API_URL}/api/games/game/${id}`
+    const gameUrl = `${process.env.REACT_APP_API_URL}/api/games/game/${id}`
+    const ssUrl = `${process.env.REACT_APP_API_URL}/api/screenshot/${id}`
     axios
-      .get(url)
+      .get(gameUrl)
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         setGame(res.data.data)
-        setScreenShots(res.data.data.screenshots)
       })
       .catch((err) => {
         showErrorToast("Error Fetching Game Detail Data")
+        console.error(err)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        throw new Error(err)
+      })
+    axios
+      .get(ssUrl)
+      .then((res: AxiosResponse<{ data: Screenshot[] }>) => {
+        setScreenShots(res.data.data)
+        console.log("res.data.data", res.data.data)
+      })
+      .catch((err) => {
+        showErrorToast("Error Fetching Screenshot Data")
         console.error(err)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         throw new Error(err)

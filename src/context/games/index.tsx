@@ -197,7 +197,10 @@ export function GamesPageContextProvider(props: {
     formState: { isValid, isDirty }
   } = useControlledForm<DialogGameData>({
     resolver: yupResolver(schema) as unknown as Resolver<DialogGameData>,
-    mode: "all"
+    mode: "all",
+    defaultValues: {
+      lastPlay: new Date().toISOString().split("T")[0]
+    }
   })
 
   const columns: ReadonlyArray<DataTableColumnData> = useMemo(
@@ -217,7 +220,7 @@ export function GamesPageContextProvider(props: {
         align: "right"
       },
       {
-        id: "screenshots",
+        id: "screenshotSize",
         label: translate("screenshots"),
         minWidth: 170,
         align: "right"
@@ -255,7 +258,7 @@ export function GamesPageContextProvider(props: {
         game.name,
         game.rating,
         game.platform,
-        game.screenshots.length,
+        game.screenshotSize,
         game.playTime,
         game.lastPlay,
         game.status,
@@ -387,7 +390,7 @@ function createData(
   name: string,
   rating: number,
   platform: Platform,
-  screenshots: number,
+  screenshotSize: number,
   playTime: number,
   lastPlay: string,
   status: Status,
@@ -399,7 +402,7 @@ function createData(
     name,
     rating,
     platform,
-    screenshots,
+    screenshotSize,
     playTime,
     lastPlay,
     status,

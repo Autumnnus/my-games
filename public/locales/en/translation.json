@@ -59,6 +59,7 @@
   "delete_game_text": "Are you sure you want to delete this game? This action cannot be undone.",
   "rating_min_error": "Rating must be at least {{value}}",
   "rating_max_error": "Rating must be at most {{value}}",
+  "min_length_error": "{{name}} must be at least {{value}} characters",
   "max_length_error": "{{name}} must be at most {{value}} characters",
   "not_rated": "Not Rated",
   "all_members": "All Members",
@@ -79,5 +80,7 @@
   "your_username": "Your Username",
   "email_invalid": "Email is invalid",
   "screenshot_type": "Screenshot Type",
-  "select_screenshots": "Select Screenshots"
+  "select_screenshots": "Select Screenshots",
+  "switch_upload_type": "Switch Upload Type",
+  "screenshot_images": "Screenshot Images"
 }

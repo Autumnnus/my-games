@@ -34,14 +34,16 @@ export default function AddScreenShot() {
     () => token?.data.role === "admin" || token?.data.role === "vip",
     [token?.data.role]
   )
-  console.log(token?.data.role, "token?.data.role")
 
   function handleClose() {
     if (loading) {
       return
     }
     setIsAddScreenshotDialogOpen?.()
-    screenshotReset?.()
+    screenshotReset?.({
+      name: "",
+      url: ""
+    })
     setSelectedImages([])
   }
   async function onSubmit(data: Screenshot) {
@@ -67,7 +69,20 @@ export default function AddScreenShot() {
           log(`${data.url} is added: `, data)
           screenshotReset?.()
           showSuccessToast("Screenshot is added")
-          setScreenShots?.((prev) => [...(prev ?? []), res.data.data])
+          const responseData = res.data.data as unknown as Screenshot[]
+          setScreenShots?.((prev) => {
+            const existingScreenshots = prev ?? []
+            const screenshotMap = new Map(
+              existingScreenshots.map((screenshot) => [
+                screenshot._id,
+                screenshot
+              ])
+            )
+            responseData.forEach((newScreenshot) => {
+              screenshotMap.set(newScreenshot._id, newScreenshot)
+            })
+            return Array.from(screenshotMap.values())
+          })
           handleClose()
         })
         .catch((error) => {
@@ -139,6 +154,7 @@ export default function AddScreenShot() {
           </Typography>
           <input
             type="file"
+            disabled={loading}
             multiple
             accept="image/*"
             onChange={handleFileChange}
@@ -178,7 +194,6 @@ export default function AddScreenShot() {
     screenshotControl,
     loading
   ])
-  console.log(allowedUploadS3ImageFeature, "allowedUploadS3ImageFeature")
   return (
     <DialogProvider
       title={translate("add_screenshot")}
@@ -197,7 +212,7 @@ export default function AddScreenShot() {
       }}
       isOpen={!!isAddScreenshotDialogOpen}
       setClose={handleClose}
-      size="large"
+      size="medium"
     >
       <>
         <Stack direction={"row"} justifyContent={"flex-end"}>
@@ -205,7 +220,7 @@ export default function AddScreenShot() {
             sx={{ opacity: allowedUploadS3ImageFeature ? 1 : 0.3 }}
             variant="body1"
           >
-            {translate("upload_type")}
+            {translate("switch_upload_type")}
           </Typography>
           <ControlledSwitch<Screenshot>
             color="success"

@@ -76,7 +76,7 @@ export default function AddGame({
             _id: res.data.data._id,
             createdAt: res.data.data.createdAt,
             userId: res.data.data.userId,
-            screenshots: []
+            screenshotSize: res.data.data.screenshotSize
           },
           ...prev
         ])

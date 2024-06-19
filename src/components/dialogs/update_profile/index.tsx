@@ -89,7 +89,7 @@ export default function UpdateProfile() {
             _id: res.data.data._id,
             createdAt: res.data.data.createdAt,
             userId: res.data.data.userId,
-            screenshots: []
+            screenshotSize: res.data.data.screenshotSize
           },
           ...prev
         ])

@@ -59,6 +59,7 @@
   "delete_game_text": "Bu oyunu silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.",
   "rating_min_error": "Puan 0'dan küçük olamaz",
   "rating_max_error": "Puan 10'dan büyük olamaz",
+  "min_length_error": "{{name}} en az {{max}} karakter olabilir",
   "max_length_error": "{{name}} en fazla {{max}} karakter olabilir",
   "not_rated": "Puanlanmadı",
   "all_members": "Tüm Üyeler",
@@ -79,5 +80,7 @@
   "your_username": "Kullanıcı Adınız",
   "email_invalid": "Geçersiz e-posta adresi",
   "screenshot_type": "Ekran Görüntüsü Türü",
-  "select_screenshots": "Ekran Görüntüleri Seç"
+  "select_screenshots": "Ekran Görüntüleri Seç",
+  "switch_upload_type": "Yükleme Türünü Değiştir",
+  "screenshot_images": "Ekran Görüntüsü Resimleri"
 }

@@ -140,7 +140,7 @@ export function GameDataTableBody() {
                 )
               } else if (
                 column.id === "playTime" ||
-                column.id === "screenshots"
+                column.id === "screenshotSize"
               ) {
                 cellContent = (
                   <Typography

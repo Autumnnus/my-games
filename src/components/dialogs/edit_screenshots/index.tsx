@@ -1,8 +1,10 @@
+import { Stack, Typography } from "@mui/material"
 import axios, { type AxiosResponse } from "axios"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useWatch } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
+import ControlledSwitch from "@components/controlled_switch"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
@@ -28,12 +30,17 @@ export default function EditScreenShot() {
   const { token } = useAppContext()
   const { id } = useParams()
   const type = useWatch({ control: screenshotControl, name: "type" })
+  const allowedUploadS3ImageFeature = useMemo(
+    () => token?.data.role === "admin" || token?.data.role === "vip",
+    [token?.data.role]
+  )
 
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     screenshotReset?.({
       name: selectedSS?.name,
-      url: selectedSS?.url
+      url: selectedSS?.url,
+      type: selectedSS?.type
     })
   }, [screenshotReset, selectedSS])
 
@@ -50,68 +57,122 @@ export default function EditScreenShot() {
       name: data.name,
       url: data.url
     }
-    await axios
-      .put(
-        `${process.env.REACT_APP_API_URL}/api/games/${id}/editSS/${selectedSS?._id}`,
-        requestData,
-        {
+    const url = `${process.env.REACT_APP_API_URL}/api/screenshot/edit/${id}/${selectedSS?._id}`
+    if (type === ScreenshotType.Image) {
+      const formData = new FormData()
+      selectedImage ? formData.append("file", selectedImage) : undefined
+      formData.append("type", ScreenshotType.Image)
+      formData.append("name", data.name)
+      axios
+        .put(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer: ${token?.access_token}`
+          }
+        })
+        .then((res: AxiosResponse<{ data: Screenshot }>) => {
+          log(`${data.url} is added: `, data)
+          screenshotReset?.()
+          showSuccessToast("Screenshot is added")
+          const responseData = res.data.data
+          console.log("responseData", responseData.url)
+          setScreenShots?.((prev) => {
+            const updatedScreenshots = prev.map((game) => {
+              if (game._id === responseData._id) {
+                return {
+                  _id: responseData._id,
+                  name: responseData.name,
+                  url: responseData.url,
+                  type: responseData.type,
+                  images: responseData.images,
+                  game: responseData.game,
+                  createdAt: responseData.createdAt,
+                  updatedAt: responseData.updatedAt,
+                  user: responseData.user,
+                  key: responseData.key
+                }
+              }
+              return game
+            })
+            return updatedScreenshots
+          })
+          handleClose()
+        })
+        .catch((error) => {
+          console.error(error)
+          showErrorToast(
+            "Screenshot couldn't be added" + (error as Error).message
+          )
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else if (type === ScreenshotType.Text && data.url) {
+      await axios
+        .put(url, requestData, {
           headers: {
             Authorization: `Bearer: ${token?.access_token}`
           }
-        }
-      )
-      .then((res: AxiosResponse<{ data: Screenshot }>) => {
-        log(`${data.url} is added: `, data)
-        screenshotReset?.()
-        showSuccessToast("Screenshot is added")
-        const responseData = res.data.data
-        setScreenShots?.((prev) => {
-          const updatedScreenshotIndex = prev.findIndex(
-            (game) => game._id === responseData._id
-          )
-          const updateScreenshot = [...prev]
-          if (updatedScreenshotIndex !== -1) {
-            updateScreenshot[updatedScreenshotIndex] = {
-              _id: responseData._id,
-              name: responseData.name,
-              url: responseData.url,
-              type: responseData.type,
-              images: responseData.images
-            }
-          }
-          return updateScreenshot
         })
-        handleClose()
-      })
-      .catch((error) => {
-        console.error(error)
-        showErrorToast(
-          "Screenshot couldn't be edited" + (error as Error).message
-        )
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+        .then((res: AxiosResponse<{ data: Screenshot }>) => {
+          log(`${data.url} is added: `, data)
+          screenshotReset?.()
+          showSuccessToast("Screenshot is added")
+          const responseData = res.data.data
+          setScreenShots?.((prev) => {
+            const updatedScreenshots = prev.map((game) => {
+              if (game._id === responseData._id) {
+                return {
+                  _id: responseData._id,
+                  name: responseData.name,
+                  url: responseData.url,
+                  type: responseData.type,
+                  images: responseData.images,
+                  game: responseData.game,
+                  createdAt: responseData.createdAt,
+                  updatedAt: responseData.updatedAt,
+                  user: responseData.user,
+                  key: responseData.key
+                }
+              }
+              return game
+            })
+            return updatedScreenshots
+          })
+          handleClose()
+        })
+        .catch((error) => {
+          console.error(error)
+          showErrorToast(
+            "Screenshot couldn't be edited" + (error as Error).message
+          )
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else {
+      showErrorToast("Please fill the required fields")
+      setLoading(false)
+    }
   }
 
-  const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const [selectedImage, setSelectedImage] = useState<File>({} as File)
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || [])
-      setSelectedImages(files)
+      setSelectedImage(files[0])
       setScreenshotValue?.("images", files)
       screenshotTrigger?.("images")
     },
     [screenshotTrigger, setScreenshotValue]
   )
 
-  console.log(selectedImages)
   const memorizedTypeInput = useMemo(() => {
     if (type === ScreenshotType.Image) {
       return (
         <input
           type="file"
-          multiple
+          disabled={loading}
           accept="image/*"
           onChange={handleFileChange}
         />
@@ -131,7 +192,7 @@ export default function EditScreenShot() {
         />
       )
     }
-  }, [type, handleFileChange, screenshotControl, translate, loading])
+  }, [type, loading, handleFileChange, screenshotControl, translate])
 
   return (
     <DialogProvider
@@ -154,6 +215,31 @@ export default function EditScreenShot() {
       size="large"
     >
       <>
+        <Stack direction={"row"} justifyContent={"flex-end"}>
+          <Typography
+            sx={{ opacity: allowedUploadS3ImageFeature ? 1 : 0.3 }}
+            variant="body1"
+          >
+            {translate("switch_upload_type")}
+          </Typography>
+          <ControlledSwitch<Screenshot>
+            color="success"
+            disabled={loading || !allowedUploadS3ImageFeature}
+            control={screenshotControl}
+            name="type"
+            value={type !== ScreenshotType.Image}
+            checked={type === ScreenshotType.Image}
+            onChange={() => {
+              setScreenshotValue?.(
+                "type",
+                type === ScreenshotType.Image
+                  ? ScreenshotType.Text
+                  : ScreenshotType.Image
+              )
+              screenshotTrigger?.("type")
+            }}
+          />
+        </Stack>
         <TextInput<Screenshot>
           type="text"
           name="name"

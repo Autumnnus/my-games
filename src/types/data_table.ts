@@ -21,7 +21,7 @@ export type DataTableRowData = {
   name: string
   rating: number
   platform: Platform
-  screenshots: number
+  screenshotSize: number
   playTime: number
   lastPlay: string
   status: Status
@@ -41,7 +41,7 @@ type GameDataTableColumnKeys =
   | "name"
   | "rating"
   | "platform"
-  | "screenshots"
+  | "screenshotSize"
   | "lastPlay"
   | "status"
   | "playTime"
