@@ -9,6 +9,7 @@ import {
 } from "@mui/material"
 import TableCell from "@mui/material/TableCell"
 import { useCallback, useMemo } from "react"
+import { useParams } from "react-router-dom"
 
 import PlatformIcon from "@assets/platform_icons"
 import Link from "@components/link"
@@ -35,8 +36,10 @@ export function GameDataTableBody() {
     rows,
     setAnchorEl,
     page,
-    rowsPerPage
+    rowsPerPage,
+    token
   } = useGamesPageContext()
+  const { id } = useParams()
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>, row: DataTableRowData) => {
       setAnchorEl?.(event.currentTarget)
@@ -44,7 +47,7 @@ export function GameDataTableBody() {
     },
     [setAnchorEl, setSelectedGame]
   )
-
+  const isOwner = useMemo(() => id === token?.data.id, [id, token?.data.id])
   const MemorizedRows = useMemo(() => {
     return rows
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -73,7 +76,10 @@ export function GameDataTableBody() {
                 )
               } else if (column.id === "actions") {
                 cellContent = (
-                  <IconButton onClick={(event) => handleClick(event, row)}>
+                  <IconButton
+                    sx={{ display: isOwner ? "block" : "none" }}
+                    onClick={(event) => handleClick(event, row)}
+                  >
                     <MoreVertIcon color="secondary" />
                   </IconButton>
                 )

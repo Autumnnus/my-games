@@ -91,7 +91,7 @@ export function UsersPageContextProvider(props: {
           translate("email_invalid")
         ),
       name: yup.string(),
-      password: yup.string().min(6, "Password must be at least 8 characters"),
+      password: yup.string().min(6).max(16),
       profileImage: yup.string()
     })
     .required()

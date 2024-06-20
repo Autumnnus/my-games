@@ -83,5 +83,8 @@
   "select_screenshots": "Ekran Görüntüleri Seç",
   "switch_upload_type": "Yükleme Türünü Değiştir",
   "screenshot_images": "Ekran Görüntüsü Resimleri",
-  "games_not_found": "Oyunlar bulunamadı"
+  "games_not_found": "Oyunlar bulunamadı",
+  "reset_password": "Şifreyi Sıfırla",
+  "send": "Gönder",
+  "reset": "Sıfırla"
 }

@@ -14,7 +14,7 @@ import { useState } from "react"
 import { useGameDetailPageContext } from "context/games_detail"
 import { Screenshot } from "types/screenshot"
 
-const screenshotsPerPage = 15
+const screenshotsPerPage = 10
 
 export default function Screenshots() {
   const {
@@ -51,12 +51,17 @@ export default function Screenshots() {
     setIsPreviewScreenshotOpen?.()
     setSelectedSS?.(item)
   }
+  const startIndex = (currentPage - 1) * screenshotsPerPage
+  const currentScreenshots = screenShots.slice(
+    startIndex,
+    startIndex + screenshotsPerPage
+  )
 
   return (
-    <>
+    <Box display={screenShots.length > 0 ? "block" : "none"}>
       <Typography variant="h4">{`${translate("screenshots")} (${screenShots.length})`}</Typography>
       <ImageList cols={5} gap={8}>
-        {screenShots.map((item) => (
+        {currentScreenshots.map((item) => (
           <ImageListItem
             onPointerEnter={() => setHoveredItemId(item._id)}
             onPointerLeave={() => {
@@ -167,6 +172,6 @@ export default function Screenshots() {
         variant="outlined"
         color="standard"
       />
-    </>
+    </Box>
   )
 }

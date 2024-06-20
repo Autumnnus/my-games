@@ -43,10 +43,12 @@ export default function AddScreenShot() {
     setIsAddScreenshotDialogOpen?.()
     screenshotReset?.({
       name: "",
-      url: ""
+      url: "",
+      type: ScreenshotType.Text
     })
     setSelectedImages([])
   }
+  console.log(type, "type")
   async function onSubmit(data: Screenshot) {
     setLoading(true)
     if (data.images && type === ScreenshotType.Image) {
@@ -68,7 +70,6 @@ export default function AddScreenShot() {
         )
         .then((res: AxiosResponse<{ data: Screenshot }>) => {
           log(`${data.url} is added: `, data)
-          screenshotReset?.()
           showSuccessToast("Screenshot is added")
           const responseData = res.data.data as unknown as Screenshot[]
           setScreenShots?.((prev) => {

@@ -9,14 +9,18 @@ import ProfilePageLayout from "@layouts/profile_page_layout"
 import UsersNavigationLayout from "@layouts/users_navigation_layout"
 import UsersPageLayout from "@layouts/users_page_layout"
 import ErrorPage from "@pages/error"
+import AuthForgotPasswordPage from "@pages/main/auth/forgot_password"
 import AuthLoginPage from "@pages/main/auth/login"
+import AuthResetPasswordPage from "@pages/main/auth/reset_password"
 import AuthSignUp from "@pages/main/auth/signup"
 import GameDetailPage from "@pages/main/game_detail"
 import GamesPage from "@pages/main/games"
 import HomePage from "@pages/main/home"
 import ProfilePage from "@pages/main/profile"
 import UsersPage from "@pages/main/users"
+import { AuthForgotPasswordPageContextProvider } from "context/auth/forgot_password"
 import { AuthLoginPageContextProvider } from "context/auth/login"
+import { AuthResetPasswordPageContextProvider } from "context/auth/reset_password"
 import { AuthSignUpPageContextProvider } from "context/auth/signup"
 import { GamesPageContextProvider } from "context/games"
 import { GameDetailPageContextProvider } from "context/games_detail"
@@ -42,6 +46,26 @@ const mainNavigation: RouteObject[] = [
         element: (
           <AuthPageLayout ContextProvider={AuthLoginPageContextProvider}>
             <AuthLoginPage />
+          </AuthPageLayout>
+        )
+      },
+      {
+        path: "auth/forgotPassword",
+        element: (
+          <AuthPageLayout
+            ContextProvider={AuthForgotPasswordPageContextProvider}
+          >
+            <AuthForgotPasswordPage />
+          </AuthPageLayout>
+        )
+      },
+      {
+        path: "auth/resetPassword",
+        element: (
+          <AuthPageLayout
+            ContextProvider={AuthResetPasswordPageContextProvider}
+          >
+            <AuthResetPasswordPage />
           </AuthPageLayout>
         )
       },

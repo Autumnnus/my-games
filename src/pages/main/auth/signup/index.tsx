@@ -3,6 +3,7 @@ import { Box, Stack } from "@mui/material"
 import Avatar from "@mui/material/Avatar"
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
+import axios from "axios"
 import * as React from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -13,9 +14,11 @@ import { PRIMARY } from "@constants/colors"
 import AuthImageSide from "@pages/main/auth/sub_components/image_side"
 import AuthInputSide from "@pages/main/auth/sub_components/input_side"
 import sleep from "@utils/functions/sleep"
+import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAuthSignUpPageContext } from "context/auth/signup"
 import { AuthSignupData } from "types/auth"
+import { AxiosErrorMessage } from "types/axios"
 
 export default function AuthSignupPage() {
   const { translate, control, handleSubmit, isValid } =
@@ -28,9 +31,28 @@ export default function AuthSignupPage() {
   }
   async function onSubmit(data: AuthSignupData) {
     setLoading(true)
-    await sleep(3000)
-    log(`${data.email} is added: `, data)
-    setLoading(false)
+    await sleep(500)
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/api/auth/register`, data)
+      .then(() => {
+        axios
+          .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
+          .then((res) => {
+            log(`${data.email} is added: `, data)
+            localStorage.setItem("my-games-user", JSON.stringify(res.data))
+            window.location.href = "/"
+          })
+          .catch((error: AxiosErrorMessage) => {
+            console.error(error)
+            showErrorToast("Login failed: " + error.response?.data.message)
+          })
+        showSuccessToast("Signup successful")
+      })
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast("Signup failed: " + error.response?.data.message)
+      })
+      .finally(() => setLoading(false))
   }
   return (
     <Grid container component="main" sx={{ height: "100%" }}>

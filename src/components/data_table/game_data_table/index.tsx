@@ -5,7 +5,7 @@ import Table from "@mui/material/Table"
 import TableContainer from "@mui/material/TableContainer"
 import TablePagination from "@mui/material/TablePagination"
 import axios, { type AxiosResponse } from "axios"
-import { ChangeEvent, useCallback } from "react"
+import { ChangeEvent, useCallback, useMemo } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { GameDataTableBody } from "@components/data_table/game_data_table/sub_components/table_body"
@@ -34,8 +34,7 @@ export default function GameDataTable() {
     setPage,
     rowsPerPage,
     setRowsPerPage,
-    loadingGames,
-    token
+    loadingGames
   } = useGamesPageContext()
 
   const handleChangePage = (_: unknown, newPage: number) => {
@@ -69,7 +68,7 @@ export default function GameDataTable() {
       }}
     >
       <TableHeader />
-      <TableContainer sx={{ display: token ? "block" : "none" }}>
+      <TableContainer sx={{ display: rows.length > 0 ? "block" : "none" }}>
         <Table stickyHeader aria-label="sticky table">
           <GameDataTableTitle />
           <GameDataTableBody />
@@ -77,7 +76,7 @@ export default function GameDataTable() {
       </TableContainer>
       <Stack
         sx={{
-          display: token ? "none" : "flex",
+          display: rows.length > 0 ? "none" : "flex",
           height: "60vh",
           p: 2,
           justifyContent: "center",
@@ -148,7 +147,7 @@ export default function GameDataTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
-          display: token ? "block" : "none",
+          display: rows.length > 0 ? "block" : "none",
           ".MuiTablePagination-toolbar": {
             color: "#fff",
             bgcolor: TABLE_HEADER_BACKGROUND_COLOR
@@ -183,6 +182,7 @@ function TableHeader() {
     setIsAddGameDialogOpen?.()
   }
   const queryParams = new URLSearchParams()
+  const isOwner = useMemo(() => id === token?.data.id, [id, token?.data.id])
   const handleSearch = (search: string) => {
     if (search) queryParams.append("search", search)
     const queryString = queryParams.toString()
@@ -244,7 +244,7 @@ function TableHeader() {
         }}
       >
         <IconButton
-          sx={{ display: token ? "block" : "none" }}
+          sx={{ display: isOwner && token ? "block" : "none" }}
           onClick={handleAddGame}
         >
           <AddCircleOutlineIcon

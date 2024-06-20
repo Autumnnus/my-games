@@ -56,7 +56,8 @@ export default function EditScreenShot() {
     setLoading(true)
     const requestData = {
       name: data.name,
-      url: data.url
+      url: data.url,
+      type: ScreenshotType.Text
     }
     const url = `${process.env.REACT_APP_API_URL}/api/screenshot/edit/${id}/${selectedSS?._id}`
     if (type === ScreenshotType.Image) {

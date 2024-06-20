@@ -2,6 +2,7 @@ import CreateIcon from "@mui/icons-material/Create"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import PhotoSizeSelectActualIcon from "@mui/icons-material/PhotoSizeSelectActual"
 import { Box, Button, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 
 import AddScreenShot from "@components/dialogs/add_screenshots"
 import DeleteGame from "@components/dialogs/delete_game"
@@ -26,7 +27,6 @@ export default function GameDetailPage() {
   if (!game) return <Loading />
   return (
     <Stack gap={1.5} px={10} py={5}>
-      <img src="2fa4711a8dbd05b62a850c99758973c969ce215f39708186a22f122d30865ea0.png"></img>
       <GameDetailTitle game={game} />
       <Screenshots />
       <EditGame
@@ -52,6 +52,10 @@ function GameDetailTitle({ game }: { game: GamesData }) {
     setIsAddScreenshotDialogOpen,
     token
   } = useGameDetailPageContext()
+  const isOwner = useMemo(
+    () => game.userId === token?.data.id,
+    [game.userId, token?.data.id]
+  )
   return (
     <Stack direction={"row"} gap={3}>
       <Box
@@ -72,7 +76,11 @@ function GameDetailTitle({ game }: { game: GamesData }) {
           gap={2}
         >
           <Typography variant="h3">{game?.name}</Typography>
-          <Stack display={token ? "flex" : "none"} direction={"row"} gap={1}>
+          <Stack
+            display={token && isOwner ? "flex" : "none"}
+            direction={"row"}
+            gap={1}
+          >
             <Button onClick={setIsAddScreenshotDialogOpen} variant="contained">
               <PhotoSizeSelectActualIcon />
             </Button>

@@ -11,37 +11,32 @@ import TextInput from "@components/text_input"
 import { PRIMARY } from "@constants/colors"
 import AuthImageSide from "@pages/main/auth/sub_components/image_side"
 import AuthInputSide from "@pages/main/auth/sub_components/input_side"
-import sleep from "@utils/functions/sleep"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
-import log from "@utils/log"
-import { useAuthLoginPageContext } from "context/auth/login"
-import { AuthLoginData } from "types/auth"
+import { useAuthForgotPasswordPageContext } from "context/auth/forgot_password"
+import { AuthForgotPasswordData } from "types/auth"
 import { AxiosErrorMessage } from "types/axios"
 
-export default function AuthLoginPage() {
-  const { translate, control, handleSubmit, isValid, reset } =
-    useAuthLoginPageContext()
+export default function AuthForgotPasswordPage() {
+  const { translate, control, handleSubmit, isValid } =
+    useAuthForgotPasswordPageContext()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   function navigatePage(pathname: string) {
     navigate(pathname)
   }
-  async function onSubmit(data: AuthLoginData) {
+  async function onSubmit(data: AuthForgotPasswordData) {
     setLoading(true)
-    await sleep(500)
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
-      .then((res) => {
-        reset?.({ email: data.email, password: data.password })
-        log(`${data.email} is added: `, data)
-        localStorage.setItem("my-games-user", JSON.stringify(res.data))
-        showSuccessToast("Login successful")
-        window.location.href = "/"
+    await axios
+      .post(`${process.env.REACT_APP_API_URL}/api/auth/forgotpassword`, data)
+      .then(() => {
+        showSuccessToast(
+          "Email sent successfully. Check your email for the reset link."
+        )
       })
       .catch((error: AxiosErrorMessage) => {
         console.error(error)
-        showErrorToast("Login failed: " + error.response?.data.message)
+        showErrorToast("Request is failed: " + error.response?.data.message)
       })
       .finally(() => setLoading(false))
   }
@@ -55,23 +50,16 @@ export default function AuthLoginPage() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              {translate("login")}
+              {translate("reset_password")}
             </Typography>
           </Stack>
           <Stack gap={1} mt={1}>
-            <TextInput<AuthLoginData>
+            <TextInput<AuthForgotPasswordData>
               type="email"
               control={control}
               name="email"
               label={translate("email")}
               placeholder="abcdef@gmail.com"
-            />
-            <TextInput<AuthLoginData>
-              type="password"
-              control={control}
-              name="password"
-              label={translate("password")}
-              placeholder="*********"
             />
             <Button
               fullWidth
@@ -80,15 +68,15 @@ export default function AuthLoginPage() {
               onClick={handleSubmit?.(onSubmit)}
               sx={{ mt: 3, mb: 2 }}
             >
-              {translate("login")}
+              {translate("send")}
             </Button>
             <Stack direction={"row"} justifyContent={"space-between"}>
               <Link
                 sx={{ cursor: "pointer", color: PRIMARY }}
                 variant="body2"
-                onClick={() => navigatePage("/auth/forgotPassword")}
+                onClick={() => navigatePage("/auth/login")}
               >
-                {translate("forgot_password")}
+                {translate("login")}
               </Link>
               <Link
                 onClick={() => navigatePage("/auth/signup")}
