@@ -34,6 +34,7 @@ export default function PageHeader(props: Props) {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState)
   }
+  //? Mobile
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
@@ -49,6 +50,7 @@ export default function PageHeader(props: Props) {
   const container =
     window !== undefined ? () => window().document.body : undefined
 
+  //?WEB
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="static">
@@ -166,19 +168,58 @@ function Navigations({
               <ListItemText primary={translate("users")} />
             </ListItemButton>
           </ListItem>
-          <ListItem
-            onClick={() => navigateToPage("/auth/login")}
-            disablePadding
-          >
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={translate("login")} />
-            </ListItemButton>
+          <ListItem sx={{ justifyContent: "center" }} disablePadding>
+            <Stack direction={"row"}>
+              <Box
+                onClick={() => changeLanguage("en")}
+                sx={{
+                  width: "100%",
+                  cursor: "pointer",
+                  backgroundColor: currentLanguage === "en" ? "#fff" : "",
+                  color: currentLanguage === "en" ? "#000" : "",
+                  ":hover": {
+                    backgroundColor: "#fff",
+                    color: "#000"
+                  },
+                  p: 1.5
+                }}
+              >
+                <Typography align="center">EN</Typography>
+              </Box>
+              <Box
+                onClick={() => changeLanguage("tr")}
+                sx={{
+                  width: "100%",
+                  cursor: "pointer",
+                  backgroundColor: currentLanguage === "tr" ? "#fff" : "",
+                  color: currentLanguage === "tr" ? "#000" : "",
+                  ":hover": {
+                    backgroundColor: "#fff",
+                    color: "#000"
+                  },
+                  p: 1.5
+                }}
+              >
+                <Typography align="center">TR</Typography>
+              </Box>
+            </Stack>
           </ListItem>
-          <ListItem onClick={handleLogout} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={translate("logout")} />
-            </ListItemButton>
-          </ListItem>
+          {!token ? (
+            <ListItem
+              onClick={() => navigateToPage("/auth/login")}
+              disablePadding
+            >
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <ListItemText primary={translate("login")} />
+              </ListItemButton>
+            </ListItem>
+          ) : (
+            <ListItem onClick={handleLogout} disablePadding>
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <ListItemText primary={translate("logout")} />
+              </ListItemButton>
+            </ListItem>
+          )}
         </>
       )
     } else {
@@ -204,7 +245,6 @@ function Navigations({
           <IconButton onClick={(event) => handlePopoverClick(event)}>
             <AccountCircleSharpIcon sx={{ color: "#fff" }} />
           </IconButton>
-
           <Popover
             open={Boolean(anchorEl)}
             anchorEl={anchorEl}
@@ -282,6 +322,8 @@ function Navigations({
     }
   }, [
     anchorEl,
+    changeLanguage,
+    currentLanguage,
     handleLogout,
     handlePopoverClick,
     isDrawer,
