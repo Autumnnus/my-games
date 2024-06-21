@@ -31,7 +31,7 @@ const AuthResetPasswordPageContext = createContext(
 export function AuthResetPasswordPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, backendUrl } = useAppContext()
 
   const schema = yup
     .object({
@@ -60,7 +60,8 @@ export function AuthResetPasswordPageContextProvider(props: {
         translate,
         control,
         handleSubmit,
-        isValid
+        isValid,
+        backendUrl
       }}
     >
       {props.children}

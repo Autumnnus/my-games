@@ -28,7 +28,8 @@ export default function UpdateProfile() {
     isDirty,
     setGames,
     platformSelectOptions,
-    statusSelectOptions
+    statusSelectOptions,
+    backendUrl
   } = useGamesPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "photo" })
@@ -64,15 +65,11 @@ export default function UpdateProfile() {
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await axios
-      .put(
-        `${process.env.REACT_APP_API_URL}/api/auth/edit/${selectedGame?._id}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer: ${token?.access_token}`
-          }
+      .put(`${backendUrl}/api/auth/edit/${selectedGame?._id}`, data, {
+        headers: {
+          Authorization: `Bearer: ${token?.access_token}`
         }
-      )
+      })
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         log(`${data.name} is edited: `, data)
         reset?.()

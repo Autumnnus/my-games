@@ -25,7 +25,8 @@ export default function AddScreenShot() {
     isAddScreenshotDialogOpen,
     setIsAddScreenshotDialogOpen,
     setScreenshotValue,
-    screenshotTrigger
+    screenshotTrigger,
+    backendUrl
   } = useGameDetailPageContext()
   const { token } = useAppContext()
   const { id } = useParams()
@@ -58,16 +59,12 @@ export default function AddScreenShot() {
       })
       formData.append("type", ScreenshotType.Image)
       axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/api/screenshot/add/${id}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer: ${token?.access_token}`
-            }
+        .post(`${backendUrl}/api/screenshot/add/${id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer: ${token?.access_token}`
           }
-        )
+        })
         .then((res: AxiosResponse<{ data: Screenshot }>) => {
           log(`${data.url} is added: `, data)
           showSuccessToast("Screenshot is added")
@@ -103,15 +100,11 @@ export default function AddScreenShot() {
         type: ScreenshotType.Text
       }
       await axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/api/screenshot/add/${id}`,
-          requestData,
-          {
-            headers: {
-              Authorization: `Bearer: ${token?.access_token}`
-            }
+        .post(`${backendUrl}/api/screenshot/add/${id}`, requestData, {
+          headers: {
+            Authorization: `Bearer: ${token?.access_token}`
           }
-        )
+        })
         .then((res: AxiosResponse<{ data: Screenshot }>) => {
           log(`${data.url} is added: `, data)
           screenshotReset?.()

@@ -36,7 +36,7 @@ const AuthSignUpPageContext = createContext(authSignUpPageDefaultValues)
 export function AuthSignUpPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, backendUrl } = useAppContext()
 
   const schema = yup
     .object({
@@ -74,7 +74,8 @@ export function AuthSignUpPageContextProvider(props: {
         translate,
         control,
         handleSubmit,
-        isValid
+        isValid,
+        backendUrl
       }}
     >
       {props.children}

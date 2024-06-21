@@ -15,7 +15,7 @@ import { AuthResetPasswordData } from "types/auth"
 import { AxiosErrorMessage } from "types/axios"
 
 export default function AuthResetPasswordPage() {
-  const { translate, control, handleSubmit, isValid } =
+  const { translate, control, handleSubmit, isValid, backendUrl } =
     useAuthResetPasswordPageContext()
   const [loading, setLoading] = useState(false)
   const location = useLocation()
@@ -26,7 +26,7 @@ export default function AuthResetPasswordPage() {
     setLoading(true)
     await axios
       .put(
-        `${process.env.REACT_APP_API_URL}/api/auth/resetPassword?resetPasswordToken=${resetPasswordToken}`,
+        `${backendUrl}/api/auth/resetPassword?resetPasswordToken=${resetPasswordToken}`,
         data
       )
       .then(() => {

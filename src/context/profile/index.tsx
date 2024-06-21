@@ -30,13 +30,13 @@ const ProfilePageContext = createContext(profilePageDefaultValues)
 export function ProfilePageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token } = useAppContext()
+  const { translate, token, backendUrl } = useAppContext()
   const { id } = useParams()
   const [profile, setProfile] = useState<UsersData>()
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/users/${id}`)
+      .get(`${backendUrl}/api/users/${id}`)
       .then((res: AxiosResponse<{ data: UsersData }>) => {
         setProfile(res.data.data)
       })
@@ -54,7 +54,8 @@ export function ProfilePageContextProvider(props: {
         ...profilePageDefaultValues,
         translate,
         token,
-        profile
+        profile,
+        backendUrl
       }}
     >
       {props.children}

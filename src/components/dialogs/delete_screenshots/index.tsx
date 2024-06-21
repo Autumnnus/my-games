@@ -18,7 +18,8 @@ export default function DeleteScreenshot() {
     selectedSS,
     isDeleteScreenshotDialogOpen,
     setIsDeleteScreenshotDialogOpen,
-    setScreenShots
+    setScreenShots,
+    backendUrl
   } = useGameDetailPageContext()
   const { token } = useAppContext()
   const { id } = useParams()
@@ -40,14 +41,11 @@ export default function DeleteScreenshot() {
   async function onSubmit() {
     setLoading(true)
     await axios
-      .delete(
-        `${process.env.REACT_APP_API_URL}/api/screenshot/delete/${id}/${selectedSS?._id}`,
-        {
-          headers: {
-            Authorization: `Bearer: ${token?.access_token}`
-          }
+      .delete(`${backendUrl}/api/screenshot/delete/${id}/${selectedSS?._id}`, {
+        headers: {
+          Authorization: `Bearer: ${token?.access_token}`
         }
-      )
+      })
       .then(() => {
         log(`Screenshot is deleted ${selectedSS?.name}`, selectedSS ?? "")
         showSuccessToast("The Screenshot Deleted Successfully")

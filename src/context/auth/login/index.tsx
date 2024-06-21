@@ -37,7 +37,7 @@ const AuthLoginPageContext = createContext(authLoginPageDefaultValues)
 export function AuthLoginPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, backendUrl } = useAppContext()
 
   const schema = yup
     .object({
@@ -72,7 +72,8 @@ export function AuthLoginPageContextProvider(props: {
         control,
         handleSubmit,
         isValid,
-        reset
+        reset,
+        backendUrl
       }}
     >
       {props.children}

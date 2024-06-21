@@ -38,7 +38,7 @@ const AuthForgotPasswordPageContext = createContext(
 export function AuthForgotPasswordPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, backendUrl } = useAppContext()
 
   const schema = yup
     .object({
@@ -64,7 +64,8 @@ export function AuthForgotPasswordPageContextProvider(props: {
         translate,
         control,
         handleSubmit,
-        isValid
+        isValid,
+        backendUrl
       }}
     >
       {props.children}

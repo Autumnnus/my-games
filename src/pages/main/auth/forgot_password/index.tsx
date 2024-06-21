@@ -17,7 +17,7 @@ import { AuthForgotPasswordData } from "types/auth"
 import { AxiosErrorMessage } from "types/axios"
 
 export default function AuthForgotPasswordPage() {
-  const { translate, control, handleSubmit, isValid } =
+  const { translate, control, handleSubmit, isValid, backendUrl } =
     useAuthForgotPasswordPageContext()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function AuthForgotPasswordPage() {
   async function onSubmit(data: AuthForgotPasswordData) {
     setLoading(true)
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/api/auth/forgotpassword`, data)
+      .post(`${backendUrl}/api/auth/forgotpassword`, data)
       .then(() => {
         showSuccessToast(
           "Email sent successfully. Check your email for the reset link."

@@ -94,7 +94,7 @@ const GamesPageContext = createContext(gamesPageDefaultValues)
 export function GamesPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token } = useAppContext()
+  const { translate, token, backendUrl } = useAppContext()
   const { id } = useParams()
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
@@ -123,7 +123,7 @@ export function GamesPageContextProvider(props: {
     if (search) queryParams.append("search", search)
 
     const queryString = queryParams.toString()
-    const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
+    const url = `${backendUrl}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
     navigate(`?${queryString}`)
     setLoadingGames(true)
     axios
@@ -377,7 +377,8 @@ export function GamesPageContextProvider(props: {
         platformSelectOptions,
         statusSelectOptions,
         token,
-        loadingGames
+        loadingGames,
+        backendUrl
       }}
     >
       {props.children}

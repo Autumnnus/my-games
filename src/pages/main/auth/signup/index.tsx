@@ -21,7 +21,7 @@ import { AuthSignupData } from "types/auth"
 import { AxiosErrorMessage } from "types/axios"
 
 export default function AuthSignupPage() {
-  const { translate, control, handleSubmit, isValid } =
+  const { translate, control, handleSubmit, isValid, backendUrl } =
     useAuthSignUpPageContext()
   const [loading, setLoading] = React.useState(false)
   const navigate = useNavigate()
@@ -33,10 +33,10 @@ export default function AuthSignupPage() {
     setLoading(true)
     await sleep(500)
     axios
-      .post(`${process.env.REACT_APP_API_URL}/api/auth/register`, data)
+      .post(`${backendUrl}/api/auth/register`, data)
       .then(() => {
         axios
-          .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
+          .post(`${backendUrl}/api/auth/login`, data)
           .then((res) => {
             log(`${data.email} is added: `, data)
             localStorage.setItem("my-games-user", JSON.stringify(res.data))

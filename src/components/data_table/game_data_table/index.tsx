@@ -171,8 +171,14 @@ export default function GameDataTable() {
 }
 
 function TableHeader() {
-  const { translate, setIsAddGameDialogOpen, reset, setGames, token } =
-    useGamesPageContext()
+  const {
+    translate,
+    setIsAddGameDialogOpen,
+    reset,
+    setGames,
+    token,
+    backendUrl
+  } = useGamesPageContext()
   const { id } = useParams()
   const navigate = useNavigate()
   function handleAddGame() {
@@ -186,7 +192,7 @@ function TableHeader() {
   const handleSearch = (search: string) => {
     if (search) queryParams.append("search", search)
     const queryString = queryParams.toString()
-    const url = `${process.env.REACT_APP_API_URL}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
+    const url = `${backendUrl}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
     navigate(`?${queryString}`)
     axios
       .get(url)

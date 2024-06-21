@@ -90,7 +90,7 @@ const GameDetailPageContext = createContext(gameDetailPageDefaultValues)
 export function GameDetailPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token } = useAppContext()
+  const { translate, token, backendUrl } = useAppContext()
   const { id } = useParams()
   const [anchorEl, setAnchorEl] =
     useState<GameDetailContextProps["anchorEl"]>(null)
@@ -242,8 +242,8 @@ export function GameDetailPageContextProvider(props: {
     })
   }, [])
   useEffect(() => {
-    const gameUrl = `${process.env.REACT_APP_API_URL}/api/games/game/${id}`
-    const ssUrl = `${process.env.REACT_APP_API_URL}/api/screenshot/${id}`
+    const gameUrl = `${backendUrl}/api/games/game/${id}`
+    const ssUrl = `${backendUrl}/api/screenshot/${id}`
     axios
       .get(gameUrl)
       .then((res: AxiosResponse<{ data: GamesData }>) => {
@@ -309,7 +309,8 @@ export function GameDetailPageContextProvider(props: {
         setIsPreviewScreenshotOpen,
         token,
         setScreenshotValue,
-        screenshotTrigger
+        screenshotTrigger,
+        backendUrl
       }}
     >
       {props.children}

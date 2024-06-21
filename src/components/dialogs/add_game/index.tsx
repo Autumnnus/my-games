@@ -32,7 +32,8 @@ export default function AddGame({
     control,
     setGames,
     platformSelectOptions,
-    statusSelectOptions
+    statusSelectOptions,
+    backendUrl
   } = useGamesPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "photo" })
@@ -55,7 +56,7 @@ export default function AddGame({
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/api/games/add`, data, {
+      .post(`${backendUrl}/api/games/add`, data, {
         headers: {
           Authorization: `Bearer: ${token?.access_token}`
         }

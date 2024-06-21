@@ -26,7 +26,8 @@ export default function EditScreenShot() {
     setIsEditScreenshotDialogOpen,
     selectedSS,
     setScreenshotValue,
-    screenshotTrigger
+    screenshotTrigger,
+    backendUrl
   } = useGameDetailPageContext()
   const { token } = useAppContext()
   const { id } = useParams()
@@ -59,7 +60,7 @@ export default function EditScreenShot() {
       url: data.url,
       type: ScreenshotType.Text
     }
-    const url = `${process.env.REACT_APP_API_URL}/api/screenshot/edit/${id}/${selectedSS?._id}`
+    const url = `${backendUrl}/api/screenshot/edit/${id}/${selectedSS?._id}`
     if (type === ScreenshotType.Image) {
       const formData = new FormData()
       selectedImage ? formData.append("file", selectedImage) : undefined

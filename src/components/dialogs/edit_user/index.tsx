@@ -24,6 +24,7 @@ export default function EditUser() {
     isDirty,
     setUsers,
     isEditUserDialogOpen,
+    backendUrl,
     setIsEditUserDialogOpen
   } = useUsersPageContext()
   const { token } = useAppContext()
@@ -51,7 +52,7 @@ export default function EditUser() {
     setLoading(true)
     await axios
       .put(
-        `${process.env.REACT_APP_API_URL}/api/auth/edit`,
+        `${backendUrl}/api/auth/edit`,
         {
           email: data.email ? data.email : undefined,
           name: data.name ? data.name : undefined,

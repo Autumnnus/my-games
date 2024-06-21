@@ -19,7 +19,7 @@ import { AuthLoginData } from "types/auth"
 import { AxiosErrorMessage } from "types/axios"
 
 export default function AuthLoginPage() {
-  const { translate, control, handleSubmit, isValid, reset } =
+  const { translate, control, handleSubmit, isValid, reset, backendUrl } =
     useAuthLoginPageContext()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -31,7 +31,7 @@ export default function AuthLoginPage() {
     setLoading(true)
     await sleep(500)
     axios
-      .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
+      .post(`${backendUrl}/api/auth/login`, data)
       .then((res) => {
         reset?.({ email: data.email, password: data.password })
         log(`${data.email} is added: `, data)

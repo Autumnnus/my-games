@@ -63,14 +63,14 @@ const UsersPageContext = createContext(usersPageDefaultValues)
 export function UsersPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token } = useAppContext()
+  const { translate, token, backendUrl } = useAppContext()
   const [users, setUsers] = useState<UsersContextProps["users"]>([])
   const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useToggle()
   const [selectedUser, setSelectedUser] =
     useState<UsersContextProps["selectedUser"]>(null)
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/users`)
+      .get(`${backendUrl}/api/users`)
       .then((res: AxiosResponse<{ data: UsersData[] }>) => {
         setUsers(res.data.data)
       })
@@ -165,7 +165,8 @@ export function UsersPageContextProvider(props: {
         reset,
         isValid,
         isDirty,
-        token
+        token,
+        backendUrl
       }}
     >
       {props.children}

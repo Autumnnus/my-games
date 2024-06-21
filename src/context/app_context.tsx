@@ -28,6 +28,7 @@ export type AppContextProps = {
       | undefined
     >
   >
+  backendUrl?: string
 }
 
 export const appContextDefaultValues: AppContextProps = {
@@ -40,20 +41,24 @@ export function AppContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
   const { translate } = useTranslate()
-
   const [token, setToken] = useState<AppContextProps["token"]>(() => {
     const storedToken = localStorage.getItem("my-games-user")
     return storedToken
       ? (JSON.parse(storedToken) as AppContextProps["token"])
       : undefined
   })
+  const backendUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:5000"
+      : "https://my-games-8c0fcafba242.herokuapp.com"
   return (
     <AppContext.Provider
       value={{
         ...appContextDefaultValues,
         translate,
         token,
-        setToken
+        setToken,
+        backendUrl
       }}
     >
       {props.children}

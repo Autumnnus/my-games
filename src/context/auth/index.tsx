@@ -20,13 +20,14 @@ const AuthPageContext = createContext(authPageDefaultValues)
 export function AuthPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate } = useAppContext()
+  const { translate, backendUrl } = useAppContext()
 
   return (
     <AuthPageContext.Provider
       value={{
         ...authPageDefaultValues,
-        translate
+        translate,
+        backendUrl
       }}
     >
       {props.children}

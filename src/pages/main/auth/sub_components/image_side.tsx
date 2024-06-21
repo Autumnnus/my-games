@@ -3,12 +3,14 @@ import axios, { type AxiosResponse } from "axios"
 import { useEffect, useState } from "react"
 
 import { showErrorToast } from "@utils/functions/toast"
+import { useAppContext } from "context/app_context"
 import { AxiosErrorMessage } from "types/axios"
 import { Screenshot } from "types/screenshot"
 
-const url = `${process.env.REACT_APP_API_URL}/api/screenshot/get/random`
 export default function AuthImageSide() {
+  const { backendUrl } = useAppContext()
   const [image, setImage] = useState<string>()
+  const url = `${backendUrl}/api/screenshot/get/random`
   useEffect(() => {
     axios
       .get(url)

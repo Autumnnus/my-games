@@ -21,7 +21,8 @@ export default function DeleteGame({
   isDeleteGameDialogOpen,
   setIsDeleteGameDialogOpen
 }: DeleteGameProps) {
-  const { translate, selectedGame, setGames } = useGamesPageContext()
+  const { translate, selectedGame, setGames, backendUrl } =
+    useGamesPageContext()
   const { token } = useAppContext()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -43,14 +44,11 @@ export default function DeleteGame({
   async function onSubmit() {
     setLoading(true)
     await axios
-      .delete(
-        `${process.env.REACT_APP_API_URL}/api/games/delete/${selectedGame?._id}`,
-        {
-          headers: {
-            Authorization: `Bearer: ${token?.access_token}`
-          }
+      .delete(`${backendUrl}/api/games/delete/${selectedGame?._id}`, {
+        headers: {
+          Authorization: `Bearer: ${token?.access_token}`
         }
-      )
+      })
       .then(() => {
         log(`Game is deleted ${selectedGame?.name}`, selectedGame ?? "")
         showSuccessToast("The Game Edited Successfully")
