@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Avatar, Box, Stack, Typography } from "@mui/material"
 import axios, { type AxiosResponse } from "axios"
 import { useCallback, useMemo, useState } from "react"
 import { useWatch } from "react-hook-form"
@@ -32,6 +32,7 @@ export default function AddScreenShot() {
   const { id } = useParams()
   const [loading, setLoading] = useState(false)
   const type = useWatch({ control: screenshotControl, name: "type" })
+  const url = useWatch({ control: screenshotControl, name: "url" })
   const allowedUploadS3ImageFeature = useMemo(
     () => token?.data.role === "admin" || token?.data.role === "vip",
     [token?.data.role]
@@ -49,7 +50,6 @@ export default function AddScreenShot() {
     })
     setSelectedImages([])
   }
-  console.log(type, "type")
   async function onSubmit(data: Screenshot) {
     setLoading(true)
     if (data.images && type === ScreenshotType.Image) {
@@ -80,7 +80,7 @@ export default function AddScreenShot() {
             responseData.forEach((newScreenshot) => {
               screenshotMap.set(newScreenshot._id, newScreenshot)
             })
-            return Array.from(screenshotMap.values())
+            return Array.from(screenshotMap.values()).reverse()
           })
           handleClose()
         })
@@ -109,7 +109,7 @@ export default function AddScreenShot() {
           log(`${data.url} is added: `, data)
           screenshotReset?.()
           showSuccessToast("Screenshot is added")
-          setScreenShots?.((prev) => [...(prev ?? []), res.data.data])
+          setScreenShots?.((prev) => [res.data.data, ...(prev ?? [])])
           handleClose()
         })
         .catch((error: AxiosErrorMessage) => {
@@ -177,6 +177,15 @@ export default function AddScreenShot() {
             placeholder={
               "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
             }
+            TextLeft={
+              url && (
+                <Avatar
+                  variant="square"
+                  sx={{ width: "40px", height: "40px" }}
+                  src={url}
+                />
+              )
+            }
             required
             disabled={loading}
           />
@@ -187,9 +196,10 @@ export default function AddScreenShot() {
     type,
     selectedImages.length,
     translate,
+    loading,
     handleFileChange,
     screenshotControl,
-    loading
+    url
   ])
   return (
     <DialogProvider
@@ -244,19 +254,21 @@ export default function AddScreenShot() {
             overflowX: "auto"
           }}
         >
-          {selectedImages.map((image) => (
-            <Box
-              component={"img"}
-              key={image.name}
-              sx={{
-                width: "150px",
-                height: "150px",
-                objectFit: "fill"
-              }}
-              src={URL.createObjectURL(image)}
-              alt={image.name}
-            />
-          ))}
+          {selectedImages
+            .map((image) => (
+              <Box
+                component={"img"}
+                key={image.name}
+                sx={{
+                  width: "150px",
+                  height: "150px",
+                  objectFit: "fill"
+                }}
+                src={URL.createObjectURL(image)}
+                alt={image.name}
+              />
+            ))
+            .reverse()}
         </Stack>
         {memorizedTypeInput}
       </>

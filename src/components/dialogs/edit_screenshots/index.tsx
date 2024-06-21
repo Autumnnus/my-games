@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Avatar, Stack, Typography } from "@mui/material"
 import axios, { type AxiosResponse } from "axios"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useWatch } from "react-hook-form"
@@ -32,6 +32,7 @@ export default function EditScreenShot() {
   const { token } = useAppContext()
   const { id } = useParams()
   const type = useWatch({ control: screenshotControl, name: "type" })
+  const url = useWatch({ control: screenshotControl, name: "url" })
   const allowedUploadS3ImageFeature = useMemo(
     () => token?.data.role === "admin" || token?.data.role === "vip",
     [token?.data.role]
@@ -189,12 +190,21 @@ export default function EditScreenShot() {
           placeholder={
             "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
           }
+          TextLeft={
+            url && (
+              <Avatar
+                variant="square"
+                sx={{ width: "40px", height: "40px" }}
+                src={url}
+              />
+            )
+          }
           required
           disabled={loading}
         />
       )
     }
-  }, [type, loading, handleFileChange, screenshotControl, translate])
+  }, [type, loading, handleFileChange, screenshotControl, translate, url])
 
   return (
     <DialogProvider

@@ -35,7 +35,7 @@ export default function AuthResetPasswordPage() {
         )
       })
       .catch((error: AxiosErrorMessage) => {
-        console.log(error)
+        console.error(error)
         showErrorToast("Request is failed: " + error.response?.data.message)
       })
       .finally(() => setLoading(false))

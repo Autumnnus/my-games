@@ -31,7 +31,6 @@ export function GameDataTableTitle() {
     },
     [setOrder, setSortBy, sort]
   )
-
   const MemoizedColumns = useMemo(() => {
     return columns.map((column) => (
       <TableCell
@@ -57,11 +56,13 @@ export function GameDataTableTitle() {
           <UnfoldMoreIcon
             sx={{
               display:
-                column.id === "actions" ||
-                column.id === "photo" ||
-                column.id === sortBy
+                !order && !sortBy && column.id === "lastPlay"
                   ? "none"
-                  : "block"
+                  : column.id === "actions" ||
+                      column.id === "photo" ||
+                      column.id === sortBy
+                    ? "none"
+                    : "block"
             }}
             color="inherit"
           />
@@ -80,12 +81,14 @@ export function GameDataTableTitle() {
           <KeyboardArrowDownIcon
             sx={{
               display:
-                column.id === "actions" ||
-                column.id === "photo" ||
-                column.id !== sortBy ||
-                order === "asc"
-                  ? "none"
-                  : "block"
+                !order && !sortBy && column.id === "lastPlay"
+                  ? "block"
+                  : column.id === "actions" ||
+                      column.id === "photo" ||
+                      column.id !== sortBy ||
+                      order === "asc"
+                    ? "none"
+                    : "block"
             }}
             color="inherit"
           />
