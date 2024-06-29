@@ -4,6 +4,7 @@ import axios, { type AxiosResponse } from "axios"
 import { useState } from "react"
 import { useWatch } from "react-hook-form"
 
+import AsyncCreatableInput from "@components/async-creatable-input"
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
@@ -13,7 +14,7 @@ import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 import { AxiosErrorMessage } from "types/axios"
-import { DialogGameData, GamesData } from "types/games"
+import { DialogGameData, GamesData, IGDBGamesData } from "types/games"
 
 type AddGameProps = {
   isAddGameDialogOpen?: boolean
@@ -37,7 +38,9 @@ export default function AddGame({
   } = useGamesPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "photo" })
-
+  const [selectedGameData, setSelectedGameData] =
+    useState<IGDBGamesData | null>()
+  console.log(selectedGameData, "selectedGameData")
   const [randomNumber, setRandomNumber] = useState<number>(
     Math.floor(Math.random() * gameNameLabel.length)
   )
@@ -94,7 +97,51 @@ export default function AddGame({
         setLoading(false)
       })
   }
-
+  async function fetchIGDBGames(search: string) {
+    let games: { value: string; label: string; additional: IGDBGamesData }[] =
+      []
+    await axios
+      .get(`${backendUrl}/api/igdb?search=${search}`, {
+        headers: {
+          Authorization: `Bearer: ${token?.access_token}`
+        }
+      })
+      .then((res: AxiosResponse<{ data: IGDBGamesData[] }>) => {
+        games = res.data.data
+          ?.map((doc) => {
+            if (!doc) return undefined
+            return {
+              value: doc.name,
+              label: doc.name,
+              additional: doc
+            }
+          })
+          .filter(
+            (
+              doc
+            ): doc is {
+              value: string
+              label: string
+              additional: IGDBGamesData
+            } => Boolean(doc)
+          )
+      })
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Game couldn't be added: " + error.response?.data.message
+        )
+      })
+    console.log(games, "games")
+    return {
+      options: games.map((game) => ({
+        value: game.value,
+        label: game.label,
+        additional: game.additional
+      })),
+      hasMore: false
+    }
+  }
   return (
     <DialogProvider
       title={translate("add_new_game")}
@@ -116,6 +163,14 @@ export default function AddGame({
       size="large"
     >
       <Stack spacing={2}>
+        <AsyncCreatableInput<DialogGameData>
+          label={translate("game_name")}
+          control={control}
+          loadOptions={fetchIGDBGames}
+          setSelectedGameData={setSelectedGameData}
+          name="name"
+          required
+        />
         <TextInput<DialogGameData>
           type="text"
           name="name"
