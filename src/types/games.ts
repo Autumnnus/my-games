@@ -38,3 +38,19 @@ export type DialogGameData = Omit<
   GamesData,
   "userId" | "screenshotSize" | "createdAt"
 >
+
+export type IGDBGamesData = {
+  cover: number
+  id: number
+  name: string
+  slug: string
+  summary: string
+  tags: number[]
+}
+export type IGDBCoverData = {
+  game: number
+  id: number
+  url: string
+  image_id: string
+  checksum: string
+}

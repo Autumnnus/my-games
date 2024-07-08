@@ -14,7 +14,9 @@ import type {
   Control,
   Resolver,
   UseFormHandleSubmit,
-  UseFormReset
+  UseFormReset,
+  UseFormSetValue,
+  UseFormTrigger
 } from "react-hook-form"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
@@ -71,6 +73,8 @@ export type GamesContextProps = {
     value: Status
   }[]
   loadingGames: boolean
+  setValue?: UseFormSetValue<DialogGameData>
+  trigger?: UseFormTrigger<DialogGameData>
 }
 
 export type GamesPageContextProps = AppContextProps & GamesContextProps
@@ -201,13 +205,12 @@ export function GamesPageContextProvider(props: {
     control,
     handleSubmit,
     reset,
+    setValue,
+    trigger,
     formState: { isValid, isDirty }
   } = useControlledForm<DialogGameData>({
     resolver: yupResolver(schema) as unknown as Resolver<DialogGameData>,
-    mode: "all",
-    defaultValues: {
-      lastPlay: new Date().toISOString().split("T")[0]
-    }
+    mode: "all"
   })
 
   const columns: ReadonlyArray<DataTableColumnData> = useMemo(
@@ -347,6 +350,8 @@ export function GamesPageContextProvider(props: {
       value={{
         ...gamesPageDefaultValues,
         translate,
+        setValue,
+        trigger,
         games,
         setGames,
         isAddGameDialogOpen,
