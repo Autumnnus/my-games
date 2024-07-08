@@ -47,3 +47,10 @@ export type IGDBGamesData = {
   summary: string
   tags: number[]
 }
+export type IGDBCoverData = {
+  game: number
+  id: number
+  url: string
+  image_id: string
+  checksum: string
+}

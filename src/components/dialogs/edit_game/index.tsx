@@ -1,9 +1,10 @@
-import { Avatar } from "@mui/material"
+import { Avatar, Box, Switch, Typography } from "@mui/material"
 import Stack from "@mui/material/Stack"
 import axios, { type AxiosResponse } from "axios"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useWatch } from "react-hook-form"
 
+import AsyncCreatableInput from "@components/async-creatable-input"
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
@@ -13,7 +14,12 @@ import log from "@utils/log"
 import { useAppContext } from "context/app_context"
 import { useGamesPageContext } from "context/games"
 import { AxiosErrorMessage } from "types/axios"
-import { DialogGameData, GamesData } from "types/games"
+import {
+  DialogGameData,
+  GamesData,
+  IGDBCoverData,
+  IGDBGamesData
+} from "types/games"
 
 type EditGameProps = {
   isEditGameDialogOpen?: boolean
@@ -35,10 +41,15 @@ export default function EditGame({
     setGames,
     platformSelectOptions,
     statusSelectOptions,
-    backendUrl
+    backendUrl,
+    setValue,
+    trigger
   } = useGamesPageContext()
   const { token } = useAppContext()
   const imageSrc = useWatch({ control, name: "photo" })
+  const [isIGDBAPIOpen, setIsIGDBAPIOpen] = useState(true)
+  const [selectedGameData, setSelectedGameData] =
+    useState<IGDBGamesData | null>()
   const [randomNumber, setRandomNumber] = useState<number>(
     Math.floor(Math.random() * gameNameLabel.length)
   )
@@ -115,6 +126,76 @@ export default function EditGame({
       })
   }
 
+  async function fetchIGDBGames(search: string) {
+    let games: { value: string; label: string; additional: IGDBGamesData }[] =
+      []
+    await axios
+      .get(`${backendUrl}/api/igdb?search=${search}`, {
+        headers: {
+          Authorization: `Bearer: ${token?.access_token}`
+        }
+      })
+      .then((res: AxiosResponse<{ data: IGDBGamesData[] }>) => {
+        games = res.data.data
+          ?.map((doc) => {
+            if (!doc) return undefined
+            return {
+              value: doc.name,
+              label: doc.name,
+              additional: doc
+            }
+          })
+          .filter(
+            (
+              doc
+            ): doc is {
+              value: string
+              label: string
+              additional: IGDBGamesData
+            } => Boolean(doc)
+          )
+      })
+      .catch((error: AxiosErrorMessage) => {
+        console.error(error)
+        showErrorToast(
+          "Game couldn't be added: " + error.response?.data.message
+        )
+      })
+    return {
+      options: games.map((game) => ({
+        value: game.value,
+        label: game.label,
+        additional: game.additional
+      })),
+      hasMore: false
+    }
+  }
+  const fetchIGDBGameCover = useCallback(async () => {
+    if (selectedGameData && !selectedGameData?.cover) {
+      showErrorToast("Game cover couldn't be added: Cover not found")
+    } else {
+      await axios
+        .get(`${backendUrl}/api/igdb/cover/${selectedGameData?.cover}`, {
+          headers: {
+            Authorization: `Bearer: ${token?.access_token}`
+          }
+        })
+        .then((res: AxiosResponse<{ data: IGDBCoverData }>) => {
+          const photo = res.data.data.url
+          setValue?.("photo", photo.replace("t_thumb", "t_1080p"))
+          trigger?.("photo")
+        })
+        .catch((error: AxiosErrorMessage) => {
+          console.error(error)
+        })
+    }
+  }, [selectedGameData, backendUrl, token, setValue, trigger])
+
+  useEffect(() => {
+    fetchIGDBGameCover()
+  }, [fetchIGDBGameCover])
+  const gameName = useWatch({ control, name: "name" })
+
   return (
     <DialogProvider
       title={translate("edit_game")}
@@ -136,15 +217,53 @@ export default function EditGame({
       size="large"
     >
       <Stack spacing={2}>
-        <TextInput<DialogGameData>
-          type="text"
-          name="name"
-          control={control}
-          label={translate("game_name")}
-          placeholder={gameNameLabel[randomNumber]}
-          disabled={loading}
-          required
-        />
+        <Box sx={{ display: !isIGDBAPIOpen ? "none" : "block" }}>
+          <AsyncCreatableInput<DialogGameData>
+            label={translate("game_name")}
+            control={control}
+            loadOptions={fetchIGDBGames}
+            setSelectedGameData={setSelectedGameData}
+            name="name"
+            defaultValue={{
+              value: gameName,
+              label: gameName
+            }}
+            TitleRight={
+              <Stack direction={"row"} alignItems={"center"} gap={1}>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  {translate("use_igdb_api")}
+                </Typography>
+                <Switch
+                  checked={isIGDBAPIOpen}
+                  onChange={(event) => setIsIGDBAPIOpen(event.target.checked)}
+                />
+              </Stack>
+            }
+            required
+          />
+        </Box>
+        <Box sx={{ display: isIGDBAPIOpen ? "none" : "block" }}>
+          <TextInput<DialogGameData>
+            type="text"
+            name="name"
+            control={control}
+            label={translate("game_name")}
+            placeholder={gameNameLabel[randomNumber]}
+            disabled={loading}
+            TitleRight={
+              <Stack direction={"row"} alignItems={"center"} gap={1}>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  {translate("use_igdb_api")}
+                </Typography>
+                <Switch
+                  checked={isIGDBAPIOpen}
+                  onChange={(event) => setIsIGDBAPIOpen(event.target.checked)}
+                />
+              </Stack>
+            }
+            required
+          />
+        </Box>
         <Stack direction={"row"} alignItems={"center"} gap={1}>
           <TextInput<DialogGameData>
             type="text"
