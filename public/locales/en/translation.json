@@ -87,5 +87,11 @@
   "reset_password": "Reset Password",
   "send": "Send",
   "reset": "Reset",
-  "use_igdb_api": "Use IGDB API"
+  "use_igdb_api": "Use IGDB API",
+  "welcome_to_my_games": "Welcome to My Games",
+  "welcome_to_my_games_description": "It is a statistics website where all users can freely keep and store the data of the games they play.",
+  "home_data_table_screen_title": "Keep Data of Your Games",
+  "home_data_table_screen_description": "You can keep detailed data about all the games you play and view and sort the data you have kept in a table.",
+  "home_screenshot_screen_title": "Save Your Screenshots",
+  "home_screenshot_screen_description": "Are you having trouble saving screenshots while playing a game outside of Steam? Now, in this project, you can save screenshots for every game."
 }

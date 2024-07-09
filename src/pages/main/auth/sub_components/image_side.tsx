@@ -12,12 +12,12 @@ import styles from "./styles"
 export default function AuthImageSide() {
   const { backendUrl } = useAppContext()
   const [image, setImage] = useState<string>()
-  const url = `${backendUrl}/api/screenshot/get/random`
+  const url = `${backendUrl}/api/screenshot/get/random/1`
   useEffect(() => {
     axios
       .get(url)
-      .then((res: AxiosResponse<{ data: Screenshot }>) => {
-        setImage(res.data.data.url)
+      .then((res: AxiosResponse<{ data: Screenshot[] }>) => {
+        setImage(res.data.data[0].url)
       })
       .catch((error: AxiosErrorMessage) => {
         console.error(error)
