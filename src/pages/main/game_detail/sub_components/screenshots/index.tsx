@@ -11,9 +11,11 @@ import {
 } from "@mui/material"
 import { useState } from "react"
 
+import globalStyles from "@styles/globalStyles"
 import { useGameDetailPageContext } from "context/games_detail"
 import { Screenshot } from "types/screenshot"
 
+import styles from "./styles"
 const screenshotsPerPage = 10
 
 export default function Screenshots() {
@@ -76,27 +78,13 @@ export default function Screenshots() {
               src={item.url}
               alt={item.name}
               onClick={() => handleClickImage(item)}
-              sx={{
-                objectFit: "fill",
-                position: "relative",
-                width: "100%",
-                cursor: "pointer",
-                height: "100%"
-              }}
+              sx={styles.screenshot}
             />
             <IconButton
               onPointerEnter={() => setHoveredItemId(item._id)}
               onClick={(event) => handleClick(event, item)}
               disableRipple
-              sx={{
-                position: "absolute",
-                top: 3,
-                right: 3,
-                display:
-                  hoveredItemId === item._id || clickedItemId === item._id
-                    ? "block"
-                    : "none"
-              }}
+              sx={styles.iconButton(hoveredItemId, clickedItemId, item)}
             >
               <MoreVertIcon />
             </IconButton>
@@ -129,16 +117,7 @@ export default function Screenshots() {
           }}
         >
           <Box
-            sx={{
-              padding: 1,
-              pr: 4,
-              cursor: "pointer",
-              color: "#fff",
-              "&:hover": {
-                background: "#F1F1F1",
-                color: "#000"
-              }
-            }}
+            sx={globalStyles.popoverPrimaryOption}
             onClick={() => {
               setIsEditScreenshotDialogOpen?.()
               handleClosePopover?.()
@@ -147,15 +126,7 @@ export default function Screenshots() {
             {translate("edit")}
           </Box>
           <Box
-            sx={{
-              padding: 1,
-              pr: 4,
-              cursor: "pointer",
-              color: "red",
-              "&:hover": {
-                background: "#F1F1F1"
-              }
-            }}
+            sx={globalStyles.popoverErrorOption}
             onClick={() => {
               setIsDeleteScreenshotDialogOpen?.()
               handleClosePopover?.()

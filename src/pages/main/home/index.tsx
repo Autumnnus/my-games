@@ -12,17 +12,18 @@ import { Screenshot } from "types/screenshot"
 
 export default function HomePage() {
   const { backendUrl } = useAppContext()
-  const [image, setImage] = useState<string>()
-  const url = `${backendUrl}/api/screenshot/get/random`
+  const [images, setImages] = useState<Screenshot["url"][]>()
+  const url = `${backendUrl}/api/screenshot/get/random/3`
   useEffect(() => {
     axios
       .get(url)
-      .then((res: AxiosResponse<{ data: Screenshot }>) => {
-        setImage(res.data.data.url)
+      .then((res: AxiosResponse<{ data: Screenshot[] }>) => {
+        console.log(res.data.data)
+        setImages(res.data.data.map((screenshot) => screenshot.url))
       })
       .catch((error: AxiosErrorMessage) => {
         console.error(error)
-        setImage("https://i.imgur.com/Jj1rFT8.png")
+        setImages(["https://i.imgur.com/Jj1rFT8.png"])
       })
   }, [])
   return (
@@ -34,9 +35,9 @@ export default function HomePage() {
         scrollBehavior: "smooth"
       }}
     >
-      <WelcomeScreen image={image || ""} />
-      <DataTableScreen />
-      <ScreenshotScreen />
+      <WelcomeScreen image={images?.[0] || ""} />
+      <DataTableScreen image={images?.[1] || ""} />
+      <ScreenshotScreen image={images?.[2] || ""} />
       <HomeFooter />
     </Box>
   )
