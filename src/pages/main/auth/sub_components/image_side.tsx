@@ -7,15 +7,17 @@ import { useAppContext } from "context/app_context"
 import { AxiosErrorMessage } from "types/axios"
 import { Screenshot } from "types/screenshot"
 
+import styles from "./styles"
+
 export default function AuthImageSide() {
   const { backendUrl } = useAppContext()
   const [image, setImage] = useState<string>()
-  const url = `${backendUrl}/api/screenshot/get/random`
+  const url = `${backendUrl}/api/screenshot/get/random/1`
   useEffect(() => {
     axios
       .get(url)
-      .then((res: AxiosResponse<{ data: Screenshot }>) => {
-        setImage(res.data.data.url)
+      .then((res: AxiosResponse<{ data: Screenshot[] }>) => {
+        setImage(res.data.data[0].url)
       })
       .catch((error: AxiosErrorMessage) => {
         console.error(error)
@@ -31,12 +33,9 @@ export default function AuthImageSide() {
       sm={4}
       md={7}
       sx={{
-        backgroundImage: `url(${image})`,
-        backgroundRepeat: "no-repeat",
+        ...styles.imageSideContainer(image),
         backgroundColor: (t) =>
-          t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900],
-        backgroundSize: "cover",
-        backgroundPosition: "center"
+          t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900]
       }}
     />
   )

@@ -19,7 +19,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "baseUrl": "./src",
-    "paths": {  
+    "paths": {
       "@assets/*": ["./assets/*"],
       "@components/*": ["./components/*"],
       "@constants/*": ["./constants/*"],
@@ -29,9 +29,8 @@
       "@utils/*": ["./utils/*"],
       "@hooks/*": ["./hooks/*"],
       "@contexts/*": ["./contexts/*"],
-      "@models/*": ["./models/*"],
-      "@domain/*": ["./domain/*"],
       "@types/*": ["./@types/*"],
+      "@styles/*": ["./styles/*"]
     }
   },
   "include": ["./src"]

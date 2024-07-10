@@ -13,10 +13,8 @@ export default function HomePageLayout({
       <Box
         sx={(theme) => ({
           width: "100%",
-          overflow: "auto!important",
           flex: 1,
           flexGrow: 1,
-          padding: theme.spacing(3),
           transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen
