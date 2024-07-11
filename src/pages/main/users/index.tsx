@@ -5,7 +5,15 @@ import EditUser from "@components/dialogs/edit_user"
 
 export default function UsersPage() {
   return (
-    <Box px={5} py={2}>
+    <Box
+      sx={{
+        px: {
+          xs: 2,
+          sm: 5
+        },
+        py: 2
+      }}
+    >
       <UserDataTable />
       <EditUser />
     </Box>

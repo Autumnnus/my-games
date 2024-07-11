@@ -56,7 +56,6 @@ export default function AddGame({
     if (loading) {
       return
     }
-    console.log("çalıştı1")
     setIsAddGameDialogOpen?.()
     reset?.()
     setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
@@ -72,7 +71,6 @@ export default function AddGame({
       })
       .then((res: AxiosResponse<{ data: GamesData }>) => {
         log(`${data.name} is added: `, data)
-        console.log("çalıştı2")
         reset?.()
         showSuccessToast(`${data.name} is added`)
         setGames?.((prev) => [

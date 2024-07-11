@@ -1,11 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup"
-import axios, { type AxiosResponse } from "axios"
 import {
   Dispatch,
   SetStateAction,
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState
 } from "react"
@@ -19,9 +17,7 @@ import * as yup from "yup"
 
 import useControlledForm from "@hooks/use_controlled_form"
 import useToggle from "@hooks/use_toggle"
-import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
-import { AxiosErrorMessage } from "types/axios"
 import { UserDataTableColumnData, UserDataTableRowData } from "types/data_table"
 import { EditUserDialogData, UsersData } from "types/users"
 
@@ -32,8 +28,6 @@ import {
 } from "../app_context"
 
 export type UsersContextProps = {
-  users: UsersData[]
-  setUsers?: Dispatch<SetStateAction<UsersContextProps["users"]>>
   selectedUser?: UsersData | null
   setSelectedUser?: Dispatch<SetStateAction<UsersContextProps["selectedUser"]>>
   columns: ReadonlyArray<UserDataTableColumnData>
@@ -54,7 +48,6 @@ export const usersPageDefaultValues: UsersPageContextProps = {
   translate: i18next.t,
   columns: [],
   rows: [],
-  users: [],
   control: {} as Control<EditUserDialogData>
 }
 
@@ -63,24 +56,12 @@ const UsersPageContext = createContext(usersPageDefaultValues)
 export function UsersPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token, backendUrl } = useAppContext()
-  const [users, setUsers] = useState<UsersContextProps["users"]>([])
+  const { translate, token, backendUrl, users, setUsers, loadingUsers } =
+    useAppContext()
+
   const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useToggle()
   const [selectedUser, setSelectedUser] =
     useState<UsersContextProps["selectedUser"]>(null)
-  useEffect(() => {
-    axios
-      .get(`${backendUrl}/api/users`)
-      .then((res: AxiosResponse<{ data: UsersData[] }>) => {
-        setUsers(res.data.data)
-      })
-      .catch((error: AxiosErrorMessage) => {
-        console.error(error)
-        showErrorToast(
-          "Database Fetching Error: " + error.response?.data.message
-        )
-      })
-  }, [])
 
   const schema = yup
     .object({
@@ -166,7 +147,8 @@ export function UsersPageContextProvider(props: {
         isValid,
         isDirty,
         token,
-        backendUrl
+        backendUrl,
+        loadingUsers
       }}
     >
       {props.children}

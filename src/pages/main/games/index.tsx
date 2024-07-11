@@ -16,7 +16,15 @@ export default function GamesPage() {
     setIsDeleteGameDialogOpen
   } = useGamesPageContext()
   return (
-    <Box px={5} py={2}>
+    <Box
+      sx={{
+        px: {
+          xs: 2,
+          sm: 5
+        },
+        py: 2
+      }}
+    >
       <GameDataTable />
       <AddGame
         isAddGameDialogOpen={isAddGameDialogOpen}

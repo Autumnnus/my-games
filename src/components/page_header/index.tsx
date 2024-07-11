@@ -115,10 +115,14 @@ function Navigations({
   handleDrawerToggle: () => void
   isDrawer: boolean
 }) {
-  const { token } = useAppContext()
+  const { token, users } = useAppContext()
   const { translate, changeLanguage, currentLanguage } = useTranslate()
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const user = useMemo(
+    () => users.find((user) => user._id === token?.data.id),
+    [token, users]
+  )
 
   const handlePopoverClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -243,7 +247,20 @@ function Navigations({
             {translate("users")}
           </Button>
           <IconButton onClick={(event) => handlePopoverClick(event)}>
-            <AccountCircleSharpIcon sx={{ color: "#fff" }} />
+            {user?.profileImage ? (
+              <Box
+                component={"img"}
+                src={user.profileImage}
+                sx={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  objectFit: "cover"
+                }}
+              />
+            ) : (
+              <AccountCircleSharpIcon sx={{ color: "#fff" }} />
+            )}
           </IconButton>
           <Popover
             open={Boolean(anchorEl)}

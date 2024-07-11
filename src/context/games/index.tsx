@@ -98,7 +98,7 @@ const GamesPageContext = createContext(gamesPageDefaultValues)
 export function GamesPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token, backendUrl } = useAppContext()
+  const { translate, token, backendUrl, users } = useAppContext()
   const { id } = useParams()
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
@@ -128,8 +128,8 @@ export function GamesPageContextProvider(props: {
 
     const queryString = queryParams.toString()
     const url = `${backendUrl}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
-    navigate(`?${queryString}`)
     setLoadingGames(true)
+    navigate(`?${queryString}`)
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
@@ -142,7 +142,7 @@ export function GamesPageContextProvider(props: {
         )
       })
       .finally(() => setLoadingGames(false))
-  }, [id, sortBy, order, search, navigate, setGames])
+  }, [id, sortBy, order, navigate, setGames, backendUrl])
   const schema = yup
     .object({
       name: yup
@@ -383,7 +383,8 @@ export function GamesPageContextProvider(props: {
         statusSelectOptions,
         token,
         loadingGames,
-        backendUrl
+        backendUrl,
+        users
       }}
     >
       {props.children}

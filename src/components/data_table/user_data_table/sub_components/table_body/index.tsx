@@ -1,4 +1,10 @@
-import { Avatar, TableBody, TableRow, Typography } from "@mui/material"
+import {
+  Avatar,
+  Skeleton,
+  TableBody,
+  TableRow,
+  Typography
+} from "@mui/material"
 import TableCell from "@mui/material/TableCell"
 import { useMemo } from "react"
 
@@ -7,13 +13,35 @@ import {
   TABLE_ROW_BACKGROUND_COLOR,
   TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
-import { TABLE_TEXT_SIZE } from "@constants/sizes"
+import { TABLE_TEXT_SIZE, TABLE_TEXT_SIZE_MOBILE } from "@constants/sizes"
 import { useUsersPageContext } from "context/users"
 
 export function UserDataTableBody() {
-  const { columns, rows } = useUsersPageContext()
+  const { columns, rows, loadingUsers } = useUsersPageContext()
 
   const MemorizedRows = useMemo(() => {
+    if (loadingUsers) {
+      return Array.from(new Array(5)).map((_, index) => (
+        <TableRow key={index}>
+          {columns.map((column) => (
+            <TableCell
+              key={column.id}
+              align={column.align}
+              sx={{
+                backgroundColor: TABLE_ROW_BACKGROUND_COLOR
+              }}
+            >
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                height={40}
+                sx={{ minWidth: 20 }}
+              />
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+    }
     return rows?.map((row, index) => {
       return (
         <TableRow
@@ -32,7 +60,10 @@ export function UserDataTableBody() {
               <TableCell
                 sx={{
                   color: "white",
-                  p: "1rem 2rem",
+                  p: {
+                    xs: "0.5rem",
+                    sm: "1rem 2rem"
+                  },
                   borderBottom: "1px solid #666666"
                 }}
                 key={column.id}
@@ -59,7 +90,18 @@ export function UserDataTableBody() {
                       : value}
                   </Link>
                 ) : (
-                  <Typography>
+                  <Typography
+                    sx={{
+                      fontSize: {
+                        xs: TABLE_TEXT_SIZE_MOBILE,
+                        sm: TABLE_TEXT_SIZE
+                      },
+                      textAlign: {
+                        xs: "center",
+                        sm: "end"
+                      }
+                    }}
+                  >
                     {column.id === "actions" ? null : value || 0}
                   </Typography>
                 )}

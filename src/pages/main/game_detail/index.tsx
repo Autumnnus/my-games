@@ -1,7 +1,7 @@
 import CreateIcon from "@mui/icons-material/Create"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import PhotoSizeSelectActualIcon from "@mui/icons-material/PhotoSizeSelectActual"
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Button, Skeleton, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 
 import AddScreenShot from "@components/dialogs/add_screenshots"
@@ -9,7 +9,6 @@ import DeleteGame from "@components/dialogs/delete_game"
 import DeleteScreenshot from "@components/dialogs/delete_screenshots"
 import EditGame from "@components/dialogs/edit_game"
 import EditScreenShot from "@components/dialogs/edit_screenshots"
-import Loading from "@components/loading"
 import PreviewScreenShot from "@components/preview_screenshot"
 import GameDetailRow from "@pages/main/game_detail/sub_components/game_detail_row"
 import Screenshots from "@pages/main/game_detail/sub_components/screenshots"
@@ -24,9 +23,17 @@ export default function GameDetailPage() {
     setIsEditGameDialogOpen,
     setIsDeleteGameDialogOpen
   } = useGameDetailPageContext()
-  if (!game) return <Loading />
   return (
-    <Stack gap={1.5} px={10} py={5}>
+    <Stack
+      sx={{
+        px: {
+          xs: 4,
+          sm: 10
+        },
+        py: 5,
+        gap: 1.5
+      }}
+    >
       <GameDetailTitle game={game} />
       <Screenshots />
       <EditGame
@@ -50,24 +57,42 @@ function GameDetailTitle({ game }: { game: GamesData }) {
     setIsEditGameDialogOpen,
     setIsDeleteGameDialogOpen,
     setIsAddScreenshotDialogOpen,
-    token
+    token,
+    loadingGameDetail
   } = useGameDetailPageContext()
   const isOwner = useMemo(
     () => game.userId === token?.data.id,
     [game.userId, token?.data.id]
   )
   return (
-    <Stack direction={"row"} gap={3}>
-      <Box
-        component={"img"}
-        src={game?.photo}
-        sx={{
-          width: "20rem",
-          height: "24rem",
-          objectFit: "cover",
-          borderRadius: 2
-        }}
-      />
+    <Stack
+      sx={{
+        flexDirection: {
+          xs: "column",
+          sm: "row"
+        },
+        gap: 3
+      }}
+    >
+      {loadingGameDetail ? (
+        <Skeleton
+          variant="rectangular"
+          width="20rem"
+          height="24rem"
+          sx={{ borderRadius: 2 }}
+        />
+      ) : (
+        <Box
+          component={"img"}
+          src={game?.photo}
+          sx={{
+            width: "20rem",
+            height: "24rem",
+            objectFit: "cover",
+            borderRadius: 2
+          }}
+        />
+      )}
       <Stack direction={"column"} gap={2}>
         <Stack
           direction={"row"}
@@ -75,7 +100,11 @@ function GameDetailTitle({ game }: { game: GamesData }) {
           alignItems={"center"}
           gap={2}
         >
-          <Typography variant="h3">{game?.name}</Typography>
+          {loadingGameDetail ? (
+            <Skeleton variant="text" width="15rem" height="3rem" />
+          ) : (
+            <Typography variant="h3">{game?.name}</Typography>
+          )}
           <Stack
             display={token && isOwner ? "flex" : "none"}
             direction={"row"}
@@ -97,12 +126,20 @@ function GameDetailTitle({ game }: { game: GamesData }) {
           </Stack>
         </Stack>
         <Stack gap={2}>
-          <GameDetailRow title="platform" content={game.platform} />
-          <GameDetailRow title="rating" content={game.rating} />
-          <GameDetailRow title="status" content={game.status} />
-          <GameDetailRow title="playTime" content={game.playTime} />
-          <GameDetailRow title="lastPlay" content={game.lastPlay} />
-          <GameDetailRow title="review" content={game.review} />
+          {loadingGameDetail ? (
+            Array.from(new Array(6)).map((_, index) => (
+              <Skeleton key={index} variant="text" width="100%" height="2rem" />
+            ))
+          ) : (
+            <>
+              <GameDetailRow title="platform" content={game.platform} />
+              <GameDetailRow title="rating" content={game.rating} />
+              <GameDetailRow title="status" content={game.status} />
+              <GameDetailRow title="playTime" content={game.playTime} />
+              <GameDetailRow title="lastPlay" content={game.lastPlay} />
+              <GameDetailRow title="review" content={game.review} />
+            </>
+          )}
         </Stack>
       </Stack>
     </Stack>
