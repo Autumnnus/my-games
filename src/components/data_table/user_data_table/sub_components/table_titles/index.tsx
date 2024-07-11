@@ -16,11 +16,14 @@ export function UserDataTableTitle() {
       <TableCell
         key={column.id}
         align={column.align}
-        style={{
+        sx={{
           minWidth: column.minWidth,
           backgroundColor: TABLE_HEADER_BACKGROUND_COLOR,
           color: TABLE_HEADER_COLOR,
-          padding: "1rem 2rem 1rem 2rem",
+          p: {
+            xs: "0.75rem",
+            sm: "1rem 2rem"
+          },
           border: "none"
         }}
       >

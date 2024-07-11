@@ -177,7 +177,8 @@ function TableHeader() {
     reset,
     setGames,
     token,
-    backendUrl
+    backendUrl,
+    users
   } = useGamesPageContext()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -189,6 +190,10 @@ function TableHeader() {
   }
   const queryParams = new URLSearchParams()
   const isOwner = useMemo(() => id === token?.data.id, [id, token?.data.id])
+  const currentUser = useMemo(
+    () => users.find((user) => user._id === id),
+    [id, users]
+  )
   const handleSearch = (search: string) => {
     if (search) queryParams.append("search", search)
     const queryString = queryParams.toString()
@@ -206,6 +211,7 @@ function TableHeader() {
         )
       })
   }
+
   return (
     <Stack
       spacing={2}
@@ -234,7 +240,7 @@ function TableHeader() {
         </Typography>
         <Typography color={TABLE_HEADER_COLOR} variant="body2">
           {translate("all_played_games_by_user", {
-            user: "xcz"
+            user: currentUser?.name || ""
           })}
         </Typography>
       </Stack>
@@ -250,8 +256,9 @@ function TableHeader() {
         }}
       >
         <IconButton
-          sx={{ display: isOwner && token ? "block" : "none" }}
+          sx={{ display: isOwner && token ? "flex" : "none" }}
           onClick={handleAddGame}
+          disableRipple
         >
           <AddCircleOutlineIcon
             sx={{ width: "40px", height: "40px", color: "white" }}

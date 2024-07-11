@@ -98,7 +98,7 @@ const GamesPageContext = createContext(gamesPageDefaultValues)
 export function GamesPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token, backendUrl } = useAppContext()
+  const { translate, token, backendUrl, users } = useAppContext()
   const { id } = useParams()
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useToggle()
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
@@ -383,7 +383,8 @@ export function GamesPageContextProvider(props: {
         statusSelectOptions,
         token,
         loadingGames,
-        backendUrl
+        backendUrl,
+        users
       }}
     >
       {props.children}

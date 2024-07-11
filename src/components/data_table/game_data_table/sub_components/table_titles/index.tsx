@@ -9,6 +9,7 @@ import {
   TABLE_HEADER_BACKGROUND_COLOR,
   TABLE_HEADER_COLOR
 } from "@constants/colors"
+import { TABLE_TEXT_SIZE, TABLE_TEXT_SIZE_MOBILE } from "@constants/sizes"
 import { useGamesPageContext } from "context/games"
 import { DataTableColumnData } from "types/data_table"
 
@@ -40,19 +41,36 @@ export function GameDataTableTitle() {
           minWidth: column.minWidth,
           backgroundColor: TABLE_HEADER_BACKGROUND_COLOR,
           color: TABLE_HEADER_COLOR,
-          padding: "1rem 2rem 1rem 2rem",
+          // padding: "1rem 2rem 1rem 2rem",
           border: "none"
         }}
       >
         <Stack
-          direction="row"
-          alignItems="center"
           justifyContent={column.id === "name" ? "flex-start" : "flex-end"}
-          gap={1}
           onClick={() => handleSortOrder(column.id)}
-          sx={{ cursor: "pointer" }}
+          sx={{
+            cursor: "pointer",
+            justifyContent:
+              column.id === "name"
+                ? "flex-start"
+                : {
+                    xs: "center",
+                    sm: "flex-end"
+                  },
+            alignItems: "center",
+            flexDirection: "row"
+          }}
         >
-          <Typography>{column.label}</Typography>
+          <Typography
+            sx={{
+              fontSize: {
+                xs: TABLE_TEXT_SIZE_MOBILE,
+                sm: TABLE_TEXT_SIZE
+              }
+            }}
+          >
+            {column.label}
+          </Typography>
           <UnfoldMoreIcon
             sx={{
               display:

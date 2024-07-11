@@ -22,7 +22,7 @@ import {
   TABLE_ROW_BACKGROUND_COLOR,
   TABLE_ROW_BACKGROUND_COLOR_HOVER
 } from "@constants/colors"
-import { TABLE_TEXT_SIZE } from "@constants/sizes"
+import { TABLE_TEXT_SIZE, TABLE_TEXT_SIZE_MOBILE } from "@constants/sizes"
 import ratingTableColor from "@utils/functions/ratingTableColor"
 import { useGamesPageContext } from "context/games"
 import { DataTableRowData } from "types/data_table"
@@ -95,7 +95,14 @@ export function GameDataTableBody() {
                             : value === Status.Completed
                               ? RATING_8_COLOR
                               : RATING_9_COLOR,
-                      fontSize: TABLE_TEXT_SIZE
+                      fontSize: {
+                        xs: TABLE_TEXT_SIZE_MOBILE,
+                        sm: TABLE_TEXT_SIZE
+                      },
+                      textAlign: {
+                        xs: "center",
+                        sm: "end"
+                      }
                     }}
                   >
                     {translate(value as string)}
@@ -106,7 +113,14 @@ export function GameDataTableBody() {
                   <Typography
                     sx={{
                       color: ratingTableColor(value as number),
-                      fontSize: TABLE_TEXT_SIZE
+                      fontSize: {
+                        xs: TABLE_TEXT_SIZE_MOBILE,
+                        sm: TABLE_TEXT_SIZE
+                      },
+                      textAlign: {
+                        xs: "center",
+                        sm: "end"
+                      }
                     }}
                   >
                     {value}
@@ -118,7 +132,17 @@ export function GameDataTableBody() {
               } else if (column.id === "lastPlay") {
                 cellContent = (
                   <Typography
-                    sx={{ color: TABLE_GRAY_COLOR, fontSize: TABLE_TEXT_SIZE }}
+                    sx={{
+                      color: TABLE_GRAY_COLOR,
+                      fontSize: {
+                        xs: TABLE_TEXT_SIZE_MOBILE,
+                        sm: TABLE_TEXT_SIZE
+                      },
+                      textAlign: {
+                        xs: "center",
+                        sm: "end"
+                      }
+                    }}
                   >
                     {column.id === "lastPlay" &&
                       value &&
@@ -128,15 +152,23 @@ export function GameDataTableBody() {
               } else if (column.id === "platform") {
                 cellContent = (
                   <Stack
-                    direction={"row"}
-                    justifyContent={"flex-end"}
-                    alignItems={"center"}
-                    gap={1}
+                    sx={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
+                      justifyContent: {
+                        xs: "center",
+                        sm: "flex-end"
+                      }
+                    }}
                   >
                     <Typography
                       sx={{
                         color: TABLE_GRAY_COLOR,
-                        fontSize: TABLE_TEXT_SIZE
+                        fontSize: {
+                          xs: TABLE_TEXT_SIZE_MOBILE,
+                          sm: TABLE_TEXT_SIZE
+                        }
                       }}
                     >
                       {column.id === "platform" && translate(value as string)}
@@ -150,7 +182,17 @@ export function GameDataTableBody() {
               ) {
                 cellContent = (
                   <Typography
-                    sx={{ color: TABLE_GRAY_COLOR, fontSize: TABLE_TEXT_SIZE }}
+                    sx={{
+                      color: TABLE_GRAY_COLOR,
+                      fontSize: {
+                        xs: TABLE_TEXT_SIZE_MOBILE,
+                        sm: TABLE_TEXT_SIZE
+                      },
+                      textAlign: {
+                        xs: "center",
+                        sm: "end"
+                      }
+                    }}
                   >
                     {value}
                   </Typography>
@@ -161,7 +203,10 @@ export function GameDataTableBody() {
                     sx={{
                       ":hover": { color: "#075985" },
                       cursor: "pointer",
-                      fontSize: TABLE_TEXT_SIZE,
+                      fontSize: {
+                        xs: TABLE_TEXT_SIZE_MOBILE,
+                        sm: TABLE_TEXT_SIZE
+                      },
                       display: "inline-block"
                     }}
                     href={`/game/${row._id}`}
@@ -177,7 +222,11 @@ export function GameDataTableBody() {
                 <TableCell
                   sx={{
                     color: "white",
-                    p: "1rem 2rem",
+                    p: {
+                      xs: 1.5,
+                      sm: "1rem 2rem"
+                    },
+
                     borderBottom: "1px solid #666666"
                   }}
                   key={column.id}
