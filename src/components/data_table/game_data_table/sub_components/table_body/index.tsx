@@ -55,8 +55,19 @@ export function GameDataTableBody() {
       return Array.from(new Array(rowsPerPage)).map((_, index) => (
         <TableRow key={index}>
           {columns.map((column) => (
-            <TableCell key={column.id} align={column.align}>
-              <Skeleton variant="rectangular" width="100%" height={40} />
+            <TableCell
+              key={column.id}
+              align={column.align}
+              sx={{
+                backgroundColor: TABLE_ROW_BACKGROUND_COLOR
+              }}
+            >
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                height={40}
+                sx={{ minWidth: 50 }}
+              />
             </TableCell>
           ))}
         </TableRow>

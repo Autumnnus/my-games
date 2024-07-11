@@ -24,8 +24,19 @@ export function UserDataTableBody() {
       return Array.from(new Array(5)).map((_, index) => (
         <TableRow key={index}>
           {columns.map((column) => (
-            <TableCell key={column.id} align={column.align}>
-              <Skeleton variant="rectangular" width="100%" height={40} />
+            <TableCell
+              key={column.id}
+              align={column.align}
+              sx={{
+                backgroundColor: TABLE_ROW_BACKGROUND_COLOR
+              }}
+            >
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                height={40}
+                sx={{ minWidth: 20 }}
+              />
             </TableCell>
           ))}
         </TableRow>
