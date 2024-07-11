@@ -41,11 +41,13 @@ export type AppContextProps = {
   backendUrl?: string
   users: UsersData[]
   setUsers?: Dispatch<SetStateAction<AppContextProps["users"]>>
+  loadingUsers: boolean
 }
 
 export const appContextDefaultValues: AppContextProps = {
   translate: i18next.t,
-  users: []
+  users: [],
+  loadingUsers: true
 }
 
 const AppContext = createContext(appContextDefaultValues)
@@ -57,6 +59,7 @@ export function AppContextProvider(props: {
   const [users, setUsers] = useState<AppContextProps["users"]>(
     JSON.parse(localStorage.getItem("my-games-users") || "[]") as UsersData[]
   )
+  const [loadingUsers, setLoadingUsers] = useState<boolean>(true)
   const [token, setToken] = useState<AppContextProps["token"]>(() => {
     const storedToken = localStorage.getItem("my-games-user")
     return storedToken
@@ -68,6 +71,7 @@ export function AppContextProvider(props: {
       ? "http://localhost:5000"
       : "https://my-games-8c0fcafba242.herokuapp.com"
   useEffect(() => {
+    setLoadingUsers(true)
     axios
       .get(`${backendUrl}/api/users`)
       .then((res: AxiosResponse<{ data: UsersData[] }>) => {
@@ -80,6 +84,7 @@ export function AppContextProvider(props: {
           "Database Fetching Error: " + error.response?.data.message
         )
       })
+      .finally(() => setLoadingUsers(false))
   }, [])
   return (
     <AppContext.Provider
@@ -90,7 +95,8 @@ export function AppContextProvider(props: {
         setToken,
         backendUrl,
         users,
-        setUsers
+        setUsers,
+        loadingUsers
       }}
     >
       {props.children}

@@ -1,4 +1,10 @@
-import { Avatar, TableBody, TableRow, Typography } from "@mui/material"
+import {
+  Avatar,
+  Skeleton,
+  TableBody,
+  TableRow,
+  Typography
+} from "@mui/material"
 import TableCell from "@mui/material/TableCell"
 import { useMemo } from "react"
 
@@ -11,9 +17,20 @@ import { TABLE_TEXT_SIZE, TABLE_TEXT_SIZE_MOBILE } from "@constants/sizes"
 import { useUsersPageContext } from "context/users"
 
 export function UserDataTableBody() {
-  const { columns, rows } = useUsersPageContext()
+  const { columns, rows, loadingUsers } = useUsersPageContext()
 
   const MemorizedRows = useMemo(() => {
+    if (loadingUsers) {
+      return Array.from(new Array(5)).map((_, index) => (
+        <TableRow key={index}>
+          {columns.map((column) => (
+            <TableCell key={column.id} align={column.align}>
+              <Skeleton variant="rectangular" width="100%" height={40} />
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+    }
     return rows?.map((row, index) => {
       return (
         <TableRow

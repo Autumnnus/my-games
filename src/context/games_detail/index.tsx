@@ -70,6 +70,7 @@ export type GameDetailContextProps = {
   setIsPreviewScreenshotOpen?: () => void
   setScreenshotValue?: UseFormSetValue<Screenshot>
   screenshotTrigger?: UseFormTrigger<Screenshot>
+  loadingGameDetail: boolean
 }
 
 export type GameDetailPageContextProps = AppContextProps &
@@ -82,7 +83,8 @@ export const gameDetailPageDefaultValues: GameDetailPageContextProps = {
   screenshotControl: {} as Control<Screenshot>,
   game: {} as GamesData,
   screenShots: [],
-  anchorEl: null
+  anchorEl: null,
+  loadingGameDetail: true
 }
 
 const GameDetailPageContext = createContext(gameDetailPageDefaultValues)
@@ -96,6 +98,7 @@ export function GameDetailPageContextProvider(props: {
     useState<GameDetailContextProps["anchorEl"]>(null)
   const [selectedSS, setSelectedSS] =
     useState<GameDetailContextProps["selectedSS"]>()
+  const [loadingGameDetail, setLoadingGameDetail] = useState<boolean>(true)
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useToggle()
   const [isPreviewScreenshotOpen, setIsPreviewScreenshotOpen] = useToggle()
   const [isDeleteGameDialogOpen, setIsDeleteGameDialogOpen] = useToggle()
@@ -244,6 +247,7 @@ export function GameDetailPageContextProvider(props: {
   useEffect(() => {
     const gameUrl = `${backendUrl}/api/games/game/${id}`
     const ssUrl = `${backendUrl}/api/screenshot/${id}`
+    setLoadingGameDetail(true)
     axios
       .get(gameUrl)
       .then((res: AxiosResponse<{ data: GamesData }>) => {
@@ -266,7 +270,8 @@ export function GameDetailPageContextProvider(props: {
           "Error Fetching Screenshot Data: " + error.response?.data.message
         )
       })
-  }, [id, navigate])
+      .finally(() => setLoadingGameDetail(false))
+  }, [backendUrl, id, navigate])
 
   function handleClosePopover() {
     setAnchorEl(null)
@@ -310,7 +315,8 @@ export function GameDetailPageContextProvider(props: {
         token,
         setScreenshotValue,
         screenshotTrigger,
-        backendUrl
+        backendUrl,
+        loadingGameDetail
       }}
     >
       {props.children}

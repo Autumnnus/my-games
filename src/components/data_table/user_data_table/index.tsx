@@ -6,13 +6,10 @@ import TableContainer from "@mui/material/TableContainer"
 import Button from "@components/button"
 import { UserDataTableBody } from "@components/data_table/user_data_table/sub_components/table_body"
 import { UserDataTableTitle } from "@components/data_table/user_data_table/sub_components/table_titles"
-import Loading from "@components/loading"
 import { TABLE_ROW_BACKGROUND_COLOR } from "@constants/colors"
 import { useUsersPageContext } from "context/users"
 
 export default function UserDataTable() {
-  const { rows } = useUsersPageContext()
-  if (rows.length === 0) return <Loading />
   return (
     <Paper
       sx={{

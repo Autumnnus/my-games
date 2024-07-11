@@ -2,6 +2,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import {
   Avatar,
   IconButton,
+  Skeleton,
   Stack,
   TableBody,
   TableRow,
@@ -37,7 +38,8 @@ export function GameDataTableBody() {
     setAnchorEl,
     page,
     rowsPerPage,
-    token
+    token,
+    loadingGames
   } = useGamesPageContext()
   const { id } = useParams()
   const handleClick = useCallback(
@@ -49,6 +51,17 @@ export function GameDataTableBody() {
   )
   const isOwner = useMemo(() => id === token?.data.id, [id, token?.data.id])
   const MemorizedRows = useMemo(() => {
+    if (loadingGames) {
+      return Array.from(new Array(rowsPerPage)).map((_, index) => (
+        <TableRow key={index}>
+          {columns.map((column) => (
+            <TableCell key={column.id} align={column.align}>
+              <Skeleton variant="rectangular" width="100%" height={40} />
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+    }
     return rows
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((row, index) => {

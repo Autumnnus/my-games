@@ -10,7 +10,6 @@ import { useNavigate, useParams } from "react-router-dom"
 
 import { GameDataTableBody } from "@components/data_table/game_data_table/sub_components/table_body"
 import { GameDataTableTitle } from "@components/data_table/game_data_table/sub_components/table_titles"
-import Loading from "@components/loading"
 import SearchBar from "@components/search_bar"
 import {
   TABLE_HEADER_BACKGROUND_COLOR,
@@ -59,7 +58,6 @@ export default function GameDataTable() {
     setAnchorEl?.(null)
     setIsDeleteGameDialogOpen?.()
   }, [setAnchorEl, setIsDeleteGameDialogOpen])
-  if (loadingGames) return <Loading />
   return (
     <Paper
       sx={{
@@ -68,7 +66,9 @@ export default function GameDataTable() {
       }}
     >
       <TableHeader />
-      <TableContainer sx={{ display: rows.length > 0 ? "block" : "none" }}>
+      <TableContainer
+        sx={{ display: rows.length > 0 || loadingGames ? "block" : "none" }}
+      >
         <Table stickyHeader aria-label="sticky table">
           <GameDataTableTitle />
           <GameDataTableBody />

@@ -56,7 +56,8 @@ const UsersPageContext = createContext(usersPageDefaultValues)
 export function UsersPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  const { translate, token, backendUrl, users, setUsers } = useAppContext()
+  const { translate, token, backendUrl, users, setUsers, loadingUsers } =
+    useAppContext()
 
   const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useToggle()
   const [selectedUser, setSelectedUser] =
@@ -146,7 +147,8 @@ export function UsersPageContextProvider(props: {
         isValid,
         isDirty,
         token,
-        backendUrl
+        backendUrl,
+        loadingUsers
       }}
     >
       {props.children}
