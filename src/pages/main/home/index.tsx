@@ -18,7 +18,6 @@ export default function HomePage() {
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: Screenshot[] }>) => {
-        console.log(res.data.data)
         setImages(res.data.data.map((screenshot) => screenshot.url))
       })
       .catch((error: AxiosErrorMessage) => {

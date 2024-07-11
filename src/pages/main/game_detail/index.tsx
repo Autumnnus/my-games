@@ -26,7 +26,16 @@ export default function GameDetailPage() {
   } = useGameDetailPageContext()
   if (!game) return <Loading />
   return (
-    <Stack gap={1.5} px={10} py={5}>
+    <Stack
+      sx={{
+        px: {
+          xs: 4,
+          sm: 10
+        },
+        py: 5,
+        gap: 1.5
+      }}
+    >
       <GameDetailTitle game={game} />
       <Screenshots />
       <EditGame
@@ -57,7 +66,15 @@ function GameDetailTitle({ game }: { game: GamesData }) {
     [game.userId, token?.data.id]
   )
   return (
-    <Stack direction={"row"} gap={3}>
+    <Stack
+      sx={{
+        flexDirection: {
+          xs: "column",
+          sm: "row"
+        },
+        gap: 3
+      }}
+    >
       <Box
         component={"img"}
         src={game?.photo}

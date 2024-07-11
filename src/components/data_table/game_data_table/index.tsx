@@ -193,11 +193,11 @@ function TableHeader() {
     if (search) queryParams.append("search", search)
     const queryString = queryParams.toString()
     const url = `${backendUrl}/api/games/user/${id}${queryString ? `?${queryString}` : ""}`
-    navigate(`?${queryString}`)
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
         setGames?.(res.data.data)
+        navigate(`?${queryString}`)
       })
       .catch((error: AxiosErrorMessage) => {
         console.error(error)
