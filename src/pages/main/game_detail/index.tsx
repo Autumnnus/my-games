@@ -13,7 +13,9 @@ import PreviewScreenShot from "@components/preview_screenshot"
 import GameDetailRow from "@pages/main/game_detail/sub_components/game_detail_row"
 import Screenshots from "@pages/main/game_detail/sub_components/screenshots"
 import { useGameDetailPageContext } from "context/games_detail"
-import { GamesData } from "types/games"
+import { GamesData, NameId } from "types/games"
+
+import styles from "./styles"
 
 export default function GameDetailPage() {
   const {
@@ -35,6 +37,7 @@ export default function GameDetailPage() {
       }}
     >
       <GameDetailTitle game={game} />
+      {game.igdb?.id && <IGDBGameDetail game={game} />}
       <Screenshots />
       <EditGame
         isEditGameDialogOpen={isEditGameDialogOpen}
@@ -137,10 +140,129 @@ function GameDetailTitle({ game }: { game: GamesData }) {
               <GameDetailRow title="status" content={game.status} />
               <GameDetailRow title="playTime" content={game.playTime} />
               <GameDetailRow title="lastPlay" content={game.lastPlay} />
-              <GameDetailRow title="review" content={game.review} />
+              {game.review && (
+                <GameDetailRow title="review" content={game.review} />
+              )}
             </>
           )}
         </Stack>
+      </Stack>
+    </Stack>
+  )
+}
+function IGDBGameDetail({ game }: { game: GamesData }) {
+  const { translate } = useGameDetailPageContext()
+  return (
+    <Stack
+      sx={{
+        flexDirection: {
+          xs: "column",
+          sm: "row"
+        },
+        gap: 3
+      }}
+    >
+      <Stack direction={"column"} gap={2} sx={{ width: "100%" }}>
+        <Typography variant="h3">IGDB {translate("game_details")}</Typography>
+        <Stack sx={styles.tagsRow}>
+          <Stack sx={styles.tagRow((game?.igdb?.genres?.length || 0) > 0)}>
+            <Tags
+              title="genres"
+              tags={
+                game.igdb?.genres?.map((item) => ({
+                  name: item.name,
+                  id: item.id
+                })) as NameId[]
+              }
+            />
+          </Stack>
+          <Stack sx={styles.tagRow((game?.igdb?.themes?.length || 0) > 0)}>
+            <Tags
+              title="themes"
+              tags={
+                game.igdb?.themes.map((item) => ({
+                  name: item.name,
+                  id: item.id
+                })) as NameId[]
+              }
+            />
+          </Stack>
+          <Stack
+            sx={styles.tagRow(
+              (game?.igdb?.player_perspectives?.length || 0) > 0
+            )}
+          >
+            <Tags
+              title="player_perspectives"
+              tags={
+                game.igdb?.player_perspectives?.map((item) => ({
+                  name: item.name,
+                  id: item.id
+                })) as NameId[]
+              }
+            />
+          </Stack>
+        </Stack>
+        <Stack sx={styles.tagsRow}>
+          <Stack sx={styles.tagRow((game?.igdb?.game_modes?.length || 0) > 0)}>
+            <Tags
+              title="game_modes"
+              tags={
+                game.igdb?.game_modes.map((item) => ({
+                  name: item.name,
+                  id: item.id
+                })) as NameId[]
+              }
+            />
+          </Stack>
+          <Stack sx={styles.tagRow((game?.igdb?.developers?.length || 0) > 0)}>
+            <Tags
+              title="developers"
+              tags={
+                game.igdb?.developers.map((item) => ({
+                  name: item.name,
+                  id: item.id
+                })) as NameId[]
+              }
+            />
+          </Stack>
+          <Stack sx={styles.tagRow((game?.igdb?.publishers?.length || 0) > 0)}>
+            <Tags
+              title="publishers"
+              tags={
+                game.igdb?.publishers.map((item) => ({
+                  name: item.name,
+                  id: item.id
+                })) as NameId[]
+              }
+            />
+          </Stack>
+        </Stack>
+      </Stack>
+    </Stack>
+  )
+}
+
+function Tags({ title, tags }: { title: string; tags: NameId[] }) {
+  const { translate } = useGameDetailPageContext()
+  return (
+    <Stack>
+      <Typography variant="body1">{translate(title)}</Typography>
+      <Stack direction={"row"} flexWrap={"wrap"} gap={1}>
+        {tags?.map((tag) => (
+          <Typography
+            key={tag.id}
+            variant="body2"
+            sx={{
+              backgroundColor: "#f5f5f5",
+              borderRadius: 2,
+              padding: "0.2rem 0.5rem",
+              color: "gray"
+            }}
+          >
+            {tag.name}
+          </Typography>
+        ))}
       </Stack>
     </Stack>
   )

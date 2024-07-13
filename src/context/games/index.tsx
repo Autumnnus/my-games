@@ -133,7 +133,6 @@ export function GamesPageContextProvider(props: {
     axios
       .get(url)
       .then((res: AxiosResponse<{ data: GamesData[] }>) => {
-        console.log(res.data.data)
         setGames(res.data.data)
       })
       .catch((error: AxiosErrorMessage) => {
@@ -170,6 +169,7 @@ export function GamesPageContextProvider(props: {
         .required(
           translate("input_is_required", { name: translate("platform") })
         ),
+      firstFinished: yup.string(),
       review: yup.string(),
       rating: yup
         .number()

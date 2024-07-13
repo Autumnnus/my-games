@@ -65,7 +65,6 @@ export default function EditGame({
     Math.floor(Math.random() * gameNameLabel.length)
   )
   const [loading, setLoading] = useState(false)
-  console.log("selectedGame", selectedGame)
   useEffect(() => {
     reset?.(
       selectedGame
