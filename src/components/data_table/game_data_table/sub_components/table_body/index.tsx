@@ -45,6 +45,7 @@ export function GameDataTableBody() {
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>, row: DataTableRowData) => {
       setAnchorEl?.(event.currentTarget)
+      console.log(row, "row")
       setSelectedGame?.(row)
     },
     [setAnchorEl, setSelectedGame]

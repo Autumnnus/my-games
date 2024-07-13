@@ -81,10 +81,6 @@ export default function AddGame({
     setValue?.("igdb", selectedGameData || undefined)
   }, [selectedGameData])
 
-  const igdb = useWatch({ control })
-  console.log("selectedGameData", selectedGameData)
-  console.log("IGDB", igdb)
-
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
     await axios
@@ -110,7 +106,9 @@ export default function AddGame({
             _id: res.data.data._id,
             createdAt: res.data.data.createdAt,
             userId: res.data.data.userId,
-            screenshotSize: res.data.data.screenshotSize
+            screenshotSize: res.data.data.screenshotSize,
+            firstFinished: res.data.data.firstFinished,
+            igdb: res.data.data.igdb || undefined
           },
           ...prev
         ])

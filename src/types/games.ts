@@ -37,13 +37,7 @@ export type GamesData = {
   userId: string
   screenshotSize: number
   createdAt: Date
-  firstFinishedDate?: Date
-  favoriteGames?: {
-    _id: string
-    name: string
-    rating: string
-    photo: string
-  }[]
+  firstFinished?: Date
   igdb?: {
     id: number
     name: string
