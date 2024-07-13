@@ -38,9 +38,9 @@ export type AsyncCreatableInputProps<T extends FieldValues> = TextFieldProps & {
     options: { value: string; label: string; additional?: IGDBGamesData }[]
     hasMore: boolean
   }>
-  value?: { value: string; label: string }
+  value?: OptionType
   setSelectedGameData?: (additional: IGDBGamesData | null) => void
-  defaultValue?: { value: string; label: string }
+  defaultValue?: OptionType
 }
 type AsyncPaginateCreatableProps<
   OptionType,

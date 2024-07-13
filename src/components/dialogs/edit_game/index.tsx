@@ -175,7 +175,7 @@ export default function EditGame({
       showErrorToast("Game cover couldn't be added: Cover not found")
     } else {
       await axios
-        .get(`${backendUrl}/api/igdb/cover/${selectedGameData?.cover}`, {
+        .get(`${backendUrl}/api/igdb/cover/${selectedGameData?.cover.id}`, {
           headers: {
             Authorization: `Bearer: ${token?.access_token}`
           }

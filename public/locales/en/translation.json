@@ -93,5 +93,16 @@
   "home_data_table_screen_title": "Keep Data of Your Games",
   "home_data_table_screen_description": "You can keep detailed data about all the games you play and view and sort the data you have kept in a table.",
   "home_screenshot_screen_title": "Save Your Screenshots",
-  "home_screenshot_screen_description": "Are you having trouble saving screenshots while playing a game outside of Steam? Now, in this project, you can save screenshots for every game."
+  "home_screenshot_screen_description": "Are you having trouble saving screenshots while playing a game outside of Steam? Now, in this project, you can save screenshots for every game.",
+  "game_details": "Game Details",
+  "summary": "Summary",
+  "info": "Info",
+  "release_date": "Release Date",
+  "tags": "Tags",
+  "genres": "Genres",
+  "themes": "Themes",
+  "player_perspectives": "Player Perspectives",
+  "game_modes": "Game Modes",
+  "developers": "Developers",
+  "publishers": "Publishers"
 }

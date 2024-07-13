@@ -19,6 +19,11 @@ export enum Status {
   ActivePlaying = "activePlaying"
 }
 
+export type NameId = {
+  name: string
+  id: number
+}
+
 export type GamesData = {
   rating: number
   playTime: number
@@ -32,20 +37,109 @@ export type GamesData = {
   userId: string
   screenshotSize: number
   createdAt: Date
+  firstFinishedDate?: Date
+  favoriteGames?: {
+    _id: string
+    name: string
+    rating: string
+    photo: string
+  }[]
+  igdb?: {
+    id: number
+    name: string
+    cover: {
+      id: number
+      url: string
+      game: string
+    }
+    summary: string
+    slug: string
+    developers: {
+      id: number
+      name: string
+    }[]
+    publishers: {
+      id: number
+      name: string
+    }[]
+    genres: {
+      id: number
+      name: string
+    }[]
+    player_perspectives: {
+      id: number
+      name: string
+    }[]
+    game_modes: {
+      id: number
+      name: string
+    }[]
+    themes: {
+      id: number
+      name: string
+    }[]
+    release_dates: {
+      id: number
+      date: number
+    }[]
+  }
 }
 
 export type DialogGameData = Omit<
   GamesData,
   "userId" | "screenshotSize" | "createdAt"
 >
+type Cover = {
+  id: number
+  url: string
+  game: string
+}
+
+type ReleaseDate = {
+  id: number
+  date: number
+}
+
+type InvolvedCompany = {
+  company: {
+    name: string
+    id: number
+  }
+  developer: boolean
+  publisher: boolean
+}
 
 export type IGDBGamesData = {
-  cover: number
   id: number
+  aggregated_rating: number
+  aggregated_rating_count: number
   name: string
-  slug: string
+  cover: Cover
   summary: string
-  tags: number[]
+  slug: string
+  developers: NameId[]
+  publishers: NameId[]
+  genres: NameId[]
+  player_perspectives: NameId[]
+  game_modes: NameId[]
+  themes: NameId[]
+  release_dates: ReleaseDate[]
+}
+
+export type IGDBGamesResponse = {
+  id: number
+  aggregated_rating: number
+  aggregated_rating_count: number
+  name: string
+  cover: Cover
+  summary: string
+  slug: string
+  involved_companies?: InvolvedCompany[]
+  genres: NameId[]
+  player_perspectives: NameId[]
+  game_modes: NameId[]
+  themes: NameId[]
+  release_dates: ReleaseDate[]
 }
 export type IGDBCoverData = {
   game: number

@@ -1,14 +1,25 @@
-import { Avatar, Box, Switch, Typography } from "@mui/material"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Avatar,
+  Box,
+  Switch,
+  Typography
+} from "@mui/material"
 import Stack from "@mui/material/Stack"
 import axios, { type AxiosResponse } from "axios"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useWatch } from "react-hook-form"
 
 import AsyncCreatableInput from "@components/async-creatable-input"
 import AutoCompleteInput from "@components/auto_complete"
 import DialogProvider from "@components/dialog_provider"
 import TextInput from "@components/text_input"
+import { TABLE_HEADER_BACKGROUND_COLOR } from "@constants/colors"
 import { gameNameLabel } from "@utils/arrays/gameNameLabel"
+import { convertUnixTimestamp } from "@utils/functions/convertUnixTimestamp"
 import { showErrorToast, showSuccessToast } from "@utils/functions/toast"
 import log from "@utils/log"
 import { useAppContext } from "context/app_context"
@@ -17,8 +28,8 @@ import { AxiosErrorMessage } from "types/axios"
 import {
   DialogGameData,
   GamesData,
-  IGDBCoverData,
-  IGDBGamesData
+  IGDBGamesData,
+  IGDBGamesResponse
 } from "types/games"
 
 type AddGameProps = {
@@ -59,7 +70,20 @@ export default function AddGame({
     setIsAddGameDialogOpen?.()
     reset?.()
     setRandomNumber(Math.floor(Math.random() * gameNameLabel.length))
+    setSelectedGameData(null)
   }
+  useEffect(() => {
+    setValue?.(
+      "photo",
+      selectedGameData?.cover?.url?.replace("t_thumb", "t_1080p") || ""
+    )
+    trigger?.("photo")
+    setValue?.("igdb", selectedGameData || undefined)
+  }, [selectedGameData])
+
+  const igdb = useWatch({ control })
+  console.log("selectedGameData", selectedGameData)
+  console.log("IGDB", igdb)
 
   async function onSubmit(data: DialogGameData) {
     setLoading(true)
@@ -103,22 +127,42 @@ export default function AddGame({
       })
   }
   async function fetchIGDBGames(search: string) {
-    let games: { value: string; label: string; additional: IGDBGamesData }[] =
-      []
+    let games: {
+      value: string
+      label: string
+      additional: IGDBGamesData
+    }[] = []
     await axios
       .get(`${backendUrl}/api/igdb?search=${search}`, {
         headers: {
           Authorization: `Bearer: ${token?.access_token}`
         }
       })
-      .then((res: AxiosResponse<{ data: IGDBGamesData[] }>) => {
+      .then((res: AxiosResponse<{ data: IGDBGamesResponse[] }>) => {
         games = res.data.data
           ?.map((doc) => {
             if (!doc) return undefined
+            const { involved_companies, ...rest } = doc
             return {
               value: doc.name,
               label: doc.name,
-              additional: doc
+              additional: {
+                ...rest,
+                publishers:
+                  involved_companies
+                    ?.filter((company) => company.publisher === true)
+                    ?.map((company) => ({
+                      name: company.company.name,
+                      id: company.company.id
+                    })) || [],
+                developers:
+                  involved_companies
+                    ?.filter((company) => company.developer === true)
+                    ?.map((company) => ({
+                      name: company.company.name,
+                      id: company.company.id
+                    })) || []
+              }
             }
           })
           .filter(
@@ -146,30 +190,6 @@ export default function AddGame({
       hasMore: false
     }
   }
-  const fetchIGDBGameCover = useCallback(async () => {
-    if (selectedGameData && !selectedGameData?.cover) {
-      showErrorToast("Game cover couldn't be added: Cover not found")
-    } else {
-      await axios
-        .get(`${backendUrl}/api/igdb/cover/${selectedGameData?.cover}`, {
-          headers: {
-            Authorization: `Bearer: ${token?.access_token}`
-          }
-        })
-        .then((res: AxiosResponse<{ data: IGDBCoverData }>) => {
-          const photo = res.data.data.url
-          setValue?.("photo", photo.replace("t_thumb", "t_1080p"))
-          trigger?.("photo")
-        })
-        .catch((error: AxiosErrorMessage) => {
-          console.error(error)
-        })
-    }
-  }, [selectedGameData, backendUrl, token, setValue, trigger])
-
-  useEffect(() => {
-    fetchIGDBGameCover()
-  }, [fetchIGDBGameCover])
 
   return (
     <DialogProvider
@@ -316,7 +336,117 @@ export default function AddGame({
           sx={{}}
           disabled={loading}
         />
+        {selectedGameData && (
+          <div>
+            <Typography textAlign={"center"} variant="body1">
+              {selectedGameData.name} {translate("game_details")}
+            </Typography>
+            <Accordion sx={{ bgcolor: TABLE_HEADER_BACKGROUND_COLOR }}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                aria-controls="panel2-content"
+                id="panel2-header"
+              >
+                <Typography>{translate("info")}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <AccordionGameDetailSection
+                  label={translate("summary")}
+                  content={selectedGameData.summary}
+                />
+                <AccordionGameDetailSection
+                  label={translate("release_date")}
+                  content={convertUnixTimestamp(
+                    selectedGameData.release_dates?.[0].date
+                  )}
+                />
+                {selectedGameData.aggregated_rating && (
+                  <AccordionGameDetailSection
+                    label={translate("rating")}
+                    content={selectedGameData.aggregated_rating?.toFixed(2)}
+                  />
+                )}
+                <AccordionGameDetailSection
+                  label={translate("developers")}
+                  content={selectedGameData.developers
+                    ?.map((item) => item.name)
+                    .join(", ")}
+                />
+                <AccordionGameDetailSection
+                  label={translate("publishers")}
+                  content={selectedGameData.publishers
+                    ?.map((item) => item.name)
+                    .join(", ")}
+                />
+              </AccordionDetails>
+            </Accordion>
+            <Accordion sx={{ bgcolor: TABLE_HEADER_BACKGROUND_COLOR }}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Typography>{translate("tags")}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <AccordionTagsSection
+                  label={translate("genres")}
+                  data={selectedGameData.genres}
+                />
+                <AccordionTagsSection
+                  label={translate("themes")}
+                  data={selectedGameData.themes}
+                />
+                <AccordionTagsSection
+                  label={translate("player_perspectives")}
+                  data={selectedGameData.player_perspectives}
+                />
+                <AccordionTagsSection
+                  label={translate("game_modes")}
+                  data={selectedGameData.game_modes}
+                />
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        )}
       </Stack>
     </DialogProvider>
   )
 }
+
+type AccordionGameDetailSectionProps = {
+  label: string
+  content: string
+}
+
+type AccordionTagsSectionProps = {
+  label: string
+  data: { name: string }[]
+}
+
+const AccordionGameDetailSection = ({
+  label,
+  content
+}: AccordionGameDetailSectionProps) =>
+  content ? (
+    <Box>
+      <Typography component={"span"} sx={{ color: "#ff3030" }}>
+        -{label}:
+      </Typography>
+      <Typography component={"span"} sx={{ marginLeft: 1 }}>
+        {content}
+      </Typography>
+    </Box>
+  ) : null
+
+const AccordionTagsSection = ({ label, data }: AccordionTagsSectionProps) =>
+  data?.length ? (
+    <Box>
+      <Typography component={"span"} sx={{ color: "#ff3030" }}>
+        -{label}:
+      </Typography>
+      <Typography component={"span"} sx={{ marginLeft: 1 }}>
+        {data.map((item) => item.name).join(", ")}
+      </Typography>
+    </Box>
+  ) : null
