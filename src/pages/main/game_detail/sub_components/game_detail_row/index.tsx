@@ -15,7 +15,12 @@ export default function GameDetailRow({ title, content }: DetailRowsProps) {
   function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
-  const stringfied = useMemo(() => String(content), [content])
+  const stringfied = useMemo(() => {
+    if (!content) {
+      return ""
+    }
+    return String(content)
+  }, [content])
   const memorizedContent = useMemo(() => {
     if (title === "lastPlay") {
       return (
@@ -26,9 +31,17 @@ export default function GameDetailRow({ title, content }: DetailRowsProps) {
     }
     if (title === "rating") {
       return (
-        <Box component="span" sx={{ color: "gray" }}>
-          {stringfied}/10
-        </Box>
+        <>
+          {!content ? (
+            <Box component="span" sx={{ color: "gray" }}>
+              {translate("not_rated")}
+            </Box>
+          ) : (
+            <Box component="span" sx={{ color: "gray" }}>
+              {stringfied}/10
+            </Box>
+          )}
+        </>
       )
     }
     if (title === "platform") {

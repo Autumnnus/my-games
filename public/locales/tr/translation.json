@@ -93,5 +93,16 @@
   "home_data_table_screen_title": "Oyunlarınızın Verilerini Tutun",
   "home_data_table_screen_description": "Oynadığınız tüm oyunlar hakkında detaylıca veri tutabilir ve tuttuğunuz verileri tablo halinde görebilir ve sıralayabilirsiniz.",
   "home_screenshot_screen_title": "Ekran görüntülerinizi saklayın",
-  "home_screenshot_screen_description": "Steam dışında bir oyun oynayıp ekran görüntülerinizi saklamakta sıkıntı mı çekiyorsunuz? Artık bu projede ekran görüntülerinizi her oyun için saklayabilirsiniz."
+  "home_screenshot_screen_description": "Steam dışında bir oyun oynayıp ekran görüntülerinizi saklamakta sıkıntı mı çekiyorsunuz? Artık bu projede ekran görüntülerinizi her oyun için saklayabilirsiniz.",
+  "game_details": "Oyun Detayları",
+  "summary": "Özet",
+  "info": "Bilgi",
+  "release_date": "Yayın Tarihi",
+  "tags": "Etiketler",
+  "genres": "Türler",
+  "themes": "Temalar",
+  "player_perspectives": "Oyuncu Bakış Açıları",
+  "game_modes": "Oyun Modları",
+  "developers": "Geliştiriciler",
+  "publishers": "Yayıncılar"
 }

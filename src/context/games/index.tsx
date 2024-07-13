@@ -169,6 +169,7 @@ export function GamesPageContextProvider(props: {
         .required(
           translate("input_is_required", { name: translate("platform") })
         ),
+      firstFinished: yup.string(),
       review: yup.string(),
       rating: yup
         .number()
@@ -198,7 +199,63 @@ export function GamesPageContextProvider(props: {
         .max(999999, translate("rating_max_error", { value: 999999 }))
         .required(
           translate("input_is_required", { name: translate("game_play_time") })
-        )
+        ),
+      igdb: yup
+        .object()
+        .shape({
+          id: yup.number().notRequired(),
+          name: yup.string().notRequired(),
+          cover: yup.object().shape({
+            id: yup.number().notRequired(),
+            url: yup.string().notRequired(),
+            game: yup.string().notRequired()
+          }),
+          summary: yup.string().notRequired(),
+          slug: yup.string().notRequired(),
+          developers: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              name: yup.string().notRequired()
+            })
+          ),
+          publishers: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              name: yup.string().notRequired()
+            })
+          ),
+          genres: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              name: yup.string().notRequired()
+            })
+          ),
+          player_perspectives: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              name: yup.string().notRequired()
+            })
+          ),
+          game_modes: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              name: yup.string().notRequired()
+            })
+          ),
+          themes: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              name: yup.string().notRequired()
+            })
+          ),
+          release_dates: yup.array().of(
+            yup.object().shape({
+              id: yup.number().notRequired(),
+              date: yup.number().notRequired()
+            })
+          )
+        })
+        .notRequired()
     })
     .required()
   const {
