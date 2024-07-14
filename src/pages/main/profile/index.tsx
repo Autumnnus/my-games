@@ -1,33 +1,19 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material"
+import EditIcon from "@mui/icons-material/Edit"
+import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material"
 
+import Button from "@components/button"
+import SetFavoriteGames from "@components/dialogs/set_favorite_games"
 import { useProfilePageContext } from "context/profile"
-
-type gameData = {
-  name: string
-  rating: number
-}
-
+import { FavoriteGamesData } from "types/games"
 export default function ProfilePage() {
-  const { profile, translate } = useProfilePageContext()
-  const games = {
-    firstGame: {
-      name: "Baldur's Gate 3",
-      rating: 10
-    },
-    secondGame: {
-      name: "Elden Ring",
-      rating: 9.8
-    },
-    thirdGame: {
-      name: "The Legend of Zelda: Tears of the Kingdom",
-      rating: 9.7
-    }
-  }
+  const { profile, translate, favoriteGames, setIsFavoriteGamesDialogOpen } =
+    useProfilePageContext()
   return (
     <Stack
       sx={{
         px: 5,
-        py: 2
+        py: 2,
+        gap: 1
       }}
     >
       <Stack
@@ -62,44 +48,53 @@ export default function ProfilePage() {
           <Typography variant="h6">{profile?.screenshotSize || 0}</Typography>
         </Stack>
       </Stack>
-      <Stack alignItems={"center"}>
-        <h1>ALPHA - UNDER PROGRESS</h1>
-        <h2>Favorite Games</h2>
+      <Stack alignItems={"center"} gap={2}>
+        <Stack direction={"row"} justifyContent={"center"} gap={5}>
+          <Typography variant="h4">{translate("favorite_games")}</Typography>
+          <IconButton onClick={() => setIsFavoriteGamesDialogOpen?.()}>
+            <EditIcon />
+          </IconButton>
+        </Stack>
+        {favoriteGames?.length && favoriteGames.length > 0 ? (
+          <Stack direction={"row"} justifyContent={"center"} gap={5}>
+            <Card favoriteGames={favoriteGames} />
+          </Stack>
+        ) : (
+          <Button onClick={() => setIsFavoriteGamesDialogOpen?.()}>
+            {translate("set_favorite_games")}
+          </Button>
+        )}
       </Stack>
-      <Stack direction={"row"} justifyContent={"center"} gap={5}>
-        <Card
-          firstGame={games.firstGame}
-          secondGame={games.secondGame}
-          thirdGame={games.thirdGame}
-        />
-      </Stack>
+      <SetFavoriteGames />
     </Stack>
   )
 }
 
-function Card({
-  firstGame,
-  secondGame,
-  thirdGame
-}: {
-  firstGame: gameData
-  secondGame: gameData
-  thirdGame: gameData
-}) {
+function Card({ favoriteGames }: { favoriteGames: FavoriteGamesData[] }) {
+  const { translate } = useProfilePageContext()
   return (
-    <Stack direction={"row"} justifyContent={"center"} gap={5}>
-      {[firstGame, secondGame, thirdGame].map((game: gameData, index) => (
+    <Stack
+      sx={{
+        height: "100%",
+        flexDirection: {
+          xs: "column",
+          md: "row"
+        },
+        justifyContent: "center",
+        gap: 5
+      }}
+    >
+      {favoriteGames.map((game) => (
         <Stack
           sx={{
             width: 300,
-            height: 500,
             gap: 1
           }}
-          key={index}
+          key={game._id}
         >
           <Box
             component={"img"}
-            src="https://i.pinimg.com/736x/3f/67/87/3f67879f186cfacff6aa3969e76c7cc3.jpg"
+            src={game?.photo || ""}
             sx={{
               width: 300,
               height: 500
@@ -109,7 +104,7 @@ function Card({
             {game.name}
           </Typography>
           <Typography textAlign={"center"} variant="h6">
-            {game.rating}/10
+            {game.rating ? `${game.rating}/10` : translate("not_rated")}
           </Typography>
         </Stack>
       ))}

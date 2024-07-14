@@ -14,6 +14,7 @@ export type UsersData = {
   resetPasswordExpire: Date
   resetPasswordToken: string
   profileImage: string
+  favoriteGames: string[]
   __v: number
   _id: string
 }

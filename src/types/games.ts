@@ -38,6 +38,7 @@ export type GamesData = {
   screenshotSize: number
   createdAt: Date
   firstFinished?: Date
+  isFavorite?: boolean
   igdb?: {
     id: number
     name: string
@@ -83,6 +84,18 @@ export type DialogGameData = Omit<
   GamesData,
   "userId" | "screenshotSize" | "createdAt"
 >
+export type FavoriteGamesData = {
+  _id: string
+  name: string
+  rating?: number
+  photo?: string
+}
+export type FavoriteGamesDialogData = {
+  first_game: string
+  second_game: string
+  third_game: string
+}
+
 type Cover = {
   id: number
   url: string

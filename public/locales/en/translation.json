@@ -104,5 +104,10 @@
   "player_perspectives": "Player Perspectives",
   "game_modes": "Game Modes",
   "developers": "Developers",
-  "publishers": "Publishers"
+  "publishers": "Publishers",
+  "set_favorite_games": "Set Favorite Games",
+  "favorite_games": "Favorite Games",
+  "first_game": "First Game",
+  "second_game": "Second Game",
+  "third_game": "Third Game"
 }

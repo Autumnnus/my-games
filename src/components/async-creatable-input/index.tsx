@@ -33,7 +33,8 @@ export type AsyncCreatableInputProps<T extends FieldValues> = TextFieldProps & {
   TitleRight?: React.ReactNode
   loadOptions: (
     search: string,
-    prevOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>
+    prevOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>,
+    page?: number
   ) => Promise<{
     options: { value: string; label: string; additional?: IGDBGamesData }[]
     hasMore: boolean
@@ -131,6 +132,7 @@ export default function AsyncCreatableInput<T extends FieldValues>(
               value={props.value}
               fullWidth
               variant="outlined"
+              menuPosition="fixed"
               onBlur={handleOnBlur}
               onFocus={handleOnFocus}
               id={componentId}

@@ -104,5 +104,10 @@
   "player_perspectives": "Oyuncu Bakış Açıları",
   "game_modes": "Oyun Modları",
   "developers": "Geliştiriciler",
-  "publishers": "Yayıncılar"
+  "publishers": "Yayıncılar",
+  "set_favorite_games": "Favori Oyunları Ayarla",
+  "favorite_games": "Favori Oyunlar",
+  "first_game": "Birinci Oyun",
+  "second_game": "İkinci Oyun",
+  "third_game": "Üçüncü Oyun"
 }
