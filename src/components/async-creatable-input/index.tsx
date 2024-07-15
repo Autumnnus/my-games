@@ -23,6 +23,7 @@ import styles from "./styles"
 type OptionType = {
   value: string
   label: string
+  additional?: IGDBGamesData
 }
 
 export type AsyncCreatableInputProps<T extends FieldValues> = TextFieldProps & {
@@ -162,6 +163,7 @@ export default function AsyncCreatableInput<T extends FieldValues>(
                   }
                 })
               }}
+              components={{ Option: CustomOption }}
               label={undefined}
               inputProps={{
                 style: { color: "#000" }
@@ -170,6 +172,42 @@ export default function AsyncCreatableInput<T extends FieldValues>(
           </>
         )}
       />
+    </Box>
+  )
+}
+
+interface CustomOptionProps {
+  innerProps: React.HTMLAttributes<HTMLDivElement>
+  data: OptionType
+}
+
+const CustomOption: React.FC<CustomOptionProps> = (props) => {
+  return (
+    <Box
+      {...props.innerProps}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        padding: "10px",
+        backgroundColor: "black",
+        color: "white",
+        "&:hover": {
+          backgroundColor: "gray",
+          cursor: "pointer"
+        }
+      }}
+    >
+      <img
+        src={props.data.additional?.cover?.url}
+        alt=""
+        style={{
+          width: "30px",
+          height: "30px",
+          marginRight: "10px",
+          display: props.data.additional?.cover?.url ? "block" : "none"
+        }}
+      />
+      <Typography component={"span"}>{props.data.label}</Typography>
     </Box>
   )
 }
