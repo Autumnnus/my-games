@@ -21,23 +21,13 @@ type TokenData = {
   name: string
   isVerified: boolean
   role: UsersData["role"]
+  access_token: string
 }
 
 export type AppContextProps = {
   translate: TFunction<"translation", undefined>
-  token?: {
-    access_token: string
-    data: TokenData
-  }
-  setToken?: React.Dispatch<
-    React.SetStateAction<
-      | {
-          access_token: string
-          data: TokenData
-        }
-      | undefined
-    >
-  >
+  token?: TokenData
+  setToken?: React.Dispatch<React.SetStateAction<TokenData | undefined>>
   backendUrl?: string
   users: UsersData[]
   setUsers?: Dispatch<SetStateAction<AppContextProps["users"]>>
@@ -63,7 +53,8 @@ export function AppContextProvider(props: {
   const [token, setToken] = useState<AppContextProps["token"]>(() => {
     const storedToken = localStorage.getItem("my-games-user")
     return storedToken
-      ? (JSON.parse(storedToken) as AppContextProps["token"])
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (JSON.parse(storedToken).data as AppContextProps["token"])
       : undefined
   })
   const backendUrl =

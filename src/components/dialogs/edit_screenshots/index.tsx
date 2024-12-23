@@ -34,8 +34,8 @@ export default function EditScreenShot() {
   const type = useWatch({ control: screenshotControl, name: "type" })
   const url = useWatch({ control: screenshotControl, name: "url" })
   const allowedUploadS3ImageFeature = useMemo(
-    () => token?.data.role === "admin" || token?.data.role === "vip",
-    [token?.data.role]
+    () => token?.role === "admin" || token?.role === "vip",
+    [token?.role]
   )
 
   const [loading, setLoading] = useState(false)

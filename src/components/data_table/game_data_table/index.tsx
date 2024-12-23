@@ -189,7 +189,7 @@ function TableHeader() {
     setIsAddGameDialogOpen?.()
   }
   const queryParams = new URLSearchParams()
-  const isOwner = useMemo(() => id === token?.data.id, [id, token?.data.id])
+  const isOwner = useMemo(() => id === token?.id, [id, token?.id])
   const currentUser = useMemo(
     () => users.find((user) => user._id === id),
     [id, users]

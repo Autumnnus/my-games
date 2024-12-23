@@ -55,7 +55,7 @@ export default function DeleteGame({
         setGames?.((prev) =>
           prev.filter((game) => game._id !== selectedGame?._id)
         )
-        path === "game" && navigate(`/games/${token?.data.id}`)
+        path === "game" && navigate(`/games/${token?.id}`)
         handleClose()
       })
       .catch((error: AxiosErrorMessage) => {

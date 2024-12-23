@@ -120,7 +120,7 @@ function Navigations({
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const user = useMemo(
-    () => users.find((user) => user._id === token?.data.id),
+    () => users.find((user) => user._id === token?.id),
     [token, users]
   )
 
@@ -159,7 +159,7 @@ function Navigations({
           </ListItem>
           {token && (
             <ListItem
-              onClick={() => navigateToPage(`/games/${token?.data.id}`)}
+              onClick={() => navigateToPage(`/games/${token?.id}`)}
               disablePadding
             >
               <ListItemButton sx={{ textAlign: "center" }}>
@@ -234,7 +234,7 @@ function Navigations({
           </Button>
           {token && (
             <Button
-              onClick={() => navigateToPage(`/games/${token?.data.id}`)}
+              onClick={() => navigateToPage(`/games/${token?.id}`)}
               sx={{ color: "#fff" }}
             >
               {translate("games")}
@@ -272,7 +272,7 @@ function Navigations({
             }}
           >
             <Box
-              onClick={() => navigateToPage(`/profile/${token?.data.id}`)}
+              onClick={() => navigateToPage(`/profile/${token?.id}`)}
               sx={{
                 color: "#fff",
                 "&:hover": {

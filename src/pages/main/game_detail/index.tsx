@@ -64,8 +64,8 @@ function GameDetailTitle({ game }: { game: GamesData }) {
     loadingGameDetail
   } = useGameDetailPageContext()
   const isOwner = useMemo(
-    () => game.userId === token?.data.id,
-    [game.userId, token?.data.id]
+    () => game.userId === token?.id,
+    [game.userId, token?.id]
   )
   return (
     <Stack

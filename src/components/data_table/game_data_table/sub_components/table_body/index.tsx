@@ -49,7 +49,7 @@ export function GameDataTableBody() {
     },
     [setAnchorEl, setSelectedGame]
   )
-  const isOwner = useMemo(() => id === token?.data.id, [id, token?.data.id])
+  const isOwner = useMemo(() => id === token?.id, [id, token?.id])
   const MemorizedRows = useMemo(() => {
     if (loadingGames) {
       return Array.from(new Array(rowsPerPage)).map((_, index) => (
