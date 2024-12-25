@@ -1,42 +1,71 @@
 import { LineChart } from "@mui/x-charts/LineChart"
 
+import useTranslate from "@hooks/use_translate"
+import { formatedPlaytime } from "@utils/functions/formatedPlayTime"
 import { StatisticData } from "types/statistics"
 
 type StatisticLineChartProps = {
   allData?: StatisticData[] | undefined
   userData?: StatisticData[] | undefined
+  type: "playtime" | "count"
 }
 
 export default function StatisticLineChart({
   allData,
-  userData
+  userData,
+  type
 }: StatisticLineChartProps) {
-  const counts = allData?.map((item) => item.count) || []
-  const xAxisData = Array.from(
-    { length: counts.length },
-    (_, index) => index + 1
-  )
+  const { translate } = useTranslate()
+
   if (!allData || !userData) {
     return null
   }
   return (
     <LineChart
+      dataset={
+        allData?.map((allItem, index) => ({
+          label: translate(allItem._id),
+          all: type === "playtime" ? allItem?.playTime : allItem?.count,
+          user:
+            type === "playtime"
+              ? userData[index]?.playTime
+              : userData[index]?.count
+        })) || []
+      }
       xAxis={[
         {
-          data: xAxisData,
-          label: "Platforms"
+          scaleType: "band",
+          dataKey: "label",
+          label:
+            type === "playtime"
+              ? translate("by_playtime")
+              : translate("by_count")
         }
       ]}
-      // yAxis={[{ data: data?.map((item) => item._id) }]}
       series={[
         {
-          data: allData?.map((item) => item.count)
+          dataKey: "all",
+          label: translate("all_users"),
+          stack: "total",
+          area: true,
+          valueFormatter: (value: number | null) =>
+            value !== null
+              ? type === "playtime"
+                ? formatedPlaytime(value, translate)
+                : value.toString()
+              : ""
         },
         {
-          data: userData?.map((item) => item.playTime)
+          dataKey: "user",
+          label: translate("you"),
+          valueFormatter: (value: number | null) =>
+            value !== null
+              ? type === "playtime"
+                ? formatedPlaytime(value, translate)
+                : value.toString()
+              : ""
         }
       ]}
-      width={500}
       height={300}
     />
   )

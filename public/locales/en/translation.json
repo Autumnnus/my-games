@@ -113,6 +113,6 @@
   "hours": "Hours",
   "all_users": "All Users",
   "you": "You",
-  "platforms_by_playtime": "Platforms by Playtime",
-  "platforms_by_count": "Platforms by Count"
+  "by_playtime": "By Playtime",
+  "by_count": "By Count"
 }

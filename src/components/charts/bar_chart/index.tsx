@@ -9,16 +9,15 @@ type StatisticBarChartProps = {
   allData?: StatisticData[] | undefined
   userData?: StatisticData[] | undefined
   type: "playtime" | "count"
-  label: string
 }
 
 export default function StatisticBarChart({
   allData,
   userData,
-  type,
-  label
+  type
 }: StatisticBarChartProps) {
   const { translate } = useTranslate()
+
   if (!allData || !userData) {
     return null
   }
@@ -40,7 +39,10 @@ export default function StatisticBarChart({
           {
             scaleType: "band",
             dataKey: "label",
-            label
+            label:
+              type === "playtime"
+                ? translate("by_playtime")
+                : translate("by_count")
           }
         ]}
         series={[

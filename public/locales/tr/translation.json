@@ -113,6 +113,6 @@
   "hours": "Saat",
   "all_users": "Tüm Kullanıcılar",
   "you": "Sen",
-  "platforms_by_playtime": "Oynama Süresine Göre Platformlar",
-  "platforms_by_count": "Sayıya Göre Platformlar"
+  "by_playtime": "Oynama Süresine Göre",
+  "by_count": "Sayıya Göre"
 }
