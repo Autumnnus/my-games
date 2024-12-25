@@ -6,6 +6,8 @@ import GamesNavigationLayout from "@layouts/games_navigation_layout"
 import GamesPageLayout from "@layouts/games_page_layout"
 import HomePageLayout from "@layouts/home_page_layout"
 import ProfilePageLayout from "@layouts/profile_page_layout"
+import StatisticsNavigationLayout from "@layouts/statistics_navigation_layout"
+import StatiscitsPageLayout from "@layouts/statistics_page_layout"
 import UsersNavigationLayout from "@layouts/users_navigation_layout"
 import UsersPageLayout from "@layouts/users_page_layout"
 import ErrorPage from "@pages/error"
@@ -17,6 +19,7 @@ import GameDetailPage from "@pages/main/game_detail"
 import GamesPage from "@pages/main/games"
 import HomePage from "@pages/main/home"
 import ProfilePage from "@pages/main/profile"
+import StatisticsPage from "@pages/main/statistics"
 import UsersPage from "@pages/main/users"
 import { AuthForgotPasswordPageContextProvider } from "context/auth/forgot_password"
 import { AuthLoginPageContextProvider } from "context/auth/login"
@@ -25,6 +28,7 @@ import { AuthSignUpPageContextProvider } from "context/auth/signup"
 import { GamesPageContextProvider } from "context/games"
 import { GameDetailPageContextProvider } from "context/games_detail"
 import { ProfilePageContextProvider } from "context/profile"
+import { StatisticsPageContextProvider } from "context/statistics"
 import { UsersPageContextProvider } from "context/users"
 
 const mainNavigation: RouteObject[] = [
@@ -114,6 +118,21 @@ const mainNavigation: RouteObject[] = [
           <GamesPageLayout ContextProvider={GameDetailPageContextProvider}>
             <GameDetailPage />
           </GamesPageLayout>
+        )
+      }
+    ]
+  },
+  {
+    path: "/",
+    element: <StatisticsNavigationLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "statistics",
+        element: (
+          <StatiscitsPageLayout ContextProvider={StatisticsPageContextProvider}>
+            <StatisticsPage />
+          </StatiscitsPageLayout>
         )
       }
     ]

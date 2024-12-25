@@ -109,5 +109,10 @@
   "favorite_games": "Favorite Games",
   "first_game": "First Game",
   "second_game": "Second Game",
-  "third_game": "Third Game"
+  "third_game": "Third Game",
+  "hours": "Hours",
+  "all_users": "All Users",
+  "you": "You",
+  "platforms_by_playtime": "Platforms by Playtime",
+  "platforms_by_count": "Platforms by Count"
 }

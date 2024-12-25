@@ -109,5 +109,10 @@
   "favorite_games": "Favori Oyunlar",
   "first_game": "Birinci Oyun",
   "second_game": "İkinci Oyun",
-  "third_game": "Üçüncü Oyun"
+  "third_game": "Üçüncü Oyun",
+  "hours": "Saat",
+  "all_users": "Tüm Kullanıcılar",
+  "you": "Sen",
+  "platforms_by_playtime": "Oynama Süresine Göre Platformlar",
+  "platforms_by_count": "Sayıya Göre Platformlar"
 }

@@ -157,6 +157,14 @@ function Navigations({
               <ListItemText primary={translate("home")} />
             </ListItemButton>
           </ListItem>
+          <ListItem
+            onClick={() => navigateToPage("/statistics")}
+            disablePadding
+          >
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={translate("statistics")} />
+            </ListItemButton>
+          </ListItem>
           {token && (
             <ListItem
               onClick={() => navigateToPage(`/games/${token?.id}`)}
@@ -231,6 +239,12 @@ function Navigations({
         <>
           <Button onClick={() => navigateToPage("/")} sx={{ color: "#fff" }}>
             {translate("home")}
+          </Button>
+          <Button
+            onClick={() => navigateToPage("/statistics")}
+            sx={{ color: "#fff" }}
+          >
+            {translate("statistics")}
           </Button>
           {token && (
             <Button
