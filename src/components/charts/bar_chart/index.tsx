@@ -1,7 +1,9 @@
-import { Stack } from "@mui/material"
+import { Box, CircularProgress, Stack } from "@mui/material"
 import { BarChart } from "@mui/x-charts"
 
-import useTranslate from "@hooks/use_translate"
+import { formatedPlaytime } from "@utils/functions/formatedPlayTime"
+import { limitChartData } from "@utils/functions/limitChartData"
+import { useStatisticsPageContext } from "context/statistics"
 import { StatisticData } from "types/statistics"
 
 type StatisticBarChartProps = {
@@ -9,74 +11,49 @@ type StatisticBarChartProps = {
   userData?: StatisticData[] | undefined
   type: "playtime" | "count"
   allowTranslate?: boolean
-}
-
-// function limitData(
-//   data: StatisticData[] | undefined,
-//   type: "playtime" | "count"
-// ) {
-//   if (!data || data.length <= 10) {
-//     return data || []
-//   }
-
-//   const firstNine = data.slice(0, 9)
-//   const othersTotal = data.slice(9).reduce((acc, curr) => {
-//     return acc + (type === "playtime" ? curr.playTime : curr.count)
-//   }, 0)
-
-//   return [
-//     ...firstNine,
-//     {
-//       _id: "others",
-//       playTime: type === "playtime" ? othersTotal : 0,
-//       count: type === "count" ? othersTotal : 0
-//     }
-//   ]
-// }
-
-const limitData = (
-  data: StatisticData[] | undefined,
-  type: "playtime" | "count"
-) => {
-  if (!data || data.length <= 10) {
-    return data || []
-  }
-
-  const firstNine = data.slice(0, 9)
-  const totalValue = data.reduce((acc, curr) => {
-    return acc + (type === "playtime" ? curr.playTime : curr.count)
-  }, 0)
-  const othersValue =
-    totalValue -
-    firstNine.reduce((acc, curr) => {
-      return acc + (type === "playtime" ? curr.playTime : curr.count)
-    }, 0)
-
-  return [
-    ...firstNine,
-    {
-      _id: "others",
-      playTime: type === "playtime" ? (othersValue / totalValue) * 100 : 0,
-      count: type === "count" ? (othersValue / totalValue) * 100 : 0
-    }
-  ]
+  limit: number
 }
 
 export default function StatisticBarChart({
   allData,
   userData,
   type,
-  allowTranslate
+  allowTranslate,
+  limit
 }: StatisticBarChartProps) {
-  const { translate } = useTranslate()
+  const {
+    translate,
+    userStatisticsLoading,
+    allStatisticsLoading,
+    selectedUser,
+    users
+  } = useStatisticsPageContext()
+
+  const userName = users.find((user) => user._id === selectedUser)?.name
+
+  if (userStatisticsLoading || allStatisticsLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%"
+        }}
+        height={300}
+      >
+        <CircularProgress size={80} />
+      </Box>
+    )
+  }
 
   if (!allData || !userData) {
-    return null
+    return <Box sx={{ height: 300 }} />
   }
-  const limitedAllData = limitData(allData, type)
-  const limitedUserData = limitData(userData, type)
-  console.log("limitedAllData", limitedAllData)
-  console.log("limitedUserData", limitedUserData)
+
+  const limitedAllData = limitChartData(allData, limit)
+  const limitedUserData = limitChartData(userData, limit)
+
   return (
     <Stack sx={{ width: "100%" }}>
       <BarChart
@@ -104,20 +81,22 @@ export default function StatisticBarChart({
           {
             dataKey: "all",
             label: translate("all_users"),
+            color: "#8884d8",
             valueFormatter: (value: number | null) =>
               value !== null
                 ? type === "playtime"
-                  ? `${value.toFixed(2)}%`
+                  ? formatedPlaytime(value, translate)
                   : value.toString()
                 : ""
           },
           {
             dataKey: "user",
-            label: translate("you"),
+            label: userName,
+            color: "#82ca9d",
             valueFormatter: (value: number | null) =>
               value !== null
                 ? type === "playtime"
-                  ? `${value.toFixed(2)}%`
+                  ? formatedPlaytime(value, translate)
                   : value.toString()
                 : ""
           }

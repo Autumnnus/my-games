@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import axios, { type AxiosResponse } from "axios"
-import { createContext, useContext } from "react"
+import { createContext, useContext, useState } from "react"
 
 import { showErrorToast } from "@utils/functions/toast"
 import i18next from "@utils/localization"
@@ -18,6 +18,8 @@ export type StatisticsContextProps = {
   allStatisticsLoading?: boolean
   userStatistics?: StatisticsResponse | null | undefined
   userStatisticsLoading?: boolean
+  selectedUser?: string | undefined
+  setSelectedUser: (userId: string) => void
 }
 
 export type StatisticsPageContextProps = AppContextProps &
@@ -25,7 +27,8 @@ export type StatisticsPageContextProps = AppContextProps &
 
 export const statisticsPageDefaultValues: StatisticsPageContextProps = {
   ...appContextDefaultValues,
-  translate: i18next.t
+  translate: i18next.t,
+  setSelectedUser: () => {}
 }
 
 const StatisticsPageContext = createContext(statisticsPageDefaultValues)
@@ -34,6 +37,9 @@ export function StatisticsPageContextProvider(props: {
   children: React.ReactNode | React.ReactNode[]
 }) {
   const { translate, token, backendUrl, users } = useAppContext()
+  const [selectedUser, setSelectedUser] = useState<string | undefined>(
+    token?.id
+  )
 
   const { data: allStatistics, isLoading: allStatisticsLoading } = useQuery({
     queryKey: ["all-statistics"],
@@ -56,7 +62,7 @@ export function StatisticsPageContextProvider(props: {
     queryKey: ["user-statistics"],
     queryFn: async () => {
       const response = axios
-        .get(`${backendUrl}/api/statistics/661400f4b4ade3d661e4d847`)
+        .get(`${backendUrl}/api/statistics/${selectedUser}`)
         .then((response: AxiosResponse<StatisticsResponse>) => {
           return response.data
         })
@@ -81,7 +87,9 @@ export function StatisticsPageContextProvider(props: {
         allStatistics,
         allStatisticsLoading,
         userStatistics,
-        userStatisticsLoading
+        userStatisticsLoading,
+        selectedUser,
+        setSelectedUser
       }}
     >
       {props.children}

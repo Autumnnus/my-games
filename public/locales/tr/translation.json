@@ -114,5 +114,9 @@
   "all_users": "Tüm Kullanıcılar",
   "you": "Sen",
   "by_playtime": "Oynama Süresine Göre",
-  "by_count": "Sayıya Göre"
+  "by_count": "Sayıya Göre",
+  "others": "Diğerleri",
+  "statistics": "İstatistikler",
+  "ratings": "Puanlar",
+  "first_release_years": "First Release Years"
 }

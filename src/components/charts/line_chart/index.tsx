@@ -1,7 +1,9 @@
+import { Box, CircularProgress } from "@mui/material"
 import { LineChart } from "@mui/x-charts/LineChart"
 
-import useTranslate from "@hooks/use_translate"
 import { formatedPlaytime } from "@utils/functions/formatedPlayTime"
+import { limitChartData } from "@utils/functions/limitChartData"
+import { useStatisticsPageContext } from "context/statistics"
 import { StatisticData } from "types/statistics"
 
 type StatisticLineChartProps = {
@@ -9,45 +11,49 @@ type StatisticLineChartProps = {
   userData?: StatisticData[] | undefined
   type: "playtime" | "count"
   allowTranslate?: boolean
-}
-
-function limitData(
-  data: StatisticData[] | undefined,
-  type: "playtime" | "count"
-) {
-  if (!data || data.length <= 10) {
-    return data || []
-  }
-
-  const firstNine = data.slice(0, 9)
-  const othersTotal = data.slice(9).reduce((acc, curr) => {
-    return acc + (type === "playtime" ? curr.playTime : curr.count)
-  }, 0)
-
-  return [
-    ...firstNine,
-    {
-      _id: "others",
-      playTime: type === "playtime" ? othersTotal : 0,
-      count: type === "count" ? othersTotal : 0
-    }
-  ]
+  limit: number
 }
 
 export default function StatisticLineChart({
   allData,
   userData,
   type,
-  allowTranslate
+  allowTranslate,
+  limit
 }: StatisticLineChartProps) {
-  const { translate } = useTranslate()
+  const {
+    translate,
+    userStatisticsLoading,
+    allStatisticsLoading,
+    selectedUser,
+    users
+  } = useStatisticsPageContext()
 
-  if (!allData || !userData) {
-    return null
+  const userName = users.find((user) => user._id === selectedUser)?.name
+
+  if (userStatisticsLoading || allStatisticsLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%"
+        }}
+        height={300}
+      >
+        <CircularProgress size={80} />
+      </Box>
+    )
   }
 
-  const limitedAllData = limitData(allData, type)
-  const limitedUserData = limitData(userData, type)
+  if (!allData || !userData) {
+    return <Box sx={{ height: 300 }} />
+  }
+
+  const limitedAllData = limitChartData(allData, limit)
+  const limitedUserData = limitChartData(userData, limit)
+
   return (
     <LineChart
       dataset={
@@ -76,6 +82,7 @@ export default function StatisticLineChart({
           label: translate("all_users"),
           stack: "total",
           area: true,
+          color: "#8884d8",
           valueFormatter: (value: number | null) =>
             value !== null
               ? type === "playtime"
@@ -85,7 +92,8 @@ export default function StatisticLineChart({
         },
         {
           dataKey: "user",
-          label: translate("you"),
+          label: userName,
+          color: "#82ca9d",
           valueFormatter: (value: number | null) =>
             value !== null
               ? type === "playtime"
