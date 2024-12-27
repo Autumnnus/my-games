@@ -152,6 +152,13 @@ function GameDetailTitle({ game }: { game: GamesData }) {
 }
 function IGDBGameDetail({ game }: { game: GamesData }) {
   const { translate } = useGameDetailPageContext()
+  console.log("game", game)
+  const developers = game.igdb?.involved_companies?.filter(
+    (item) => item.developer
+  )
+  const publishers = game.igdb?.involved_companies?.filter(
+    (item) => item.publisher
+  )
   return (
     <Stack
       sx={{
@@ -215,23 +222,23 @@ function IGDBGameDetail({ game }: { game: GamesData }) {
               }
             />
           </Stack>
-          <Stack sx={styles.tagRow((game?.igdb?.developers?.length || 0) > 0)}>
+          <Stack sx={styles.tagRow((developers?.length || 0) > 0)}>
             <Tags
               title="developers"
               tags={
-                game.igdb?.developers.map((item) => ({
-                  name: item.name,
+                developers?.map((item) => ({
+                  name: item.company.name,
                   id: item.id
                 })) as NameId[]
               }
             />
           </Stack>
-          <Stack sx={styles.tagRow((game?.igdb?.publishers?.length || 0) > 0)}>
+          <Stack sx={styles.tagRow((publishers?.length || 0) > 0)}>
             <Tags
               title="publishers"
               tags={
-                game.igdb?.publishers.map((item) => ({
-                  name: item.name,
+                publishers?.map((item) => ({
+                  name: item.company.name,
                   id: item.id
                 })) as NameId[]
               }

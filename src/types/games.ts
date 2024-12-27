@@ -49,6 +49,16 @@ export type GamesData = {
     }
     summary: string
     slug: string
+    involved_companies: {
+      company: {
+        id: number
+        name: string
+      }
+      developer: boolean
+      publisher: boolean
+      id: number
+      _id: string
+    }[]
     developers: {
       id: number
       name: string

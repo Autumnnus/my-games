@@ -78,6 +78,7 @@ export default function AddGame({
       selectedGameData?.cover?.url?.replace("t_thumb", "t_1080p") || ""
     )
     trigger?.("photo")
+    //@ts-expect-error setValue can be undefined
     setValue?.("igdb", selectedGameData || undefined)
   }, [selectedGameData])
 
