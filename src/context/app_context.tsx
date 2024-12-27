@@ -57,10 +57,12 @@ export function AppContextProvider(props: {
         (JSON.parse(storedToken).data as AppContextProps["token"])
       : undefined
   })
+
   const backendUrl =
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000"
       : "https://my-games-8c0fcafba242.herokuapp.com"
+
   useEffect(() => {
     setLoadingUsers(true)
     axios

@@ -109,5 +109,15 @@
   "favorite_games": "Favorite Games",
   "first_game": "First Game",
   "second_game": "Second Game",
-  "third_game": "Third Game"
+  "third_game": "Third Game",
+  "hours": "Hours",
+  "all_users": "All Users",
+  "you": "You",
+  "by_playtime": "By Playtime",
+  "by_count": "By Count",
+  "others": "Others",
+  "statistics": "Statistics",
+  "platforms": "Platforms",
+  "ratings": "Ratings",
+  "first_release_years": "First Release Years"
 }

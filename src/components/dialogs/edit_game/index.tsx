@@ -98,6 +98,7 @@ export default function EditGame({
       selectedGameData?.cover?.url?.replace("t_thumb", "t_1080p") || ""
     )
     trigger?.("photo")
+    //@ts-expect-error setValue is not null
     setValue?.("igdb", selectedGameData || undefined)
   }, [selectedGameData])
 
