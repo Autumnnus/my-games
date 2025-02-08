@@ -16,6 +16,6 @@ This is a React Typescript Project about gamers who will store their game static
 
 This is a Fullstack Project. Backend created with Express.js and MongoDB techs. You can see backend project with there. The actual contents of the project are included in the backend.
 
-[Backend Project](https://github.com/VectortheGreat/my-games-backend)
+[Backend Project](https://github.com/Autumnnus/my-games-backend)
 
 Explore and enjoy the My Games experience! Feel free to contribute and make this project even better.
