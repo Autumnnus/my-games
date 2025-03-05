@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Layout, Typography } from "antd";
 
 type HomeSectionCardProps = {
   image: string;
@@ -8,6 +8,7 @@ type HomeSectionCardProps = {
 };
 
 const { Title, Text } = Typography;
+const { Content } = Layout;
 
 export function HomeSectionCard({
   image,
@@ -16,7 +17,7 @@ export function HomeSectionCard({
   imagePosition = "left",
 }: HomeSectionCardProps) {
   return (
-    <div
+    <Content
       style={{
         display: "flex",
         height: "100vh",
@@ -29,7 +30,7 @@ export function HomeSectionCard({
         backgroundImage: `url()`,
       }}
     >
-      <div
+      <Content
         style={{
           height: "100vh",
           backgroundImage: `url(${image})`,
@@ -44,7 +45,7 @@ export function HomeSectionCard({
           alignItems: "center",
         }}
       />
-      <div
+      <Content
         style={{
           display: "flex",
           flexDirection: "column",
@@ -91,7 +92,7 @@ export function HomeSectionCard({
         >
           {body}
         </Text>
-      </div>
-    </div>
+      </Content>
+    </Content>
   );
 }

@@ -1,3 +1,4 @@
+import ClientLayout from "@/components/layout";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -35,7 +36,9 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider messages={messages}>
-          <AntdRegistry>{children}</AntdRegistry>
+          <AntdRegistry>
+            <ClientLayout>{children}</ClientLayout>
+          </AntdRegistry>
         </NextIntlClientProvider>
       </body>
     </html>

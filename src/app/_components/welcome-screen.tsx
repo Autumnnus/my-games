@@ -1,13 +1,14 @@
-import { Typography } from "antd";
+import { Layout, Typography } from "antd";
 import { useTranslations } from "next-intl";
 
 const { Text, Title } = Typography;
+const { Content } = Layout;
 
 export default function WelcomeScreen({ image }: { image: string }) {
   const t = useTranslations();
 
   return (
-    <div
+    <Content
       style={{
         height: "100vh",
         display: "flex",
@@ -48,6 +49,6 @@ export default function WelcomeScreen({ image }: { image: string }) {
       >
         {t("welcome_to_my_games_description")}
       </Text>
-    </div>
+    </Content>
   );
 }
