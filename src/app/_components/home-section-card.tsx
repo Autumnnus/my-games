@@ -18,6 +18,7 @@ export function HomeSectionCard({
   return (
     <div
       style={{
+        display: "flex",
         height: "100vh",
         flexDirection: imagePosition === "left" ? "row-reverse" : "row",
         scrollSnapAlign: "start",
@@ -25,7 +26,7 @@ export function HomeSectionCard({
         //   xs: `url(${image})`,
         //   md: "url()",
         // },
-        backgroundImage: `url(${image})`,
+        backgroundImage: `url()`,
       }}
     >
       <div
@@ -45,6 +46,8 @@ export function HomeSectionCard({
       />
       <div
         style={{
+          display: "flex",
+          flexDirection: "column",
           //   width: {
           //     xs: "100%",
           //     md: "50%",

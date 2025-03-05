@@ -1,14 +1,14 @@
 import { HomeSectionCard } from "@/app/_components/home-section-card";
-import useTranslate from "@/hooks/use-translate";
+import { useTranslations } from "next-intl";
 
 export function ScreenshotScreen({ image }: { image: string }) {
-  const { translate } = useTranslate();
+  const t = useTranslations();
 
   return (
     <HomeSectionCard
       image={image}
-      heading={translate("home_screenshot_screen_title")}
-      body={translate("home_screenshot_screen_description")}
+      heading={t("home_screenshot_screen_title")}
+      body={t("home_screenshot_screen_description")}
       imagePosition="left"
     />
   );

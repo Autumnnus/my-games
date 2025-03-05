@@ -1,15 +1,17 @@
-import useTranslate from "@/hooks/use-translate";
-import { Flex, Typography } from "antd";
+import { Typography } from "antd";
+import { useTranslations } from "next-intl";
 
 const { Text, Title } = Typography;
 
 export default function WelcomeScreen({ image }: { image: string }) {
-  const { translate } = useTranslate();
+  const t = useTranslations();
 
   return (
-    <Flex
+    <div
       style={{
         height: "100vh",
+        display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         backgroundImage: `url(${image})`,
@@ -31,7 +33,7 @@ export default function WelcomeScreen({ image }: { image: string }) {
           //   },
         }}
       >
-        {translate("welcome_to_my_games")}
+        {t("welcome_to_my_games")}
       </Title>
       <Text
         style={{
@@ -44,8 +46,8 @@ export default function WelcomeScreen({ image }: { image: string }) {
           //   }
         }}
       >
-        {translate("welcome_to_my_games_description")}
+        {t("welcome_to_my_games_description")}
       </Text>
-    </Flex>
+    </div>
   );
 }
