@@ -1,8 +1,9 @@
 "use client";
 import { Flex, Layout, theme, Typography } from "antd";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 
 export default function PageHeader() {
   const {
@@ -14,7 +15,7 @@ export default function PageHeader() {
     <Header
       style={{
         paddingTop: 10,
-        paddingBottom: 20,
+        paddingBottom: 0,
         background: colorBgContainer,
         display: "flex",
         flexDirection: "row",
@@ -22,41 +23,40 @@ export default function PageHeader() {
         justifyContent: "space-between",
       }}
     >
-      <Typography.Title
-        level={4}
-        style={{ cursor: "pointer" }}
-        //   onClick={() => navigate("/")}
-      >
-        My Games
+      <Typography.Title level={4} style={{ cursor: "pointer" }}>
+        <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+          My Games
+        </Link>
       </Typography.Title>
       <Flex gap={20} style={{ alignItems: "center" }}>
-        <Typography.Title
-          level={4}
-          style={{ cursor: "pointer" }}
-          //   onClick={() => navigate("/")}
-        >
-          {t("home")}
+        <Typography.Title level={4} style={{ cursor: "pointer" }}>
+          <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            {t("home")}
+          </Link>
         </Typography.Title>
-        <Typography.Title
-          level={4}
-          style={{ cursor: "pointer", marginTop: 0 }}
-          //   onClick={() => navigate("/")}
-        >
-          {t("statistics")}
+        <Typography.Title level={4} style={{ cursor: "pointer", marginTop: 0 }}>
+          <Link
+            href="/statistics"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            {t("statistics")}
+          </Link>
         </Typography.Title>
-        <Typography.Title
-          level={4}
-          style={{ cursor: "pointer", marginTop: 0 }}
-          //   onClick={() => navigate("/")}
-        >
-          {t("games")}
+        <Typography.Title level={4} style={{ cursor: "pointer", marginTop: 0 }}>
+          <Link
+            href="/games"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            {t("games")}
+          </Link>
         </Typography.Title>
-        <Typography.Title
-          level={4}
-          style={{ cursor: "pointer", marginTop: 0 }}
-          //   onClick={() => navigate("/")}
-        >
-          {t("users")}
+        <Typography.Title level={4} style={{ cursor: "pointer", marginTop: 0 }}>
+          <Link
+            href="/users"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            {t("users")}
+          </Link>
         </Typography.Title>
       </Flex>
     </Header>
