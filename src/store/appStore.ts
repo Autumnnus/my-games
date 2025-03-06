@@ -8,10 +8,7 @@ interface AppState {
 }
 
 const useAppStore = create<AppState>((set) => ({
-  darkMode:
-    typeof window !== "undefined"
-      ? localStorage.getItem("darkMode") === "true"
-      : false,
+  darkMode: localStorage.getItem("darkMode") === "true",
   toggleDarkMode: () =>
     set((state) => {
       const newDarkMode = !state.darkMode;
@@ -28,7 +25,6 @@ const useAppStore = create<AppState>((set) => ({
   setLocale: (locale) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("locale", locale);
-      // Opsiyonel: Çerezi de güncelleyin
       document.cookie = `locale=${locale}; path=/`;
     }
 

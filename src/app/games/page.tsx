@@ -1,14 +1,15 @@
 "use client";
 
+import GamesDataTable from "@/app/games/_components/games-data-table";
+
 export default function Games() {
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
+        padding: 24,
       }}
-    ></div>
+    >
+      <GamesDataTable />
+    </div>
   );
 }

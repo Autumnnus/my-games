@@ -36,6 +36,9 @@ export const darkTheme: ThemeConfig = {
       rowSelectedBg: "#333333",
       rowSelectedHoverBg: "#333333",
     },
+    Typography: {
+      titleMarginBottom: "rem",
+    },
   },
 };
 
@@ -73,6 +76,9 @@ export const lightTheme: ThemeConfig = {
     Table: {
       rowSelectedBg: "#D3D3D3",
       rowSelectedHoverBg: "#D3D3D3",
+    },
+    Typography: {
+      titleMarginBottom: "rem",
     },
   },
 };

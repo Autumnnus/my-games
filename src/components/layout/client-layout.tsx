@@ -50,12 +50,14 @@ export default function ClientLayout({
   const themeName = useMemo(() => (darkMode ? "dark" : "light"), [darkMode]);
   const t = useTranslations();
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  // Dil popover'ı için ayrı state
+  const [isLangPopoverOpen, setIsLangPopoverOpen] = useState(false);
 
   function handleChaneLanguage(locale: "en" | "tr") {
     setLanguage(locale);
     router.refresh();
-    setIsOpen(false);
+    setIsLangPopoverOpen(false);
   }
 
   return (
@@ -68,6 +70,8 @@ export default function ClientLayout({
           // onBreakpoint={(broken) => console.log(broken)}
           // onCollapse={(collapsed, type) => console.log(collapsed, type)}
           collapsible
+          trigger={null}
+          collapsed={collapsed}
         >
           <Flex
             justify="space-around"
@@ -92,8 +96,8 @@ export default function ClientLayout({
                   </Text>
                 </div>
               }
-              open={isOpen}
-              onOpenChange={setIsOpen}
+              open={isLangPopoverOpen}
+              onOpenChange={setIsLangPopoverOpen}
               trigger="click"
             >
               <Text style={{ cursor: "pointer" }}>{t(language)}</Text>
@@ -115,7 +119,7 @@ export default function ClientLayout({
           />
         </Sider>
         <Layout>
-          <PageHeader />
+          <PageHeader collapsed={collapsed} setCollapsed={setCollapsed} />
           {children}
         </Layout>
       </Layout>
