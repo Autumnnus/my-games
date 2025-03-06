@@ -6,6 +6,7 @@ import type { GetProp, TableProps } from "antd";
 import { Image, Table } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useState } from "react";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
@@ -47,6 +48,9 @@ export default function UsersDataTable() {
       title: t("member"),
       dataIndex: "name",
       ellipsis: true,
+      render: (name, record) => (
+        <Link href={`/games/${record._id}`}>{name}</Link>
+      ),
     },
     {
       title: t("games"),

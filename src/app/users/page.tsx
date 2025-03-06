@@ -1,4 +1,4 @@
-import UsersDataTable from "@/app/users/_components/games-data-table";
+import UsersDataTable from "@/app/users/_components/users-data-table";
 
 export default function Users() {
   return (

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import * as gamesService from "../services/gamesService";
 
-export const useUserGames = () => {
+export const useUserGames = (id: string) => {
   return useQuery({
     queryKey: ["userGames"],
-    queryFn: () => gamesService.getUserGames("661400f4b4ade3d661e4d847"),
+    queryFn: () => gamesService.getUserGames(id),
   });
 };

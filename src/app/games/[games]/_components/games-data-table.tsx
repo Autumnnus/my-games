@@ -7,7 +7,7 @@ import type { GetProp, TableProps } from "antd";
 import { Image, Table } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
 type TablePaginationConfig = Exclude<
@@ -22,7 +22,7 @@ interface TableParams {
   filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
 
-export default function GamesDataTable() {
+export default function GamesDataTable({ id }: { id: string }) {
   const locale = useAppStore((state) => state.locale);
   const t = useTranslations();
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -56,6 +56,7 @@ export default function GamesDataTable() {
         { text: "Female", value: "female" },
       ],
       ellipsis: true,
+      render: (rating) => rating || t("not_rated"),
     },
     {
       title: t("platform"),
@@ -65,6 +66,7 @@ export default function GamesDataTable() {
         { text: "Female", value: "female" },
       ],
       ellipsis: true,
+      render: (platform) => t(platform),
     },
     {
       title: t("screenshots"),
@@ -80,30 +82,25 @@ export default function GamesDataTable() {
       title: t("lastPlay"),
       dataIndex: "lastPlay",
       ellipsis: true,
+      render: (lastPlay) =>
+        new Date(lastPlay).toLocaleDateString(
+          locale === "tr" ? "tr-TR" : "en-US",
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }
+        ),
     },
     {
       title: t("status"),
       dataIndex: "status",
       ellipsis: true,
+      render: (status) => t(status),
     },
   ];
 
-  const { data, isLoading } = useUserGames();
-
-  const renderData = useMemo(() => {
-    const localeDateString = locale === "tr" ? "tr-TR" : "en-US";
-
-    return data?.map((game) => ({
-      ...game,
-      platform: t(game.platform),
-      status: t(game.status),
-      lastPlay: new Date(game.lastPlay).toLocaleDateString(localeDateString, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-    })) as GamesData[];
-  }, [data, t, locale]);
+  const { data, isFetching } = useUserGames(id);
 
   const handleTableChange: TableProps<GamesData>["onChange"] = (
     pagination,
@@ -127,9 +124,9 @@ export default function GamesDataTable() {
     <Table<GamesData>
       columns={columns}
       rowKey={(record) => record._id}
-      dataSource={renderData}
+      dataSource={isFetching ? [] : data}
       pagination={tableParams.pagination}
-      loading={isLoading}
+      loading={isFetching}
       onChange={handleTableChange}
       scroll={{ x: "max-content" }}
     />
