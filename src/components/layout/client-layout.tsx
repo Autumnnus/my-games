@@ -9,6 +9,7 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   ConfigProvider,
   Divider,
@@ -22,6 +23,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createElement, useMemo, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -36,6 +38,15 @@ const items = [
   icon: createElement(icon),
   label: `nav ${index + 1}`,
 }));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 export default function ClientLayout({
   children,
@@ -61,68 +72,71 @@ export default function ClientLayout({
   }
 
   return (
-    <ConfigProvider componentSize="large" theme={theme}>
-      <Layout style={{ height: "100vh" }}>
-        <Sider
-          theme={themeName}
-          breakpoint="lg"
-          collapsedWidth="0"
-          // onBreakpoint={(broken) => console.log(broken)}
-          // onCollapse={(collapsed, type) => console.log(collapsed, type)}
-          collapsible
-          trigger={null}
-          collapsed={collapsed}
-        >
-          <Flex
-            justify="space-around"
-            align="center"
-            style={{ height: "64px" }}
-          >
-            <Popover
-              content={
-                <div>
-                  <Text
-                    onClick={() => handleChaneLanguage("en")}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {t("en")}
-                  </Text>
-                  <Divider type="vertical" />
-                  <Text
-                    onClick={() => handleChaneLanguage("tr")}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {t("tr")}
-                  </Text>
-                </div>
-              }
-              open={isLangPopoverOpen}
-              onOpenChange={setIsLangPopoverOpen}
-              trigger="click"
-            >
-              <Text style={{ cursor: "pointer" }}>{t(language)}</Text>
-            </Popover>
-            <Switch
-              checkedChildren={<BulbFilled />}
-              unCheckedChildren={<BulbFilled />}
-              checked={darkMode}
-              onChange={toggleDarkMode}
-              style={{ background: darkMode ? "#141414" : "#f5f5f5" }}
-            />
-          </Flex>
-          <Divider style={{ margin: 0 }} />
-          <Menu
+    <QueryClientProvider client={queryClient}>
+      <Toaster />
+      <ConfigProvider componentSize="large" theme={theme}>
+        <Layout style={{ height: "100vh" }}>
+          <Sider
             theme={themeName}
-            mode="inline"
-            defaultSelectedKeys={["4"]}
-            items={items}
-          />
-        </Sider>
-        <Layout>
-          <PageHeader collapsed={collapsed} setCollapsed={setCollapsed} />
-          {children}
+            breakpoint="lg"
+            collapsedWidth="0"
+            // onBreakpoint={(broken) => console.log(broken)}
+            // onCollapse={(collapsed, type) => console.log(collapsed, type)}
+            collapsible
+            trigger={null}
+            collapsed={collapsed}
+          >
+            <Flex
+              justify="space-around"
+              align="center"
+              style={{ height: "64px" }}
+            >
+              <Popover
+                content={
+                  <div>
+                    <Text
+                      onClick={() => handleChaneLanguage("en")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {t("en")}
+                    </Text>
+                    <Divider type="vertical" />
+                    <Text
+                      onClick={() => handleChaneLanguage("tr")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {t("tr")}
+                    </Text>
+                  </div>
+                }
+                open={isLangPopoverOpen}
+                onOpenChange={setIsLangPopoverOpen}
+                trigger="click"
+              >
+                <Text style={{ cursor: "pointer" }}>{t(language)}</Text>
+              </Popover>
+              <Switch
+                checkedChildren={<BulbFilled />}
+                unCheckedChildren={<BulbFilled />}
+                checked={darkMode}
+                onChange={toggleDarkMode}
+                style={{ background: darkMode ? "#141414" : "#f5f5f5" }}
+              />
+            </Flex>
+            <Divider style={{ margin: 0 }} />
+            <Menu
+              theme={themeName}
+              mode="inline"
+              defaultSelectedKeys={["4"]}
+              items={items}
+            />
+          </Sider>
+          <Layout>
+            <PageHeader collapsed={collapsed} setCollapsed={setCollapsed} />
+            {children}
+          </Layout>
         </Layout>
-      </Layout>
-    </ConfigProvider>
+      </ConfigProvider>
+    </QueryClientProvider>
   );
 }

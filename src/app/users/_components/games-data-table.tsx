@@ -1,13 +1,12 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useUserGames } from "@/hooks/useGames";
-import useAppStore from "@/store/appStore";
-import { GamesData } from "@/types/games";
+import { useUsers } from "@/hooks/useUsers";
+import { User } from "@/types/users";
 import type { GetProp, TableProps } from "antd";
 import { Image, Table } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
 type TablePaginationConfig = Exclude<
@@ -22,8 +21,7 @@ interface TableParams {
   filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
 
-export default function GamesDataTable() {
-  const locale = useAppStore((state) => state.locale);
+export default function UsersDataTable() {
   const t = useTranslations();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -32,38 +30,32 @@ export default function GamesDataTable() {
     },
   });
 
-  const columns: ColumnsType<GamesData> = [
+  const columns: ColumnsType<User> = [
     {
       title: "",
-      dataIndex: "photo",
+      dataIndex: "profileImage",
       width: "8%",
       render: (photo) => (
-        <Image src={photo} alt="avatar" style={{ width: 50 }} />
+        <Image
+          src={photo || "https://avatar.iran.liara.run/public/boy"}
+          alt="avatar"
+          style={{ width: 50, height: 50, objectFit: "cover" }}
+        />
       ),
     },
     {
-      title: t("name"),
+      title: t("member"),
       dataIndex: "name",
-      sorter: true,
-      width: "30%",
       ellipsis: true,
     },
     {
-      title: t("rating"),
-      dataIndex: "rating",
-      filters: [
-        { text: "Male", value: "male" },
-        { text: "Female", value: "female" },
-      ],
+      title: t("games"),
+      dataIndex: "games",
       ellipsis: true,
     },
     {
-      title: t("platform"),
-      dataIndex: "platform",
-      filters: [
-        { text: "Male", value: "male" },
-        { text: "Female", value: "female" },
-      ],
+      title: t("completed_games"),
+      dataIndex: "completedGameSize",
       ellipsis: true,
     },
     {
@@ -71,41 +63,11 @@ export default function GamesDataTable() {
       dataIndex: "screenshotSize",
       ellipsis: true,
     },
-    {
-      title: t("playTime"),
-      dataIndex: "playTime",
-      ellipsis: true,
-    },
-    {
-      title: t("lastPlay"),
-      dataIndex: "lastPlay",
-      ellipsis: true,
-    },
-    {
-      title: t("status"),
-      dataIndex: "status",
-      ellipsis: true,
-    },
   ];
 
-  const { data, isLoading } = useUserGames();
+  const { data, isLoading } = useUsers();
 
-  const renderData = useMemo(() => {
-    const localeDateString = locale === "tr" ? "tr-TR" : "en-US";
-
-    return data?.map((game) => ({
-      ...game,
-      platform: t(game.platform),
-      status: t(game.status),
-      lastPlay: new Date(game.lastPlay).toLocaleDateString(localeDateString, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-    })) as GamesData[];
-  }, [data, t, locale]);
-
-  const handleTableChange: TableProps<GamesData>["onChange"] = (
+  const handleTableChange: TableProps<User>["onChange"] = (
     pagination,
     filters,
     sorter
@@ -124,10 +86,10 @@ export default function GamesDataTable() {
   };
 
   return (
-    <Table<GamesData>
+    <Table<User>
       columns={columns}
       rowKey={(record) => record._id}
-      dataSource={renderData}
+      dataSource={data}
       pagination={tableParams.pagination}
       loading={isLoading}
       onChange={handleTableChange}
