@@ -1,15 +1,39 @@
 import { create } from "zustand";
 
 interface AppState {
-  count: number;
-  addCount: () => void;
-  resetCount: () => void;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+  locale: string;
+  setLocale: (locale: string) => void;
 }
 
 const useAppStore = create<AppState>((set) => ({
-  count: 0,
-  addCount: () => set((state) => ({ count: state.count + 1 })),
-  resetCount: () => set({ count: 0 }),
+  darkMode:
+    typeof window !== "undefined"
+      ? localStorage.getItem("darkMode") === "true"
+      : false,
+  toggleDarkMode: () =>
+    set((state) => {
+      const newDarkMode = !state.darkMode;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("darkMode", String(newDarkMode));
+      }
+
+      return { darkMode: newDarkMode };
+    }),
+  locale:
+    typeof window !== "undefined"
+      ? localStorage.getItem("locale") || "en"
+      : "en",
+  setLocale: (locale) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("locale", locale);
+      // Opsiyonel: Çerezi de güncelleyin
+      document.cookie = `locale=${locale}; path=/`;
+    }
+
+    set({ locale });
+  },
 }));
 
 export default useAppStore;

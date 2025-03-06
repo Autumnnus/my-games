@@ -1,4 +1,4 @@
-import ClientLayout from "@/components/layout";
+import ClientLayout from "@/components/layout/client-layout";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
