@@ -8,12 +8,9 @@ import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const backendUrl =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5000"
-      : "https://my-games-8c0fcafba242.herokuapp.com";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL;
   const [images, setImages] = useState<Screenshot["url"][]>();
-  const url = `${backendUrl}/api/screenshot/get/random/3`;
+  const url = `${backendUrl}/screenshot/get/random/3`;
 
   useEffect(() => {
     axios

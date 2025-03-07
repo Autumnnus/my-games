@@ -1,3 +1,4 @@
+import { TokenData } from "@/types/auth";
 import { create } from "zustand";
 
 interface AppState {
@@ -5,6 +6,8 @@ interface AppState {
   toggleDarkMode: () => void;
   locale: string;
   setLocale: (locale: string) => void;
+  me?: TokenData | undefined;
+  setMe: (me: TokenData) => void;
 }
 
 const useAppStore = create<AppState>((set) => ({
@@ -29,6 +32,14 @@ const useAppStore = create<AppState>((set) => ({
     }
 
     set({ locale });
+  },
+  me: localStorage.getItem("my-games-user") as unknown as TokenData | undefined,
+  setMe: (me) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("my-games-user", JSON.stringify(me));
+    }
+
+    set({ me });
   },
 }));
 
