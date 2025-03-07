@@ -11,17 +11,19 @@ const { Title } = Typography;
 
 export default function AuthResetPasswordPage() {
   const t = useTranslations();
-  const { mutate, data, isPending, isError } = useResetPassword();
+  const { mutateAsync, isPending } = useResetPassword();
   const resetPasswordToken = new URLSearchParams(location.search).get(
     "resetPasswordToken"
   ) as string;
 
   const onFinish = async (formData: AuthResetPasswordData) => {
-    mutate({ ...formData, resetPasswordToken: resetPasswordToken });
-    if (data && !isError) {
+    try {
+      await mutateAsync({ ...formData, resetPasswordToken });
       toast.success(
         "Password reset successfully. You can now login with your new password."
       );
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -50,7 +52,7 @@ export default function AuthResetPasswordPage() {
               {t("reset_password")}
             </Title>
             <Form layout="vertical" onFinish={onFinish}>
-              <Form.Item
+              <Form.Item<AuthResetPasswordData>
                 label={t("password")}
                 name="password"
                 rules={[

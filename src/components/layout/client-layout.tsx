@@ -4,10 +4,12 @@ import PageHeader from "@/components/header";
 import useAppStore from "@/store/appStore";
 import { darkTheme, lightTheme } from "@/theme/themeConfig";
 import {
+  BarChartOutlined,
   BulbFilled,
-  UploadOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  RocketOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -21,23 +23,18 @@ import {
   Typography,
 } from "antd";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { createElement, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { JSX, useMemo, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 const { Sider } = Layout;
 const { Text } = Typography;
 
-const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  UserOutlined,
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: createElement(icon),
-  label: `nav ${index + 1}`,
-}));
+type Page = {
+  key: string;
+  icon: JSX.Element;
+  label: string;
+};
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +50,7 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const me = useAppStore((state) => state.me);
   const darkMode = useAppStore((state) => state.darkMode);
   const toggleDarkMode = useAppStore((state) => state.toggleDarkMode);
   const language = useAppStore((state) => state.locale);
@@ -61,9 +59,37 @@ export default function ClientLayout({
   const themeName = useMemo(() => (darkMode ? "dark" : "light"), [darkMode]);
   const t = useTranslations();
   const router = useRouter();
+  const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(true);
-  // Dil popover'ı için ayrı state
   const [isLangPopoverOpen, setIsLangPopoverOpen] = useState(false);
+
+  const pages: Page[] = [
+    {
+      key: "/",
+      icon: <HomeOutlined />,
+      label: t("home"),
+    },
+    {
+      key: "/statistics",
+      icon: <BarChartOutlined />,
+      label: t("statistics"),
+    },
+    !!me?.access_token && {
+      key: "/games",
+      icon: <RocketOutlined />,
+      label: t("games"),
+    },
+    {
+      key: "/users",
+      icon: <UserOutlined />,
+      label: t("users"),
+    },
+    {
+      key: "/logout",
+      icon: <LogoutOutlined />,
+      label: t("logout"),
+    },
+  ].filter(Boolean) as Page[];
 
   function handleChaneLanguage(locale: "en" | "tr") {
     setLanguage(locale);
@@ -128,7 +154,13 @@ export default function ClientLayout({
               theme={themeName}
               mode="inline"
               defaultSelectedKeys={["4"]}
-              items={items}
+              items={pages}
+              selectedKeys={[
+                pathname.startsWith("/games") ? "/games" : pathname,
+              ]}
+              onClick={({ key }) =>
+                router.push(key === "/games" ? `${key}/${me?.id}` : key)
+              }
             />
           </Sider>
           <Layout>

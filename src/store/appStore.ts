@@ -33,7 +33,9 @@ const useAppStore = create<AppState>((set) => ({
 
     set({ locale });
   },
-  me: localStorage.getItem("my-games-user") as unknown as TokenData | undefined,
+  me: JSON.parse(localStorage.getItem("my-games-user") || "null") as
+    | TokenData
+    | undefined,
   setMe: (me) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("my-games-user", JSON.stringify(me));

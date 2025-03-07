@@ -14,26 +14,24 @@ export default function AuthSignupPage() {
   const router = useRouter();
   const t = useTranslations();
   const {
-    mutate: signupMutate,
-    data: signupData,
+    mutateAsync: signupMutate,
     isPending: isSignupPending,
     isError: isSignupError,
   } = useSignup();
-  const {
-    mutate: loginMutate,
-    data: loginData,
-    isPending: isLoginPending,
-    isError: isLoginError,
-  } = useLogin();
+  const { mutateAsync: loginMutate, isPending: isLoginPending } = useLogin();
 
   const onFinish = async (formData: AuthSignupData) => {
-    signupMutate(formData);
-    if (signupData && !isSignupError) {
-      loginMutate(formData);
-      if (loginData && !isLoginError) {
-        setMe(loginData);
-        router.push("/");
+    try {
+      await signupMutate(formData);
+      if (!isSignupError) {
+        const loginData = await loginMutate(formData);
+        if (loginData) {
+          setMe(loginData);
+          router.push("/");
+        }
       }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -62,7 +60,7 @@ export default function AuthSignupPage() {
               {t("signup")}
             </Title>
             <Form layout="vertical" onFinish={onFinish}>
-              <Form.Item
+              <Form.Item<AuthSignupData>
                 label={t("name")}
                 name="name"
                 rules={[{ required: true, message: "Please input your name!" }]}
@@ -79,7 +77,7 @@ export default function AuthSignupPage() {
               >
                 <Input placeholder="abcdef@gmail.com" />
               </Form.Item>
-              <Form.Item
+              <Form.Item<AuthSignupData>
                 label={t("password")}
                 name="password"
                 rules={[

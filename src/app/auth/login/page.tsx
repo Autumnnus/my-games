@@ -13,13 +13,15 @@ export default function AuthLoginPage() {
   const setMe = useAppStore((state) => state.setMe);
   const t = useTranslations();
   const router = useRouter();
-  const { mutate, data, isPending, isError } = useLogin();
+  const { mutateAsync, isPending } = useLogin();
 
   const onFinish = async (formData: AuthLoginData) => {
-    mutate(formData);
-    if (data && !isError) {
+    try {
+      const data = await mutateAsync(formData);
       setMe(data);
       router.push("/");
+    } catch (error) {
+      console.error(error);
     }
   };
 

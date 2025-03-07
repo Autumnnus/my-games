@@ -12,15 +12,17 @@ const { Title } = Typography;
 export default function AuthForgotPasswordPage() {
   const t = useTranslations();
   const router = useRouter();
-  const { mutate, data, isPending, isError } = useForgotPassword();
+  const { mutateAsync, isPending } = useForgotPassword();
 
   const onFinish = async (formData: AuthForgotPasswordData) => {
-    mutate(formData);
-    if (data && !isError) {
+    try {
+      await mutateAsync(formData);
       toast.success(
         "Email sent successfully. Check your email for the reset link."
       );
       router.push("/");
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -49,7 +51,7 @@ export default function AuthForgotPasswordPage() {
               {t("reset_password")}
             </Title>
             <Form layout="vertical" onFinish={onFinish}>
-              <Form.Item
+              <Form.Item<AuthForgotPasswordData>
                 label={t("email")}
                 name="email"
                 rules={[
