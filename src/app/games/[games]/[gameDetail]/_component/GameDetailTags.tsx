@@ -1,8 +1,8 @@
 "use client";
-
 import { NameId } from "@/types/games";
-import { Space, Typography } from "antd";
+import { Space, Tag, Typography } from "antd";
 import { useTranslations } from "next-intl";
+
 export default function Tags({
   title,
   tags,
@@ -17,17 +17,7 @@ export default function Tags({
       <Typography.Text>{t(title)}</Typography.Text>
       <Space wrap>
         {tags.map((tag) => (
-          <Typography.Text
-            key={tag.id}
-            style={{
-              backgroundColor: "#f5f5f5",
-              borderRadius: 4,
-              padding: "0.2rem 0.5rem",
-              color: "gray",
-            }}
-          >
-            {tag.name}
-          </Typography.Text>
+          <Tag key={tag.id}>{tag.name}</Tag>
         ))}
       </Space>
     </Space>

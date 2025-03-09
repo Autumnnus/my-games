@@ -1,98 +1,93 @@
 "use client";
-
 import { useScreenshots } from "@/hooks/useScreenshots";
 import { Screenshot } from "@/types/screenshot";
 import { EllipsisOutlined } from "@ant-design/icons";
-import { Button, Image, List, Pagination, Popover, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Grid,
+  Image,
+  List,
+  Pagination,
+  Popover,
+  Typography,
+} from "antd";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
-const screenshotsPerPage = 10;
-
-export default function Screenshots({ gameId }: { gameId: string }) {
+export default function Screenshots() {
   const t = useTranslations();
-
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
   const [clickedItemId, setClickedItemId] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [selectedSS, setSelectedSS] = useState<Screenshot | null>(null);
+  const params = useParams();
+  const gameId = params.gameDetail as string;
   const { data } = useScreenshots(gameId);
+  const screenshotsPerPage = 10;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
 
-  function handleClosePopover() {
-    setAnchorEl(null);
+  // Belirlenen breakpoint'lara göre kolon sayısını ayarla.
+  let columns = 5;
+  if (screens.xl) {
+    columns = 5;
+  } else if (screens.lg) {
+    columns = 4;
+  } else if (screens.md) {
+    columns = 3;
+  } else if (screens.sm) {
+    columns = 2;
+  } else {
+    columns = 1;
   }
 
-  function handlePageChange(page: number) {
-    setCurrentPage(page);
-  }
-
-  function handleClick(
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
+  const handleClosePopover = () => setAnchorEl(null);
+  const handlePageChange = (page: number) => setCurrentPage(page);
+  const handleClick = (
+    event: React.MouseEvent<HTMLElement>,
     item: Screenshot
-  ) {
-    setAnchorEl?.(event.currentTarget);
-    setSelectedSS?.(item);
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedSS(item);
     setClickedItemId(item._id);
-  }
-
-  function handleClickImage(item: Screenshot) {
-    setSelectedSS?.(item);
-  }
+  };
+  const handleClickImage = (item: Screenshot) => setSelectedSS(item);
 
   const startIndex = (currentPage - 1) * screenshotsPerPage;
   const currentScreenshots = data?.slice(
     startIndex,
     startIndex + screenshotsPerPage
   );
-
   if (!data?.length) return null;
 
   const popoverContent = (
     <div>
-      <div
-        // style={globalStyles.popoverPrimaryOption}
-        onClick={() => {
-          //   setIsEditScreenshotDialogOpen?.();
-          handleClosePopover?.();
-        }}
-      >
-        {t("edit")}
-      </div>
-      <div
-        // style={globalStyles.popoverErrorOption}
-        onClick={() => {
-          //   setIsDeleteScreenshotDialogOpen?.();
-          handleClosePopover?.();
-        }}
-      >
-        {t("delete")}
-      </div>
+      <div onClick={handleClosePopover}>{t("edit")}</div>
+      <div onClick={handleClosePopover}>{t("delete")}</div>
     </div>
   );
 
   return (
-    <div>
-      <Typography.Title level={4}>
-        {`${t("screenshots")} (${data.length})`}
-      </Typography.Title>
+    <Card variant="borderless" title={t("screenshots") + ` (${data.length})`}>
       <List
-        grid={{ gutter: 8, column: 5 }}
+        grid={{ gutter: 16, column: columns }}
+        style={{ padding: 0 }}
         dataSource={currentScreenshots}
         renderItem={(item: Screenshot) => (
-          <List.Item style={{ padding: 0 }}>
+          <List.Item>
             <div
               style={{
                 position: "relative",
-                border: "1px solid #e8e8e8",
-                borderRadius: "4px",
+                border: "1px solid #f0f0f0",
+                borderRadius: 4,
                 overflow: "hidden",
               }}
               onMouseEnter={() => setHoveredItemId(item._id)}
               onMouseLeave={() => {
-                if (clickedItemId !== item._id) {
-                  setHoveredItemId(null);
-                }
+                if (clickedItemId !== item._id) setHoveredItemId(null);
               }}
             >
               <Image
@@ -100,11 +95,10 @@ export default function Screenshots({ gameId }: { gameId: string }) {
                 alt={item.name}
                 onClick={() => handleClickImage(item)}
                 style={{
-                  objectFit: "fill",
-                  position: "relative",
                   width: "100%",
+                  height: 140,
+                  objectFit: "cover",
                   cursor: "pointer",
-                  height: "100%",
                 }}
               />
               <Popover
@@ -113,7 +107,7 @@ export default function Screenshots({ gameId }: { gameId: string }) {
                 visible={!!anchorEl && clickedItemId === item._id}
                 onVisibleChange={(visible) => {
                   if (!visible) {
-                    handleClosePopover?.();
+                    handleClosePopover();
                     setClickedItemId(null);
                   }
                 }}
@@ -125,8 +119,8 @@ export default function Screenshots({ gameId }: { gameId: string }) {
                   onClick={(event) => handleClick(event, item)}
                   style={{
                     position: "absolute",
-                    top: 3,
-                    right: 3,
+                    top: 8,
+                    right: 8,
                     display:
                       hoveredItemId === item._id || clickedItemId === item._id
                         ? "block"
@@ -135,7 +129,7 @@ export default function Screenshots({ gameId }: { gameId: string }) {
                 />
               </Popover>
               {item.name && (
-                <div style={{ marginTop: 4 }}>
+                <div style={{ padding: "8px" }}>
                   <Typography.Text>{item.name}</Typography.Text>
                 </div>
               )}
@@ -148,7 +142,8 @@ export default function Screenshots({ gameId }: { gameId: string }) {
         current={currentPage}
         pageSize={screenshotsPerPage}
         onChange={handlePageChange}
+        style={{ marginTop: 16, textAlign: "center" }}
       />
-    </div>
+    </Card>
   );
 }

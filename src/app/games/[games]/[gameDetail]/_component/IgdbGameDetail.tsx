@@ -1,24 +1,27 @@
 "use client";
-
 import Tags from "@/app/games/[games]/[gameDetail]/_component/GameDetailTags";
-import { GamesData } from "@/types/games";
-import { Space, Typography } from "antd";
+import { useUserGameDetail } from "@/hooks/useGames";
+import { Card, Col, Row } from "antd";
 import { useTranslations } from "next-intl";
-export default function IGDBGameDetail({ game }: { game: GamesData }) {
+import { useParams } from "next/navigation";
+
+export default function IGDBGameDetail() {
   const t = useTranslations();
-  const developers = game.igdb?.involved_companies?.filter(
+  const params = useParams();
+  const gameId = params.gameDetail as string;
+  const { data: game, isLoading } = useUserGameDetail(gameId);
+  const developers = game?.igdb?.involved_companies?.filter(
     (item) => item.developer
   );
-  const publishers = game.igdb?.involved_companies?.filter(
+  const publishers = game?.igdb?.involved_companies?.filter(
     (item) => item.publisher
   );
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-      <Typography.Title level={3}>IGDB {t("game_details")}</Typography.Title>
-      <Space wrap>
-        {game.igdb?.genres?.length ? (
-          <div>
+    <Card variant="borderless" title={t("igdb_detail")}>
+      <Row gutter={[16, 16]}>
+        {game?.igdb?.genres?.length && (
+          <Col>
             <Tags
               title="genres"
               tags={game.igdb.genres.map((item) => ({
@@ -26,10 +29,10 @@ export default function IGDBGameDetail({ game }: { game: GamesData }) {
                 id: item.id,
               }))}
             />
-          </div>
-        ) : null}
-        {game.igdb?.themes?.length ? (
-          <div>
+          </Col>
+        )}
+        {game?.igdb?.themes?.length && (
+          <Col>
             <Tags
               title="themes"
               tags={game.igdb.themes.map((item) => ({
@@ -37,10 +40,10 @@ export default function IGDBGameDetail({ game }: { game: GamesData }) {
                 id: item.id,
               }))}
             />
-          </div>
-        ) : null}
-        {game.igdb?.player_perspectives?.length ? (
-          <div>
+          </Col>
+        )}
+        {game?.igdb?.player_perspectives?.length && (
+          <Col>
             <Tags
               title="player_perspectives"
               tags={game.igdb.player_perspectives.map((item) => ({
@@ -48,12 +51,10 @@ export default function IGDBGameDetail({ game }: { game: GamesData }) {
                 id: item.id,
               }))}
             />
-          </div>
-        ) : null}
-      </Space>
-      <Space wrap>
-        {game.igdb?.game_modes?.length ? (
-          <div>
+          </Col>
+        )}
+        {game?.igdb?.game_modes?.length && (
+          <Col>
             <Tags
               title="game_modes"
               tags={game.igdb.game_modes.map((item) => ({
@@ -61,10 +62,10 @@ export default function IGDBGameDetail({ game }: { game: GamesData }) {
                 id: item.id,
               }))}
             />
-          </div>
-        ) : null}
-        {developers?.length ? (
-          <div>
+          </Col>
+        )}
+        {developers?.length && (
+          <Col>
             <Tags
               title="developers"
               tags={developers.map((item) => ({
@@ -72,10 +73,10 @@ export default function IGDBGameDetail({ game }: { game: GamesData }) {
                 id: item.id,
               }))}
             />
-          </div>
-        ) : null}
-        {publishers?.length ? (
-          <div>
+          </Col>
+        )}
+        {publishers?.length && (
+          <Col>
             <Tags
               title="publishers"
               tags={publishers.map((item) => ({
@@ -83,9 +84,9 @@ export default function IGDBGameDetail({ game }: { game: GamesData }) {
                 id: item.id,
               }))}
             />
-          </div>
-        ) : null}
-      </Space>
-    </Space>
+          </Col>
+        )}
+      </Row>
+    </Card>
   );
 }

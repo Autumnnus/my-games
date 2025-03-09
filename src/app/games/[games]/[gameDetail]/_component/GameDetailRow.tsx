@@ -1,7 +1,7 @@
 "use client";
 import PlatformIcon from "@/components/platform_icon";
 import { GamesData, Platform } from "@/types/games";
-import { Space, Typography } from "antd";
+import { Typography } from "antd";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
@@ -13,54 +13,59 @@ type DetailRowsProps = {
 export default function GameDetailRow({ title, content }: DetailRowsProps) {
   const t = useTranslations();
 
-  function capitalizeFirstLetter(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  const capitalizeFirstLetter = (string: string) =>
+    string.charAt(0).toUpperCase() + string.slice(1);
 
   const stringfied = useMemo(() => (content ? String(content) : ""), [content]);
 
   const memorizedContent = useMemo(() => {
     if (title === "lastPlay") {
       return (
-        <span style={{ color: "gray" }}>
+        <Typography.Text type="secondary">
           {new Date(stringfied).toLocaleDateString()}
-        </span>
+        </Typography.Text>
       );
     }
 
     if (title === "rating") {
       return !content ? (
-        <span style={{ color: "gray" }}>{t("not_rated")}</span>
+        <Typography.Text type="secondary">{t("not_rated")}</Typography.Text>
       ) : (
-        <span style={{ color: "gray" }}>{stringfied}/10</span>
+        <Typography.Text type="secondary">{stringfied}/10</Typography.Text>
       );
     }
 
     if (title === "platform") {
       return (
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            color: "gray",
-            gap: 8,
-          }}
-        >
-          {t(stringfied)}
-          <PlatformIcon platform={content as Platform} />
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+          <span style={{ display: "inline-block", lineHeight: "20px" }}>
+            {t(stringfied)}
+          </span>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              width: 20,
+              height: 20,
+            }}
+          >
+            <PlatformIcon platform={content as Platform} />
+          </span>
         </span>
       );
     }
 
     return (
-      <span style={{ color: "gray" }}>{capitalizeFirstLetter(stringfied)}</span>
+      <Typography.Text type="secondary">
+        {capitalizeFirstLetter(stringfied)}
+      </Typography.Text>
     );
-  }, [content, stringfied, title]);
+  }, [content, stringfied, title, t]);
 
   return (
-    <Space direction="horizontal" size={4}>
-      <Typography.Text strong>{t(title)}:</Typography.Text>
-      <Typography.Text>{memorizedContent}</Typography.Text>
-    </Space>
+    <>
+      <Typography.Text strong>{t(title)}: </Typography.Text>
+      <Typography.Text strong>{memorizedContent}</Typography.Text>
+    </>
   );
 }
