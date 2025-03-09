@@ -1,6 +1,7 @@
 "use client";
 
-import { Screenshot, ScreenshotType } from "@/types/screenshot";
+import { useScreenshots } from "@/hooks/useScreenshots";
+import { Screenshot } from "@/types/screenshot";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { Button, Image, List, Pagination, Popover, Typography } from "antd";
 import { useTranslations } from "next-intl";
@@ -8,7 +9,7 @@ import React, { useState } from "react";
 
 const screenshotsPerPage = 10;
 
-export default function Screenshots() {
+export default function Screenshots({ gameId }: { gameId: string }) {
   const t = useTranslations();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -16,155 +17,7 @@ export default function Screenshots() {
   const [clickedItemId, setClickedItemId] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [selectedSS, setSelectedSS] = useState<Screenshot | null>(null);
-  const [isPreviewScreenshotOpen, setIsPreviewScreenshotOpen] =
-    useState<() => void | undefined | null>();
-
-  const screenShots: Screenshot[] = [
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-    {
-      _id: "1",
-      url: "https://images.steamusercontent.com/ugc/51332347453718096/A6648EE3EA01524DE80C936D6915DE8F42480198/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
-      name: "Screenshot 1",
-      createdAt: new Date(),
-      game: "1",
-      images: [],
-      updatedAt: new Date(),
-      user: "1",
-      key: "1",
-      type: ScreenshotType.Image,
-    },
-  ];
+  const { data } = useScreenshots(gameId);
 
   function handleClosePopover() {
     setAnchorEl(null);
@@ -188,12 +41,12 @@ export default function Screenshots() {
   }
 
   const startIndex = (currentPage - 1) * screenshotsPerPage;
-  const currentScreenshots = screenShots.slice(
+  const currentScreenshots = data?.slice(
     startIndex,
     startIndex + screenshotsPerPage
   );
 
-  if (screenShots.length === 0) return null;
+  if (!data?.length) return null;
 
   const popoverContent = (
     <div>
@@ -221,7 +74,7 @@ export default function Screenshots() {
   return (
     <div>
       <Typography.Title level={4}>
-        {`${t("screenshots")} (${screenShots.length})`}
+        {`${t("screenshots")} (${data.length})`}
       </Typography.Title>
       <List
         grid={{ gutter: 8, column: 5 }}
@@ -291,7 +144,7 @@ export default function Screenshots() {
         )}
       />
       <Pagination
-        total={screenShots.length}
+        total={data.length}
         current={currentPage}
         pageSize={screenshotsPerPage}
         onChange={handlePageChange}

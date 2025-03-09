@@ -9,11 +9,17 @@ import {
   PictureOutlined,
 } from "@ant-design/icons";
 import { Button, Image, Skeleton, Space, Typography } from "antd";
-export default function GameDetailTitle({ game }: { game: GamesData }) {
+export default function GameDetailTitle({
+  game,
+  isLoading,
+}: {
+  game?: GamesData | undefined;
+  isLoading: boolean;
+}) {
   const me = useAppStore((state) => state.me);
   // const isOwner = useMemo(() => game.userId === token?.id, [game.userId, token?.id]);
   const isOwner = true;
-  const loadingGameDetail = false;
+  const loadingGameDetail = !game || isLoading;
 
   return (
     <Space direction="horizontal" size={24} style={{ flexWrap: "wrap" }}>

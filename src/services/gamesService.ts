@@ -1,14 +1,16 @@
 import { GamesData } from "@/types/games";
 import apiClient from "./apiClient";
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+const baseUrl = "/games";
 
-export const getUserGames = async (id: string): Promise<GamesData[]> => {
-  const { data } = await apiClient.get(`/games/user/${id}`);
+export const userGames = async (id: string): Promise<GamesData[]> => {
+  const { data } = await apiClient.get(`${baseUrl}/user/${id}`);
+
+  return data.data;
+};
+
+export const userGameDetail = async (id: string): Promise<GamesData> => {
+  const { data } = await apiClient.get(`${baseUrl}/game/${id}`);
 
   return data.data;
 };
