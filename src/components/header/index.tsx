@@ -25,6 +25,9 @@ export default function PageHeader({
   return (
     <Header
       style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
         paddingTop: 10,
         paddingBottom: 10,
         background: colorBgContainer,

@@ -7,6 +7,7 @@ import {
   BarChartOutlined,
   BulbFilled,
   HomeOutlined,
+  LoginOutlined,
   LogoutOutlined,
   RocketOutlined,
   UserOutlined,
@@ -84,11 +85,17 @@ export default function ClientLayout({
       icon: <UserOutlined />,
       label: t("users"),
     },
-    {
-      key: "/logout",
-      icon: <LogoutOutlined />,
-      label: t("logout"),
-    },
+    !!me?.access_token
+      ? {
+          key: "/logout",
+          icon: <LogoutOutlined />,
+          label: t("logout"),
+        }
+      : {
+          key: "auth/login",
+          icon: <LoginOutlined />,
+          label: t("login"),
+        },
   ].filter(Boolean) as Page[];
 
   function handleChaneLanguage(locale: "en" | "tr") {

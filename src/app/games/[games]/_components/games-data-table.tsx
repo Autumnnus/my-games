@@ -7,6 +7,8 @@ import type { GetProp, TableProps } from "antd";
 import { Image, Table } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
@@ -31,6 +33,8 @@ export default function GamesDataTable({ id }: { id: string }) {
       pageSize: 10,
     },
   });
+  const pathname = usePathname();
+  console.log("pathname", `${pathname}/aaa`);
 
   const columns: ColumnsType<GamesData> = [
     {
@@ -47,6 +51,9 @@ export default function GamesDataTable({ id }: { id: string }) {
       sorter: true,
       width: "30%",
       ellipsis: true,
+      render: (name, record) => (
+        <Link href={`${pathname}/${record._id}`}>{name}</Link>
+      ),
     },
     {
       title: t("rating"),

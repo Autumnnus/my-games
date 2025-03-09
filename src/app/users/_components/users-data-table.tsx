@@ -54,7 +54,7 @@ export default function UsersDataTable() {
     },
     {
       title: t("games"),
-      dataIndex: "games",
+      dataIndex: "gameSize",
       ellipsis: true,
     },
     {
