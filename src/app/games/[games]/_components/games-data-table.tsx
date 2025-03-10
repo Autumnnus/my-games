@@ -3,13 +3,14 @@
 import { useUserGames } from "@/hooks/useGames";
 import useAppStore from "@/store/appStore";
 import { GamesData } from "@/types/games";
-import type { GetProp, TableProps } from "antd";
-import { Image, Table } from "antd";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import type { GetProp, MenuProps, TableProps } from "antd";
+import { Dropdown, Image, Table } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
 type TablePaginationConfig = Exclude<
@@ -24,8 +25,9 @@ interface TableParams {
   filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
 
-export default function GamesDataTable({ id }: { id: string }) {
+export default function GamesDataTable() {
   const locale = useAppStore((state) => state.locale);
+  const me = useAppStore((state) => state.me);
   const t = useTranslations();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -33,12 +35,23 @@ export default function GamesDataTable({ id }: { id: string }) {
       pageSize: 10,
     },
   });
+  const params = useParams();
   const pathname = usePathname();
-  console.log("pathname", `${pathname}/aaa`);
+  const route = useRouter();
+  const id = params.games as string;
+  const isOwner = useMemo(() => me?.id === id, [me?.id, id]);
+
+  function handleDelete(id: string) {
+    console.log("delete", id);
+  }
+
+  function handleEdit(id: string) {
+    console.log("edit", id);
+  }
 
   const columns: ColumnsType<GamesData> = [
     {
-      title: "",
+      title: null,
       dataIndex: "photo",
       width: "8%",
       render: (photo) => (
@@ -105,6 +118,66 @@ export default function GamesDataTable({ id }: { id: string }) {
       ellipsis: true,
       render: (status) => t(status),
     },
+    ...(isOwner
+      ? [
+          {
+            title: null,
+            dataIndex: "action",
+            width: "3%",
+            render: (_: any, record: GamesData) => {
+              const items: MenuProps["items"] = [
+                {
+                  key: "view",
+                  label: t("view"),
+                  onClick: () => route.push(`${pathname}/${record._id}`),
+                  icon: <EyeOutlined />,
+                },
+                {
+                  type: "divider",
+                },
+                {
+                  key: "edit",
+                  label: t("edit"),
+                  onClick: () => handleEdit(record._id),
+                  icon: <EditOutlined />,
+                },
+                {
+                  key: "delete",
+                  label: t("delete"),
+                  onClick: () => handleDelete(record._id),
+                  icon: <DeleteOutlined />,
+                  danger: true,
+                },
+              ];
+
+              const handleButtonClick = (
+                e: React.MouseEvent<HTMLButtonElement>
+              ) => {
+                console.log("click left button", e);
+              };
+
+              const handleMenuClick: MenuProps["onClick"] = (e) => {
+                console.log("click", e);
+              };
+
+              const menuProps = {
+                items,
+                onClick: handleMenuClick,
+              };
+
+              return (
+                <Dropdown.Button
+                  size="small"
+                  menu={menuProps}
+                  onClick={handleButtonClick}
+                >
+                  {t("edit")}
+                </Dropdown.Button>
+              );
+            },
+          },
+        ]
+      : []),
   ];
 
   const { data, isFetching } = useUserGames(id);

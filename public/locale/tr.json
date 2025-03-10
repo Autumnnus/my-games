@@ -121,5 +121,6 @@
   "first_release_years": "First Release Years",
   "tr": "Türkçe",
   "en": "İngilizce",
-  "igdb_details": "IGDB Detayları"
+  "igdb_detail": "IGDB Detayları",
+  "view": "Görüntüle"
 }

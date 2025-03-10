@@ -10,37 +10,36 @@ interface AppState {
   setMe: (me: TokenData) => void;
 }
 
+const isBrowser = typeof window !== "undefined";
+
+const getItem = (key: string, defaultValue: string = "") =>
+  isBrowser ? localStorage.getItem(key) || defaultValue : defaultValue;
+
+const setItem = (key: string, value: string) => {
+  if (isBrowser) localStorage.setItem(key, value);
+};
+
 const useAppStore = create<AppState>((set) => ({
-  darkMode: localStorage.getItem("darkMode") === "true",
+  darkMode: isBrowser && getItem("darkMode") === "true",
   toggleDarkMode: () =>
     set((state) => {
       const newDarkMode = !state.darkMode;
-      if (typeof window !== "undefined") {
-        localStorage.setItem("darkMode", String(newDarkMode));
-      }
+      setItem("darkMode", String(newDarkMode));
 
       return { darkMode: newDarkMode };
     }),
-  locale:
-    typeof window !== "undefined"
-      ? localStorage.getItem("locale") || "en"
-      : "en",
+  locale: isBrowser ? getItem("locale", "en") : "en",
   setLocale: (locale) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("locale", locale);
+    setItem("locale", locale);
+    if (isBrowser) {
       document.cookie = `locale=${locale}; path=/`;
     }
 
     set({ locale });
   },
-  me: JSON.parse(localStorage.getItem("my-games-user") || "null") as
-    | TokenData
-    | undefined,
+  me: isBrowser ? JSON.parse(getItem("my-games-user") || "null") : undefined,
   setMe: (me) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("my-games-user", JSON.stringify(me));
-    }
-
+    setItem("my-games-user", JSON.stringify(me));
     set({ me });
   },
 }));
