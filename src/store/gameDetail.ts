@@ -1,14 +1,14 @@
-import { GamesData } from "@/types/games";
 import { create } from "zustand";
 
 interface AppState {
-  game?: GamesData | undefined;
-  setGame: (game: GamesData) => void;
+  isEditGameModalOpen: boolean;
+  toggleEditGameModal: () => void;
 }
 
 const useGameDetailStore = create<AppState>((set) => ({
-  game: undefined,
-  setGame: (game) => set({ game }),
+  isEditGameModalOpen: false,
+  toggleEditGameModal: () =>
+    set((state) => ({ isEditGameModalOpen: !state.isEditGameModalOpen })),
 }));
 
 export default useGameDetailStore;

@@ -1,17 +1,15 @@
 import GamesDataTable from "@/app/games/[games]/_components/games-data-table";
+import EditGameModal from "@/components/modals/edit-game";
 
-export default async function Games({
-  params,
-}: {
-  params: Promise<{ games: string }>;
-}) {
+export default async function Games() {
   return (
     <div
       style={{
         padding: 24,
       }}
     >
-      <GamesDataTable id={(await params).games} />
+      <GamesDataTable />
+      <EditGameModal />
     </div>
   );
 }

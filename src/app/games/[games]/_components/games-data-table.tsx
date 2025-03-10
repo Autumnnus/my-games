@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useUserGames } from "@/hooks/useGames";
 import useAppStore from "@/store/appStore";
+import useGameDetailStore from "@/store/gameDetail";
 import { GamesData } from "@/types/games";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import type { GetProp, MenuProps, TableProps } from "antd";
@@ -28,6 +29,9 @@ interface TableParams {
 export default function GamesDataTable() {
   const locale = useAppStore((state) => state.locale);
   const me = useAppStore((state) => state.me);
+  const toggleEditGameModal = useGameDetailStore(
+    (state) => state.toggleEditGameModal
+  );
   const t = useTranslations();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -47,6 +51,7 @@ export default function GamesDataTable() {
 
   function handleEdit(id: string) {
     console.log("edit", id);
+    toggleEditGameModal();
   }
 
   const columns: ColumnsType<GamesData> = [
