@@ -52,7 +52,11 @@ export default function PageHeader({
       {screens.md && (
         <Flex gap={20} style={{ alignItems: "center" }}>
           <Typography.Title level={4} style={{ cursor: "pointer" }}>
-            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              href="/"
+              prefetch
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               {t("home")}
             </Link>
           </Typography.Title>
@@ -63,6 +67,7 @@ export default function PageHeader({
             <Link
               href="/statistics"
               style={{ textDecoration: "none", color: "inherit" }}
+              prefetch
             >
               {t("statistics")}
             </Link>
@@ -78,6 +83,7 @@ export default function PageHeader({
             <Link
               href={`/games/${me?.id}`}
               style={{ textDecoration: "none", color: "inherit" }}
+              prefetch
             >
               {t("games")}
             </Link>
@@ -89,6 +95,7 @@ export default function PageHeader({
             <Link
               href="/users"
               style={{ textDecoration: "none", color: "inherit" }}
+              prefetch
             >
               {t("users")}
             </Link>

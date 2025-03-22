@@ -1,6 +1,5 @@
 "use client";
-import PlatformIcon from "@/components/platform_icon";
-import { GamesData, Platform } from "@/types/games";
+import { GamesData } from "@/types/games";
 import { Typography } from "antd";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -48,9 +47,7 @@ export default function GameDetailRow({ title, content }: DetailRowsProps) {
               width: 20,
               height: 20,
             }}
-          >
-            <PlatformIcon platform={content as Platform} />
-          </span>
+          ></span>
         </span>
       );
     }

@@ -1,10 +1,13 @@
 "use client";
+import usePlatforms from "@/hooks/usePlatforms";
 import useGameDetailStore from "@/store/gameDetail";
+import { Platform, Status } from "@/types/games";
 import {
-  Avatar,
-  Collapse,
+  Button,
   DatePicker,
+  Flex,
   Form,
+  Image,
   Input,
   Modal,
   Select,
@@ -14,7 +17,6 @@ import {
 } from "antd";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-const { Panel } = Collapse;
 
 export default function EditGameModal() {
   const t = useTranslations();
@@ -25,59 +27,36 @@ export default function EditGameModal() {
   const toggleEditGameModal = useGameDetailStore(
     (state) => state.toggleEditGameModal
   );
+  const platforms = usePlatforms();
   const [isIGDBAPIOpen, setIsIGDBAPIOpen] = useState(true);
   const [nameOptions, setNameOptions] = useState([]);
 
-  // Varsayılan değerler, loading, imageSrc, platformSelectOptions, statusSelectOptions,
-  // selectedGameData, convertUnixTimestamp, TABLE_HEADER_BACKGROUND_COLOR gibi değişkenlerin tanımlandığını varsayın.
   const loading = false;
-  const imageSrc = ""; // örnek: "https://..."
-  const platformSelectOptions = [
-    { value: "pc", label: "PC" },
-    { value: "ps5", label: "PS5" },
-  ];
-  const statusSelectOptions = [
-    { value: "released", label: t("released") },
-    { value: "beta", label: t("beta") },
-  ];
-  const selectedGameData = null; // örnek olarak
-  const TABLE_HEADER_BACKGROUND_COLOR = "#f0f2f5";
   const gameName = "Game Name";
   const gameNameLabel = ["Örnek Oyun", "Diğer Oyun"];
   const randomNumber = 0;
 
-  // Örnek: istenirse fetchIGDBGames çağırıp nameOptions state'ini güncelleyebilirsiniz.
-  const fetchIGDBGames = (searchText: string) => {
-    // API çağrısı yapıp sonuçları setNameOptions ile güncelleyin.
-    // Örneğin:
-    // fetch(`/api/games?search=${searchText}`).then(res => res.json()).then(data => setNameOptions(data));
-  };
+  const photo = Form.useWatch(["photo"], form);
 
   const handleClose = () => {
     toggleEditGameModal();
     form.resetFields();
   };
 
-  const handleFinish = (values: any) => {
-    // Form verilerini gönderme işlemi: onSubmit(values)
+  const handleFinish = (values) => {
     console.log("Form values:", values);
     handleClose();
   };
-
-  // İsim alanında arama yapıldığında asenkron seçenekleri güncelleyin
-  const handleNameSearch = (value: string) => {
-    if (isIGDBAPIOpen) {
-      fetchIGDBGames(value);
-    }
-  };
+  console.log("platforms", platforms);
 
   return (
     <Modal
-      title={t("edit_game")}
+      title={<Typography.Title level={3}>{t("edit_game")}</Typography.Title>}
       open={!!isEditGameModalOpen}
       onCancel={handleClose}
-      onOk={() => form.submit()}
-      width="large"
+      footer={null}
+      width={600}
+      style={{ borderRadius: "12px", overflow: "hidden", padding: "20px" }}
     >
       <Form
         form={form}
@@ -87,22 +66,22 @@ export default function EditGameModal() {
           name: gameName,
           photo: "",
           playTime: "",
-          platform: "",
+          platform: Platform.Steam,
           rating: "",
-          status: "",
+          status: Status.Completed,
           lastPlay: null,
           review: "",
         }}
       >
         <Form.Item
           label={
-            <Space>
+            <Flex gap={10} align="center" justify="space-between">
               {t("game_name")}
               <Typography.Text type="secondary">
                 {t("use_igdb_api")}
               </Typography.Text>
               <Switch checked={isIGDBAPIOpen} onChange={setIsIGDBAPIOpen} />
-            </Space>
+            </Flex>
           }
           name="name"
           rules={[{ required: true, message: t("game_name_required") }]}
@@ -110,9 +89,7 @@ export default function EditGameModal() {
           {isIGDBAPIOpen ? (
             <Select
               showSearch
-              filterOption={false}
               placeholder={t("game_name")}
-              onSearch={handleNameSearch}
               options={nameOptions}
               disabled={loading}
             />
@@ -126,92 +103,98 @@ export default function EditGameModal() {
 
         <Form.Item label={t("game_photo_url")} name="photo">
           <Input
-            placeholder="https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"
+            placeholder="https://game-cover.jpg"
             disabled={loading}
-            addonBefore={imageSrc && <Avatar size={40} src={imageSrc} />}
+            addonBefore={
+              photo && (
+                <Image
+                  sizes={"40"}
+                  src={photo}
+                  alt="Photo"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    objectFit: "cover",
+                    borderRadius: 4,
+                  }}
+                />
+              )
+            }
           />
         </Form.Item>
 
-        <Space direction="horizontal" size="middle">
+        <Flex gap={20}>
           <Form.Item
             label={t("game_play_time")}
             name="playTime"
-            rules={[{ required: true, message: t("game_play_time_required") }]}
+            style={{ flex: 1 }}
           >
             <Input type="number" placeholder="23.5" disabled={loading} />
           </Form.Item>
-          <Form.Item
-            label={t("platform")}
-            name="platform"
-            rules={[{ required: true, message: t("platform_required") }]}
-          >
-            <Select
-              placeholder={t("required_input_placeholder", {
-                name: t("platform"),
-              })}
-              disabled={loading}
-            >
-              {platformSelectOptions.map((opt) => (
-                <Select.Option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Space>
 
-        <Space direction="horizontal" size="middle">
-          <Form.Item label={t("rating")} name="rating">
+          <Form.Item label={t("platform")} name="platform" style={{ flex: 1 }}>
+            <Select
+              placeholder={t("platform")}
+              disabled={loading}
+              options={
+                platforms.map((platform) => ({
+                  label: t(platform.label),
+                  value: platform.value,
+                })) || []
+              }
+              // optionRender={(platform) => {
+              //   return (
+              //     <Flex gap={10} align="center">
+              //       <Image
+              //         src={platform.icon}
+              //         alt={platform.label}
+              //         style={{ width: 20, height: 20 }}
+              //       />
+              //       <Typography.Text>{platform.label}</Typography.Text>
+              //     </Flex>
+              //   );
+              // }}
+            />
+          </Form.Item>
+        </Flex>
+
+        <Flex gap={20}>
+          <Form.Item label={t("rating")} name="rating" style={{ flex: 1 }}>
             <Input type="number" placeholder="8.6" disabled={loading} />
           </Form.Item>
-          <Form.Item
-            label={t("game_status")}
-            name="status"
-            rules={[{ required: true, message: t("game_status_required") }]}
-          >
-            <Select
-              placeholder={t("required_input_placeholder", {
-                name: t("game_status"),
-              })}
-              disabled={loading}
-            >
-              {statusSelectOptions.map((opt) => (
-                <Select.Option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Space>
 
-        <Form.Item
-          label={t("last_play_date")}
-          name="lastPlay"
-          rules={[{ required: true, message: t("last_play_date_required") }]}
-        >
+          <Form.Item label={t("game_status")} name="status" style={{ flex: 1 }}>
+            <Select
+              placeholder={t("game_status")}
+              disabled={loading}
+              options={
+                Object.values(Status).map((status) => ({
+                  label: t(status),
+                  value: status,
+                })) || []
+              }
+              // options={statusSelectOptions}
+            />
+          </Form.Item>
+        </Flex>
+        <Form.Item label={t("last_play_date")} name="lastPlay">
           <DatePicker style={{ width: "100%" }} disabled={loading} />
         </Form.Item>
 
         <Form.Item label={t("game_review")} name="review">
           <Input.TextArea
             rows={4}
-            placeholder={t("optional_input_placeholder", {
-              name: t("game_review"),
-            })}
+            placeholder={t("game_review")}
             disabled={loading}
           />
         </Form.Item>
 
-        {selectedGameData && (
-          <div>
-            <Typography.Text
-              style={{ textAlign: "center", display: "block" }}
-              strong
-            >
-              {selectedGameData.name} {t("game_details")}
-            </Typography.Text>
-          </div>
-        )}
+        <Space style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={handleClose}>{t("cancel")}</Button>
+          <Button type="primary" htmlType="submit">
+            {t("save")}
+          </Button>
+        </Space>
       </Form>
     </Modal>
   );
