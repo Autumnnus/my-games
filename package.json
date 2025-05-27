@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write .{js,jsx,ts,tsx,css,md,json,scss} && eslint --fix .{js,jsx,ts,tsx,css,md,json,scss}"
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css,md,json,scss}\" && eslint --fix \"**/*.{js,jsx,ts,tsx,css,md,json,scss}\" --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",

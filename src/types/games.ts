@@ -1,22 +1,22 @@
 export enum Platform {
-  Steam = "steam",
-  EpicGames = "epicGames",
-  Ubisoft = "ubisoft",
-  XboxPc = "xboxPc",
-  EaGames = "eaGames",
-  Torrent = "torrent",
-  Playstation = "playstation",
-  XboxSeries = "xboxSeries",
-  Nintendo = "nintendo",
-  Mobile = "mobile",
-  OtherPlatforms = "otherPlatforms",
+  Steam = 'steam',
+  EpicGames = 'epicGames',
+  Ubisoft = 'ubisoft',
+  XboxPc = 'xboxPc',
+  EaGames = 'eaGames',
+  Torrent = 'torrent',
+  Playstation = 'playstation',
+  XboxSeries = 'xboxSeries',
+  Nintendo = 'nintendo',
+  Mobile = 'mobile',
+  OtherPlatforms = 'otherPlatforms',
 }
 
 export enum Status {
-  Completed = "completed",
-  Abandoned = "abandoned",
-  ToBeCompleted = "toBeCompleted",
-  ActivePlaying = "activePlaying",
+  Completed = 'completed',
+  Abandoned = 'abandoned',
+  ToBeCompleted = 'toBeCompleted',
+  ActivePlaying = 'activePlaying',
 }
 
 export type NameId = {
@@ -90,10 +90,7 @@ export type GamesData = {
   };
 };
 
-export type DialogGameData = Omit<
-  GamesData,
-  "userId" | "screenshotSize" | "createdAt"
->;
+export type DialogGameData = Omit<GamesData, 'userId' | 'screenshotSize' | 'createdAt'>;
 export type FavoriteGamesData = {
   _id: string;
   name: string;

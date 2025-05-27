@@ -1,26 +1,13 @@
-"use client";
-import GameDetailRow from "@/app/games/[games]/[gameDetail]/_component/GameDetailRow";
-import { useUserGameDetail } from "@/hooks/useGames";
-import useAppStore from "@/store/appStore";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PictureOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Col,
-  Image,
-  Row,
-  Skeleton,
-  Space,
-  Typography,
-} from "antd";
-import { useParams } from "next/navigation";
+'use client';
+import GameDetailRow from '@/app/games/[games]/[gameDetail]/_component/GameDetailRow';
+import { useUserGameDetail } from '@/hooks/useGames';
+import useAppStore from '@/store/appStore';
+import { DeleteOutlined, EditOutlined, PictureOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Image, Row, Skeleton, Space, Typography } from 'antd';
+import { useParams } from 'next/navigation';
 
 export default function GameDetailTitle() {
-  const me = useAppStore((state) => state.me);
+  const me = useAppStore(state => state.me);
   const params = useParams();
   const gameId = params.gameDetail as string;
   const { data: game, isLoading } = useUserGameDetail(gameId);
@@ -34,10 +21,7 @@ export default function GameDetailTitle() {
         <Row justify="space-between" align="middle">
           <Col>
             {loadingGameDetail ? (
-              <Skeleton.Input
-                style={{ width: 200, height: 40, borderRadius: 4 }}
-                active
-              />
+              <Skeleton.Input style={{ width: 200, height: 40, borderRadius: 4 }} active />
             ) : (
               <Typography.Title level={5}>{game?.name}</Typography.Title>
             )}
@@ -45,18 +29,9 @@ export default function GameDetailTitle() {
           {me?.access_token && isOwner && (
             <Col>
               <Space>
-                <Button
-                  type="primary"
-                  size="middle"
-                  icon={<PictureOutlined />}
-                />
+                <Button type="primary" size="middle" icon={<PictureOutlined />} />
                 <Button type="primary" size="middle" icon={<EditOutlined />} />
-                <Button
-                  type="primary"
-                  size="middle"
-                  danger
-                  icon={<DeleteOutlined />}
-                />
+                <Button type="primary" size="middle" danger icon={<DeleteOutlined />} />
               </Space>
             </Col>
           )}
@@ -66,17 +41,15 @@ export default function GameDetailTitle() {
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={5}>
           {loadingGameDetail ? (
-            <Skeleton.Image
-              style={{ width: "100%", height: 300, borderRadius: 8 }}
-            />
+            <Skeleton.Image style={{ width: '100%', height: 300, borderRadius: 8 }} />
           ) : (
             <Image
               src={game?.photo}
               alt={game?.name}
               style={{
-                width: "100%",
+                width: '100%',
                 height: 300,
-                objectFit: "cover",
+                objectFit: 'cover',
                 borderRadius: 8,
               }}
             />
@@ -88,7 +61,7 @@ export default function GameDetailTitle() {
               Array.from({ length: 6 }).map((_, index) => (
                 <Skeleton.Input
                   key={index}
-                  style={{ width: "100%", height: 32, borderRadius: 4 }}
+                  style={{ width: '100%', height: 32, borderRadius: 4 }}
                   active
                 />
               ))
@@ -99,9 +72,7 @@ export default function GameDetailTitle() {
                 <GameDetailRow title="status" content={game?.status} />
                 <GameDetailRow title="playTime" content={game?.playTime} />
                 <GameDetailRow title="lastPlay" content={game?.lastPlay} />
-                {game?.review && (
-                  <GameDetailRow title="review" content={game.review} />
-                )}
+                {game?.review && <GameDetailRow title="review" content={game.review} />}
               </>
             )}
           </Space>

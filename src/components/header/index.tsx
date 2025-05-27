@@ -1,9 +1,9 @@
-"use client";
-import useAppStore from "@/store/appStore";
-import { MenuOutlined } from "@ant-design/icons";
-import { Flex, Grid, Layout, theme, Typography } from "antd";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
+'use client';
+import useAppStore from '@/store/appStore';
+import { MenuOutlined } from '@ant-design/icons';
+import { Flex, Grid, Layout, theme, Typography } from 'antd';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -20,84 +20,66 @@ export default function PageHeader({
   } = theme.useToken();
   const t = useTranslations();
   const screens = useBreakpoint();
-  const me = useAppStore((state) => state.me);
+  const me = useAppStore(state => state.me);
 
   return (
     <Header
       style={{
-        position: "sticky",
+        position: 'sticky',
         top: 0,
         zIndex: 100,
         paddingTop: 10,
         paddingBottom: 10,
         background: colorBgContainer,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 20px",
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 20px',
       }}
     >
-      <Flex gap={20} style={{ alignItems: "center" }}>
+      <Flex gap={20} style={{ alignItems: 'center' }}>
         <MenuOutlined
           onClick={() => setCollapsed(!collapsed)}
-          style={{ fontSize: 18, cursor: "pointer" }}
+          style={{ fontSize: 18, cursor: 'pointer' }}
         />
-        <Typography.Title level={4} style={{ cursor: "pointer" }}>
-          <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+        <Typography.Title level={4} style={{ cursor: 'pointer' }}>
+          <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             My Games
           </Link>
         </Typography.Title>
       </Flex>
       {screens.md && (
-        <Flex gap={20} style={{ alignItems: "center" }}>
-          <Typography.Title level={4} style={{ cursor: "pointer" }}>
-            <Link
-              href="/"
-              prefetch
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              {t("home")}
+        <Flex gap={20} style={{ alignItems: 'center' }}>
+          <Typography.Title level={4} style={{ cursor: 'pointer' }}>
+            <Link href="/" prefetch style={{ textDecoration: 'none', color: 'inherit' }}>
+              {t('home')}
             </Link>
           </Typography.Title>
-          <Typography.Title
-            level={4}
-            style={{ cursor: "pointer", marginTop: 0 }}
-          >
-            <Link
-              href="/statistics"
-              style={{ textDecoration: "none", color: "inherit" }}
-              prefetch
-            >
-              {t("statistics")}
+          <Typography.Title level={4} style={{ cursor: 'pointer', marginTop: 0 }}>
+            <Link href="/statistics" style={{ textDecoration: 'none', color: 'inherit' }} prefetch>
+              {t('statistics')}
             </Link>
           </Typography.Title>
           <Typography.Title
             level={4}
             style={{
-              cursor: "pointer",
+              cursor: 'pointer',
               marginTop: 0,
-              display: !me?.access_token ? "none" : "",
+              display: !me?.access_token ? 'none' : '',
             }}
           >
             <Link
               href={`/games/${me?.id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
+              style={{ textDecoration: 'none', color: 'inherit' }}
               prefetch
             >
-              {t("games")}
+              {t('games')}
             </Link>
           </Typography.Title>
-          <Typography.Title
-            level={4}
-            style={{ cursor: "pointer", marginTop: 0 }}
-          >
-            <Link
-              href="/users"
-              style={{ textDecoration: "none", color: "inherit" }}
-              prefetch
-            >
-              {t("users")}
+          <Typography.Title level={4} style={{ cursor: 'pointer', marginTop: 0 }}>
+            <Link href="/users" style={{ textDecoration: 'none', color: 'inherit' }} prefetch>
+              {t('users')}
             </Link>
           </Typography.Title>
         </Flex>

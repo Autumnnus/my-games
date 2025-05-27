@@ -1,5 +1,5 @@
-import GamesDataTable from "@/app/games/[games]/_components/games-data-table";
-import EditGameModal from "@/components/modals/edit-game";
+import GamesDataTable from '@/app/games/[games]/_components/games-data-table';
+import EditGameModal from '@/components/modals/edit-game';
 
 export default async function Games() {
   return (

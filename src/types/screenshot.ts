@@ -12,6 +12,6 @@ export type Screenshot = {
 };
 
 export enum ScreenshotType {
-  Text = "text",
-  Image = "image",
+  Text = 'text',
+  Image = 'image',
 }

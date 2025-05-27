@@ -1,63 +1,63 @@
-import PlatformIcon from "@/assets/PlatformIcons";
-import { Platform } from "@/types/games";
-import { useTranslations } from "next-intl";
+import PlatformIcon from '@/assets/PlatformIcons';
+import { Platform } from '@/types/games';
+import { useTranslations } from 'next-intl';
 
 const usePlatforms = () => {
   const t = useTranslations();
   const platforms = [
-    { label: "Steam", value: Platform.Steam, icon: Platform.Steam },
+    { label: 'Steam', value: Platform.Steam, icon: Platform.Steam },
     {
-      label: "Epic Games",
+      label: 'Epic Games',
       value: Platform.EpicGames,
       icon: PlatformIcon.Steam,
     },
     {
-      label: "Ubisoft",
+      label: 'Ubisoft',
       value: Platform.Ubisoft,
       icon: PlatformIcon.Ubisoft,
     },
     {
-      label: "Xbox(Pc)",
+      label: 'Xbox(Pc)',
       value: Platform.XboxPc,
       icon: PlatformIcon.XboxPc,
     },
     {
-      label: "EA Games",
+      label: 'EA Games',
       value: Platform.EaGames,
       icon: PlatformIcon.EaGames,
     },
     {
-      label: "Ubisoft",
+      label: 'Ubisoft',
       value: Platform.Ubisoft,
       icon: PlatformIcon.Ubisoft,
     },
     {
-      label: "Torrent",
+      label: 'Torrent',
       value: Platform.Torrent,
       icon: PlatformIcon.Torrent,
     },
     {
-      label: "Playstation",
+      label: 'Playstation',
       value: Platform.Playstation,
       icon: PlatformIcon.Playstation,
     },
     {
-      label: "Xbox Series",
+      label: 'Xbox Series',
       value: Platform.XboxSeries,
       icon: PlatformIcon.XboxSeries,
     },
     {
-      label: "Nintendo",
+      label: 'Nintendo',
       value: Platform.XboxSeries,
       icon: PlatformIcon.XboxSeries,
     },
     {
-      label: "Mobile",
+      label: 'Mobile',
       value: Platform.Mobile,
       icon: PlatformIcon.Mobile,
     },
     {
-      label: t("otherPlatforms"),
+      label: t('otherPlatforms'),
       value: Platform.OtherPlatforms,
       icon: PlatformIcon.OtherPlatforms,
     },

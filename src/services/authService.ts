@@ -4,10 +4,10 @@ import {
   AuthResetPasswordData,
   AuthSignupData,
   TokenData,
-} from "@/types/auth";
-import apiClient from "./apiClient";
+} from '@/types/auth';
+import apiClient from './apiClient';
 
-const baseUrl = "/auth";
+const baseUrl = '/auth';
 
 export const login = async (params: AuthBaseData): Promise<TokenData> => {
   const { data } = await apiClient.post(`${baseUrl}/login`, params);
@@ -15,9 +15,7 @@ export const login = async (params: AuthBaseData): Promise<TokenData> => {
   return data.data;
 };
 
-export const forgotPassword = async (
-  params: AuthForgotPasswordData
-): Promise<void> => {
+export const forgotPassword = async (params: AuthForgotPasswordData): Promise<void> => {
   const { data } = await apiClient.post(`${baseUrl}/forgotpassword`, params);
 
   return data.data;

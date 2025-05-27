@@ -6,7 +6,7 @@ export type User = {
   isVerified: boolean;
   name: string;
   password: string;
-  role: "admin" | "user" | "vip";
+  role: 'admin' | 'user' | 'vip';
   screenshotSize: number;
   updatedAt: Date;
   verificationExpire: Date;

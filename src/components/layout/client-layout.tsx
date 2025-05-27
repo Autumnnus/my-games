@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import PageHeader from "@/components/header";
-import useAppStore from "@/store/appStore";
-import { darkTheme, lightTheme } from "@/theme/themeConfig";
+import PageHeader from '@/components/header';
+import useAppStore from '@/store/appStore';
+import { darkTheme, lightTheme } from '@/theme/themeConfig';
 import {
   BarChartOutlined,
   BulbFilled,
@@ -11,22 +11,13 @@ import {
   LogoutOutlined,
   RocketOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  ConfigProvider,
-  Divider,
-  Flex,
-  Layout,
-  Menu,
-  Popover,
-  Switch,
-  Typography,
-} from "antd";
-import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
-import { JSX, useMemo, useState } from "react";
-import { Toaster } from "react-hot-toast";
+} from '@ant-design/icons';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConfigProvider, Divider, Flex, Layout, Menu, Popover, Switch, Typography } from 'antd';
+import { useTranslations } from 'next-intl';
+import { usePathname, useRouter } from 'next/navigation';
+import { JSX, useMemo, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -46,18 +37,14 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function ClientLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const me = useAppStore((state) => state.me);
-  const darkMode = useAppStore((state) => state.darkMode);
-  const toggleDarkMode = useAppStore((state) => state.toggleDarkMode);
-  const language = useAppStore((state) => state.locale);
-  const setLanguage = useAppStore((state) => state.setLocale);
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
+  const me = useAppStore(state => state.me);
+  const darkMode = useAppStore(state => state.darkMode);
+  const toggleDarkMode = useAppStore(state => state.toggleDarkMode);
+  const language = useAppStore(state => state.locale);
+  const setLanguage = useAppStore(state => state.setLocale);
   const theme = useMemo(() => (darkMode ? darkTheme : lightTheme), [darkMode]);
-  const themeName = useMemo(() => (darkMode ? "dark" : "light"), [darkMode]);
+  const themeName = useMemo(() => (darkMode ? 'dark' : 'light'), [darkMode]);
   const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
@@ -66,39 +53,39 @@ export default function ClientLayout({
 
   const pages: Page[] = [
     {
-      key: "/",
+      key: '/',
       icon: <HomeOutlined />,
-      label: t("home"),
+      label: t('home'),
     },
     {
-      key: "/statistics",
+      key: '/statistics',
       icon: <BarChartOutlined />,
-      label: t("statistics"),
+      label: t('statistics'),
     },
     !!me?.access_token && {
-      key: "/games",
+      key: '/games',
       icon: <RocketOutlined />,
-      label: t("games"),
+      label: t('games'),
     },
     {
-      key: "/users",
+      key: '/users',
       icon: <UserOutlined />,
-      label: t("users"),
+      label: t('users'),
     },
     !!me?.access_token
       ? {
-          key: "/logout",
+          key: '/logout',
           icon: <LogoutOutlined />,
-          label: t("logout"),
+          label: t('logout'),
         }
       : {
-          key: "auth/login",
+          key: 'auth/login',
           icon: <LoginOutlined />,
-          label: t("login"),
+          label: t('login'),
         },
   ].filter(Boolean) as Page[];
 
-  function handleChaneLanguage(locale: "en" | "tr") {
+  function handleChaneLanguage(locale: 'en' | 'tr') {
     setLanguage(locale);
     router.refresh();
     setIsLangPopoverOpen(false);
@@ -108,7 +95,7 @@ export default function ClientLayout({
     <QueryClientProvider client={queryClient}>
       <Toaster />
       <ConfigProvider componentSize="large" theme={theme}>
-        <Layout style={{ height: "100vh" }}>
+        <Layout style={{ height: '100vh' }}>
           <Sider
             theme={themeName}
             breakpoint="lg"
@@ -119,26 +106,16 @@ export default function ClientLayout({
             trigger={null}
             collapsed={collapsed}
           >
-            <Flex
-              justify="space-around"
-              align="center"
-              style={{ height: "64px" }}
-            >
+            <Flex justify="space-around" align="center" style={{ height: '64px' }}>
               <Popover
                 content={
                   <div>
-                    <Text
-                      onClick={() => handleChaneLanguage("en")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {t("en")}
+                    <Text onClick={() => handleChaneLanguage('en')} style={{ cursor: 'pointer' }}>
+                      {t('en')}
                     </Text>
                     <Divider type="vertical" />
-                    <Text
-                      onClick={() => handleChaneLanguage("tr")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {t("tr")}
+                    <Text onClick={() => handleChaneLanguage('tr')} style={{ cursor: 'pointer' }}>
+                      {t('tr')}
                     </Text>
                   </div>
                 }
@@ -146,28 +123,24 @@ export default function ClientLayout({
                 onOpenChange={setIsLangPopoverOpen}
                 trigger="click"
               >
-                <Text style={{ cursor: "pointer" }}>{t(language)}</Text>
+                <Text style={{ cursor: 'pointer' }}>{t(language)}</Text>
               </Popover>
               <Switch
                 checkedChildren={<BulbFilled />}
                 unCheckedChildren={<BulbFilled />}
                 checked={darkMode}
                 onChange={toggleDarkMode}
-                style={{ background: darkMode ? "#141414" : "#f5f5f5" }}
+                style={{ background: darkMode ? '#141414' : '#f5f5f5' }}
               />
             </Flex>
             <Divider style={{ margin: 0 }} />
             <Menu
               theme={themeName}
               mode="inline"
-              defaultSelectedKeys={["4"]}
+              defaultSelectedKeys={['4']}
               items={pages}
-              selectedKeys={[
-                pathname.startsWith("/games") ? "/games" : pathname,
-              ]}
-              onClick={({ key }) =>
-                router.push(key === "/games" ? `${key}/${me?.id}` : key)
-              }
+              selectedKeys={[pathname.startsWith('/games') ? '/games' : pathname]}
+              onClick={({ key }) => router.push(key === '/games' ? `${key}/${me?.id}` : key)}
             />
           </Sider>
           <Layout>

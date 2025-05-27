@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from 'react';
 
 const SteamIcon: FC = () => (
   <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -104,7 +104,7 @@ const OtherPlatformsIcon: FC = () => (
     <g id="SVGRepo_iconCarrier">
       <style>
         {
-          ".st0{fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}"
+          '.st0{fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}'
         }
       </style>
       <path d="M23 7H9c-5 0-9 4-9 9s4 9 9 9h14c5 0 9-4 9-9s-4-9-9-9zM8 17H7v1c0 .6-.4 1-1 1s-1-.4-1-1v-1H4c-.6 0-1-.4-1-1s.4-1 1-1h1v-1c0-.6.4-1 1-1s1 .4 1 1v1h1c.6 0 1 .4 1 1s-.4 1-1 1zm14 4c0 .6-.4 1-1 1H11c-.6 0-1-.4-1-1V11c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v10zm3.1-7.4c.1-.1.1-.2.2-.3.4-.4 1-.4 1.4 0 .2.2.3.4.3.7 0 .3-.1.5-.3.7-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.1 0-.3.1-.4zM24 17c-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.3.1-.5.3-.7.1-.1.2-.2.3-.2.4-.1.8-.1 1.1.2.2.2.3.4.3.7 0 .3-.1.5-.3.7-.2.2-.4.3-.7.3zm2.7 1.7c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.1 0-.3.1-.4.1-.1.1-.2.2-.3.4-.4 1-.4 1.4 0 .1.1.2.2.2.3 0 .1.1.3.1.4 0 .3-.1.5-.3.7zm2-2c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7 0-.3.1-.5.3-.7.4-.4 1-.4 1.4 0 .2.2.3.4.3.7 0 .3-.1.5-.3.7z" />

@@ -1,7 +1,7 @@
-import { GamesData } from "@/types/games";
-import apiClient from "./apiClient";
+import { GamesData } from '@/types/games';
+import apiClient from './apiClient';
 
-const baseUrl = "/games";
+const baseUrl = '/games';
 
 export const userGames = async (id: string): Promise<GamesData[]> => {
   const { data } = await apiClient.get(`${baseUrl}/user/${id}`);

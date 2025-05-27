@@ -1,13 +1,13 @@
-import { Modal } from "antd";
-import { useState } from "react";
+import { Modal } from 'antd';
+import { useState } from 'react';
 
 export const ModalProvider = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
+  const [modalText, setModalText] = useState('Content of the modal');
 
   const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
+    setModalText('The modal will be closed after two seconds');
     setConfirmLoading(true);
     setTimeout(() => {
       setOpen(false);
@@ -16,7 +16,7 @@ export const ModalProvider = () => {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    console.log('Clicked cancel button');
     setOpen(false);
   };
 
