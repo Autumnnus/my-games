@@ -16,12 +16,14 @@ import {
 } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
 
 interface UrlItem {
+  id: string;
   url: string;
   name?: string;
 }
@@ -37,15 +39,75 @@ interface AddScreenshotModalProps {
   onCancel: () => void;
 }
 
+// URL input satırı için memoize edilmiş bileşen
+type UrlInputRowProps = {
+  item: UrlItem;
+  index: number;
+  onUrlChange: (index: number, value: string) => void;
+  onNameChange: (index: number, value: string) => void;
+  onRemove: (index: number) => void;
+  canRemove: boolean;
+  renderUrlPreview: (url: string) => React.ReactNode;
+};
+
+const UrlInputRow = React.memo(function UrlInputRow({
+  item,
+  index,
+  onUrlChange,
+  onNameChange,
+  onRemove,
+  canRemove,
+  renderUrlPreview,
+}: UrlInputRowProps) {
+  const t = useTranslations();
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: 8,
+        border: '1px solid #f0f0f0',
+        borderRadius: 4,
+      }}
+    >
+      {renderUrlPreview(item.url)}
+      <Space style={{ flex: 1 }} size="small">
+        <Input
+          value={item.url}
+          onChange={e => onUrlChange(index, e.target.value)}
+          placeholder={t('screenshot_url')}
+        />
+        <Input
+          value={item.name}
+          onChange={e => onNameChange(index, e.target.value)}
+          placeholder={t('screenshot_name') + ' (' + t('optional') + ')'}
+        />
+      </Space>
+      {canRemove && (
+        <Button
+          type="text"
+          danger
+          icon={<DeleteOutlined />}
+          onClick={() => onRemove(index)}
+          style={{ padding: '4px 8px' }}
+        />
+      )}
+    </div>
+  );
+});
+
 export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreenshotModalProps) {
   const t = useTranslations();
   const [form] = Form.useForm();
   const [uploadType, setUploadType] = useState<'url' | 'file'>('url');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [fileNames, setFileNames] = useState<{ [key: string]: string }>({});
-  const [urlList, setUrlList] = useState<UrlItem[]>([{ url: '' }]);
+  const [urlList, setUrlList] = useState<UrlItem[]>([{ id: uuidv4(), url: '' }]);
   const [urlPreviews, setUrlPreviews] = useState<{ [key: string]: string }>({});
-
+  const urlDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const prevFileListRef = useRef<UploadFile[]>([]);
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -58,6 +120,7 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
           : urlList
               .filter(item => item.url.trim())
               .map(item => ({
+                id: item.id,
                 url: item.url,
                 name: item.name,
               }));
@@ -66,7 +129,7 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
       form.resetFields();
       setFileList([]);
       setFileNames({});
-      setUrlList([{ url: '' }]);
+      setUrlList([{ id: uuidv4(), url: '' }]);
       setUrlPreviews({});
     } catch (error) {
       console.error('Validation failed:', error);
@@ -77,66 +140,77 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
     form.resetFields();
     setFileList([]);
     setFileNames({});
-    setUrlList([{ url: '' }]);
+    setUrlList([{ id: uuidv4(), url: '' }]);
     setUrlPreviews({});
     onCancel();
   };
 
   const handleUploadChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
-    if (newFileList.length > 50) {
-      message.error(t('max_file_limit', { limit: 50 }));
+    // En güncel dosya listesini ref üzerinden al
+    const prevList = prevFileListRef.current;
 
+    // Eğer yeni gelen dosya listesi mevcut dosya listesiyle aynıysa veya 50'yi geçtiyse hiçbir şey yapma
+    if (
+      prevList.length >= 50 ||
+      (prevList.length === newFileList.length &&
+        prevList.every((f, i) => f.uid === newFileList[i].uid))
+    ) {
       return;
     }
 
-    setFileList(newFileList);
+    let filesToSet = newFileList;
+    if (newFileList.length > 50) {
+      filesToSet = newFileList.slice(0, 50);
+    }
+
+    setFileList(filesToSet);
+    prevFileListRef.current = filesToSet;
   };
 
   const handleUrlChange = (index: number, value: string) => {
     const newUrlList = [...urlList];
-    const oldUrl = newUrlList[index].url;
     newUrlList[index] = { ...newUrlList[index], url: value };
     setUrlList(newUrlList);
-
-    // Önceki URL'in önizlemesini temizle
-    if (oldUrl) {
-      setUrlPreviews(prev => {
-        const newPreviews = { ...prev };
-        delete newPreviews[oldUrl];
-
-        return newPreviews;
-      });
-    }
-
-    // URL'den önizleme yükleme
-    if (value) {
-      // Önce loading durumunu göster
-      setUrlPreviews(prev => ({ ...prev, [value]: 'loading' }));
-
-      const img = new Image();
-      img.onload = () => {
-        setUrlPreviews(prev => {
-          // Eğer URL hala aynıysa güncelle
-          if (prev[value] === 'loading') {
-            return { ...prev, [value]: value };
-          }
-
-          return prev;
-        });
-      };
-      img.onerror = () => {
-        setUrlPreviews(prev => {
-          // Eğer URL hala aynıysa güncelle
-          if (prev[value] === 'loading') {
-            return { ...prev, [value]: 'error' };
-          }
-
-          return prev;
-        });
-      };
-      img.src = value;
-    }
   };
+
+  // URL önizlemelerini debounce ile yükle
+  useEffect(() => {
+    if (urlDebounceRef.current) clearTimeout(urlDebounceRef.current);
+
+    urlDebounceRef.current = setTimeout(() => {
+      urlList.forEach(item => {
+        const value = item.url;
+        if (!value) return;
+
+        // Önce loading durumunu göster
+        setUrlPreviews(prev => ({ ...prev, [value]: 'loading' }));
+        const img = new window.Image();
+        img.onload = () => {
+          setUrlPreviews(prev => {
+            if (prev[value] === 'loading') {
+              return { ...prev, [value]: value };
+            }
+
+            return prev;
+          });
+        };
+        img.onerror = () => {
+          setUrlPreviews(prev => {
+            if (prev[value] === 'loading') {
+              return { ...prev, [value]: 'error' };
+            }
+
+            return prev;
+          });
+        };
+        img.src = value;
+      });
+    }, 400); // 400ms debounce
+
+    return () => {
+      if (urlDebounceRef.current) clearTimeout(urlDebounceRef.current);
+    };
+  }, [urlList]);
 
   const handleNameChange = (index: number, value: string) => {
     const newUrlList = [...urlList];
@@ -155,12 +229,12 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
       return;
     }
 
-    setUrlList([...urlList, { url: '' }]);
+    setUrlList([...urlList, { id: uuidv4(), url: '' }]);
   };
 
   const removeUrlField = (index: number) => {
     const newUrlList = urlList.filter((_, i) => i !== index);
-    setUrlList(newUrlList.length ? newUrlList : [{ url: '' }]);
+    setUrlList(newUrlList.length ? newUrlList : [{ id: uuidv4(), url: '' }]);
   };
 
   const renderUrlPreview = (url: string) => {
@@ -238,10 +312,10 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
       onOk={handleOk}
       onCancel={handleCancel}
       width={800}
-      bodyStyle={{ padding: '24px' }}
+      styles={{ body: { padding: '24px' } }}
     >
       <Form form={form} layout="vertical">
-        <Card bordered={false}>
+        <Card variant="borderless">
           <Space direction="vertical" style={{ width: '100%' }} size="large">
             <Radio.Group value={uploadType} onChange={e => setUploadType(e.target.value)}>
               <Radio.Button value="url">
@@ -255,40 +329,16 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
             {uploadType === 'url' ? (
               <Space direction="vertical" style={{ width: '100%' }}>
                 {urlList.map((item, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      padding: 8,
-                      border: '1px solid #f0f0f0',
-                      borderRadius: 4,
-                    }}
-                  >
-                    {renderUrlPreview(item.url)}
-                    <Space style={{ flex: 1 }} size="small">
-                      <Input
-                        value={item.url}
-                        onChange={e => handleUrlChange(index, e.target.value)}
-                        placeholder={t('screenshot_url')}
-                      />
-                      <Input
-                        value={item.name}
-                        onChange={e => handleNameChange(index, e.target.value)}
-                        placeholder={t('screenshot_name') + ' (' + t('optional') + ')'}
-                      />
-                    </Space>
-                    {urlList.length > 1 && (
-                      <Button
-                        type="text"
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => removeUrlField(index)}
-                        style={{ padding: '4px 8px' }}
-                      />
-                    )}
-                  </div>
+                  <UrlInputRow
+                    key={item.id}
+                    item={item}
+                    index={index}
+                    onUrlChange={handleUrlChange}
+                    onNameChange={handleNameChange}
+                    onRemove={removeUrlField}
+                    canRemove={urlList.length > 1}
+                    renderUrlPreview={renderUrlPreview}
+                  />
                 ))}
                 <Button type="dashed" onClick={addUrlField} block>
                   {t('add_url')} ({urlList.length}/100)
@@ -310,9 +360,7 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
                     <InboxOutlined />
                   </p>
                   <p className="ant-upload-text">
-                    {fileList.length >= 50
-                      ? t('max_file_limit_reached', { limit: 50 })
-                      : t('click_or_drag_files')}
+                    {fileList.length >= 50 ? t('max_file_limit_reached') : t('click_or_drag_files')}
                   </p>
                   <p className="ant-upload-hint">
                     <Text type="secondary">
@@ -339,7 +387,12 @@ export default function AddScreenshotModal({ isOpen, onOk, onCancel }: AddScreen
                             <Image
                               src={URL.createObjectURL(file.originFileObj as File)}
                               alt={file.name}
-                              style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                objectFit: 'cover',
+                                borderRadius: 4,
+                              }}
                               preview={false}
                             />
                           ) : (

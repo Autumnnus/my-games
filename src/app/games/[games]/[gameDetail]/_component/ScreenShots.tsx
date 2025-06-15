@@ -141,9 +141,9 @@ export default function Screenshots() {
               <Popover
                 content={popoverContent}
                 trigger="click"
-                visible={!!anchorEl && clickedItemId === item._id}
-                onVisibleChange={visible => {
-                  if (!visible) {
+                open={!!anchorEl && clickedItemId === item._id}
+                onOpenChange={open => {
+                  if (!open) {
                     handleClosePopover();
                     setClickedItemId(null);
                   }

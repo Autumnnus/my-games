@@ -126,5 +126,15 @@
   "tr": "Turkish",
   "en": "English",
   "igdb_detail": "IGDB Detail",
-  "view": "View"
+  "view": "View",
+  "game_name_required": "Game name is required",
+  "required_field": "is required",
+  "add_url": "Add URL",
+  "url": "URL",
+  "file": "File",
+  "click_or_drag_files": "Click or drag files here",
+  "support_multiple_files": "Support multiple files",
+  "optional": "Optional",
+  "max_file_limit_reached": "You can only upload 50 files",
+  "loading": "Loading..."
 }

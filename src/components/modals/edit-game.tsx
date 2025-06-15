@@ -39,10 +39,10 @@ export default function EditGameModal() {
     form.resetFields();
   };
 
-  const handleFinish = values => {
+  function handleFinish(values: any) {
     console.log('Form values:', values);
     handleClose();
-  };
+  }
   console.log('platforms', platforms);
 
   return (
@@ -125,7 +125,7 @@ export default function EditGameModal() {
               disabled={loading}
               options={
                 platforms.map(platform => ({
-                  label: t(platform.label),
+                  label: platform.label,
                   value: platform.value,
                 })) || []
               }
