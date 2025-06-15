@@ -4,9 +4,15 @@ import { useUserGames } from '@/hooks/useGames';
 import useAppStore from '@/store/appStore';
 import useGameDetailStore from '@/store/gameDetail';
 import { GamesData } from '@/types/games';
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import type { GetProp, MenuProps, TableProps } from 'antd';
-import { Dropdown, Image, Table } from 'antd';
+import { Button, Card, Dropdown, Image, Input, Table } from 'antd';
 import type { SorterResult } from 'antd/es/table/interface';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -28,40 +34,65 @@ export default function GamesDataTable() {
   const me = useAppStore(state => state.me);
   const toggleEditGameModal = useGameDetailStore(state => state.toggleEditGameModal);
   const t = useTranslations();
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
   const params = useParams();
   const pathname = usePathname();
   const route = useRouter();
   const id = params.games as string;
   const isOwner = useMemo(() => me?.id === id, [me?.id, id]);
 
-  function handleDelete(id: string) {
-    console.log('delete', id);
-  }
+  const { data: games, isFetching } = useUserGames(id);
+  const [searchText, setSearchText] = useState('');
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
 
-  function handleEdit(id: string) {
+  const filteredGames = useMemo(() => {
+    if (!searchText || !games) return games;
+
+    return games.filter(game => game.name.toLowerCase().includes(searchText.toLowerCase()));
+  }, [searchText, games]);
+
+  const handleDelete = (id: string) => {
+    console.log('delete', id);
+  };
+
+  const handleEdit = (id: string) => {
     console.log('edit', id);
     toggleEditGameModal();
-  }
+  };
+
+  const handleTableChange: TableProps<GamesData>['onChange'] = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+      sortField: Array.isArray(sorter) ? undefined : sorter.field,
+    });
+
+    // `dataSource` is useless since `pageSize` changed
+    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+      //   setData([]);
+    }
+  };
 
   const columns: ColumnsType<GamesData> = [
     {
       title: null,
       dataIndex: 'photo',
-      width: '8%',
+      width: 50,
+      fixed: 'left',
       render: photo => <Image src={photo} alt="avatar" style={{ width: 50 }} />,
     },
     {
       title: t('name'),
       dataIndex: 'name',
       sorter: true,
-      width: '30%',
+      width: 200,
       ellipsis: true,
+      fixed: 'left',
       render: (name, record) => <Link href={`${pathname}/${record._id}`}>{name}</Link>,
     },
     {
@@ -73,6 +104,7 @@ export default function GamesDataTable() {
       ],
       ellipsis: true,
       render: rating => rating || t('not_rated'),
+      width: 180,
     },
     {
       title: t('platform'),
@@ -83,16 +115,19 @@ export default function GamesDataTable() {
       ],
       ellipsis: true,
       render: platform => t(platform),
+      width: 180,
     },
     {
       title: t('screenshots'),
       dataIndex: 'screenshotSize',
       ellipsis: true,
+      width: 180,
     },
     {
       title: t('playTime'),
       dataIndex: 'playTime',
       ellipsis: true,
+      width: 180,
     },
     {
       title: t('lastPlay'),
@@ -104,19 +139,21 @@ export default function GamesDataTable() {
           month: 'long',
           day: 'numeric',
         }),
+      width: 200,
     },
     {
       title: t('status'),
       dataIndex: 'status',
       ellipsis: true,
       render: status => t(status),
+      width: 180,
     },
     ...(isOwner
       ? [
           {
             title: null,
             dataIndex: 'action',
-            width: '3%',
+            width: 100,
             render: (_: any, record: GamesData) => {
               const items: MenuProps['items'] = [
                 {
@@ -145,6 +182,7 @@ export default function GamesDataTable() {
 
               const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
                 console.log('click left button', e);
+                handleEdit(record._id);
               };
 
               const handleMenuClick: MenuProps['onClick'] = e => {
@@ -167,31 +205,43 @@ export default function GamesDataTable() {
       : []),
   ];
 
-  const { data, isFetching } = useUserGames(id);
-
-  const handleTableChange: TableProps<GamesData>['onChange'] = (pagination, filters, sorter) => {
-    setTableParams({
-      pagination,
-      filters,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
-    });
-
-    // `dataSource` is useless since `pageSize` changed
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      //   setData([]);
-    }
-  };
-
   return (
-    <Table<GamesData>
-      columns={columns}
-      rowKey={record => record._id}
-      dataSource={isFetching ? [] : data}
-      pagination={tableParams.pagination}
-      loading={isFetching}
-      onChange={handleTableChange}
-      scroll={{ x: 'max-content' }}
-    />
+    <Card style={{ marginBottom: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+        <Input.Search
+          placeholder={t('search_games')}
+          prefix={<SearchOutlined />}
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          style={{ width: 300 }}
+        />
+        <Button
+          type="primary"
+          onClick={() => {
+            toggleEditGameModal();
+          }}
+          icon={<PlusOutlined />}
+        >
+          {t('add_game')}
+        </Button>
+      </div>
+      <Table<GamesData>
+        columns={columns}
+        dataSource={filteredGames}
+        rowKey={record => record._id}
+        onChange={handleTableChange}
+        loading={isFetching}
+        pagination={tableParams.pagination}
+        scroll={{
+          x: columns.reduce(
+            (acc, column) => acc + (typeof column.width === 'number' ? column.width : 0),
+            0
+          ),
+          y: 'calc(100vh - 200px)',
+        }}
+        locale={{ emptyText: t('no_data') }}
+        sticky
+      />
+    </Card>
   );
 }

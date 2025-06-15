@@ -136,5 +136,8 @@
   "support_multiple_files": "Support multiple files",
   "optional": "Optional",
   "max_file_limit_reached": "You can only upload 50 files",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "search_games": "Search Games",
+  "add_game": "Add Game",
+  "no_data": "No Data"
 }

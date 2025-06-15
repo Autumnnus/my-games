@@ -133,5 +133,8 @@
   "optional": "İsteğe bağlı",
   "max_file_limit": "En fazla {{limit}} dosya yükleyebilirsiniz",
   "max_file_limit_reached": "En fazla 50 dosya yükleyebilirsiniz",
-  "loading": "Yükleniyor..."
+  "loading": "Yükleniyor...",
+  "search_games": "Oyunları Ara",
+  "add_game": "Oyun Ekle",
+  "no_data": "Veri yok"
 }
