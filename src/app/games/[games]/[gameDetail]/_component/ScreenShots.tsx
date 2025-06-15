@@ -1,11 +1,13 @@
 'use client';
 import { useScreenshots } from '@/hooks/useScreenshots';
 import { Screenshot } from '@/types/screenshot';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Grid, Image, List, Pagination, Popover, Typography } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import React, { useState } from 'react';
+import AddScreenshotModal from './AddScreenshotModal';
+import EditScreenshotModal from './EditScreenshotModal';
 
 export default function Screenshots() {
   const t = useTranslations();
@@ -14,6 +16,8 @@ export default function Screenshots() {
   const [clickedItemId, setClickedItemId] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [selectedSS, setSelectedSS] = useState<Screenshot | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const params = useParams();
   const gameId = params.gameDetail as string;
   const { data } = useScreenshots(gameId);
@@ -42,20 +46,54 @@ export default function Screenshots() {
     setClickedItemId(item._id);
   };
   const handleClickImage = (item: Screenshot) => setSelectedSS(item);
-  console.log('selectedSS', selectedSS?._id);
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+  const handleEditModalOk = async (values: { name: string; url: string }) => {
+    // TODO: API çağrısı yapılacak
+    console.log('Form values:', values);
+    setIsEditModalOpen(false);
+  };
+  const handleEditModalCancel = () => {
+    setIsEditModalOpen(false);
+  };
+  const handleAddClick = () => {
+    setIsAddModalOpen(true);
+  };
+  const handleAddModalOk = async (values: {
+    items: { url?: string; file?: File; name?: string }[];
+  }) => {
+    // TODO: API çağrısı yapılacak
+    console.log('Form values:', values);
+    setIsAddModalOpen(false);
+  };
+  const handleAddModalCancel = () => {
+    setIsAddModalOpen(false);
+  };
+
   const startIndex = (currentPage - 1) * screenshotsPerPage;
   const currentScreenshots = data?.slice(startIndex, startIndex + screenshotsPerPage);
   if (!data?.length) return null;
 
   const popoverContent = (
     <div>
-      <div onClick={handleClosePopover}>{t('edit')}</div>
+      <div onClick={handleEditClick}>{t('edit')}</div>
       <div onClick={handleClosePopover}>{t('delete')}</div>
     </div>
   );
 
   return (
-    <Card variant="borderless" title={t('screenshots') + ` (${data.length})`}>
+    <Card
+      variant="borderless"
+      title={
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>{t('screenshots') + ` (${data.length})`}</span>
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleAddClick}>
+            {t('add_screenshot')}
+          </Button>
+        </div>
+      }
+    >
       <List
         grid={{ gutter: 16, column: columns }}
         style={{ padding: 0 }}
@@ -85,6 +123,21 @@ export default function Screenshots() {
                   cursor: 'pointer',
                 }}
               />
+              <Button
+                type="text"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setSelectedSS(item);
+                  handleEditClick();
+                }}
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  display: hoveredItemId === item._id ? 'block' : 'none',
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                }}
+              />
               <Popover
                 content={popoverContent}
                 trigger="click"
@@ -104,7 +157,7 @@ export default function Screenshots() {
                   style={{
                     position: 'absolute',
                     top: 8,
-                    right: 8,
+                    right: 40,
                     display:
                       hoveredItemId === item._id || clickedItemId === item._id ? 'block' : 'none',
                   }}
@@ -125,6 +178,17 @@ export default function Screenshots() {
         pageSize={screenshotsPerPage}
         onChange={handlePageChange}
         style={{ marginTop: 16, textAlign: 'center' }}
+      />
+      <EditScreenshotModal
+        isOpen={isEditModalOpen}
+        screenshot={selectedSS}
+        onOk={handleEditModalOk}
+        onCancel={handleEditModalCancel}
+      />
+      <AddScreenshotModal
+        isOpen={isAddModalOpen}
+        onOk={handleAddModalOk}
+        onCancel={handleAddModalCancel}
       />
     </Card>
   );
