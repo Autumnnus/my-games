@@ -33,6 +33,7 @@ export default function GamesDataTable() {
   const locale = useAppStore(state => state.locale);
   const me = useAppStore(state => state.me);
   const toggleEditGameModal = useGameDetailStore(state => state.toggleEditGameModal);
+  const setSelectedGame = useGameDetailStore(state => state.setSelectedGame);
   const t = useTranslations();
   const params = useParams();
   const pathname = usePathname();
@@ -55,13 +56,12 @@ export default function GamesDataTable() {
     return games.filter(game => game.name.toLowerCase().includes(searchText.toLowerCase()));
   }, [searchText, games]);
 
-  const handleDelete = (id: string) => {
-    console.log('delete', id);
-  };
+  const handleDelete = (id: string) => {};
 
   const handleEdit = (id: string) => {
-    console.log('edit', id);
     toggleEditGameModal();
+    const game = games?.find(game => game._id === id);
+    setSelectedGame(game || null);
   };
 
   const handleTableChange: TableProps<GamesData>['onChange'] = (pagination, filters, sorter) => {
@@ -181,13 +181,10 @@ export default function GamesDataTable() {
               ];
 
               const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-                console.log('click left button', e);
                 handleEdit(record._id);
               };
 
-              const handleMenuClick: MenuProps['onClick'] = e => {
-                console.log('click', e);
-              };
+              const handleMenuClick: MenuProps['onClick'] = e => {};
 
               const menuProps = {
                 items,

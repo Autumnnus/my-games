@@ -1,4 +1,8 @@
 'use client';
+import { useUpdateGame } from '@/hooks/useGames';
+import usePlatforms from '@/hooks/usePlatforms';
+import useGameDetailStore from '@/store/gameDetail';
+import { GamesData, Status } from '@/types/games';
 import {
   Avatar,
   Col,
@@ -16,6 +20,7 @@ import {
 } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 const { Panel } = Collapse;
@@ -38,63 +43,59 @@ interface IGDBGameData {
   game_modes?: { name: string }[];
 }
 
-interface Game {
-  _id: string;
-  name: string;
-  photo: string;
-  platform: string;
-  rating: number;
-  status: string;
-  playTime: number;
-  lastPlay: string;
-  review?: string;
-  createdAt: string;
-  userId: string;
-}
-
-interface EditGameModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  game: Game;
-  onSuccess: () => void;
-}
-
-export default function EditGameModal({ isOpen, onClose, game, onSuccess }: EditGameModalProps) {
+export default function EditGameModal({ game }: { game?: GamesData | undefined }) {
+  const t = useTranslations();
   const [form] = Form.useForm();
   const [isIGDBAPIOpen, setIsIGDBAPIOpen] = useState(true);
   const [selectedGameData, setSelectedGameData] = useState<IGDBGameData | null>(null);
-  const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<
     { value: string; label: string; data: IGDBGameData }[]
   >([]);
 
+  const gameStore = useGameDetailStore(state => state.selectedGame);
+  const [selectedGame, setSelectedGame] = useState(game);
+
   useEffect(() => {
-    if (game) {
+    if (gameStore) {
+      setSelectedGame(gameStore);
+    }
+  }, [gameStore]);
+
+  const isOpen = useGameDetailStore(state => state.isEditGameModalOpen);
+  const onClose = useGameDetailStore(state => state.toggleEditGameModal);
+
+  useEffect(() => {
+    if (selectedGame) {
       form.setFieldsValue({
-        name: game.name,
-        photo: game.photo,
-        platform: game.platform,
-        rating: game.rating,
-        status: game.status,
-        playTime: game.playTime,
-        lastPlay: game.lastPlay ? dayjs(game.lastPlay) : undefined,
-        review: game.review,
+        name: selectedGame.name,
+        photo: selectedGame.photo,
+        platform: selectedGame.platform,
+        rating: selectedGame.rating,
+        status: selectedGame.status,
+        playTime: selectedGame.playTime,
+        lastPlay: selectedGame.lastPlay ? dayjs(selectedGame.lastPlay) : undefined,
+        review: selectedGame.review,
       });
     }
-  }, [game, form]);
+  }, [selectedGame, form]);
+
+  const photo = Form.useWatch(['photo'], form);
+  const { mutateAsync: updateMutate, isPending: updateIsPending } = useUpdateGame();
 
   const handleOk = async () => {
+    if (!selectedGame?._id) {
+      return;
+    }
+
     try {
       const values = await form.validateFields();
-      setLoading(true);
-      // API çağrısı burada yapılacak
-      console.log('Form değerleri:', values);
-      onSuccess();
+      updateMutate({
+        id: selectedGame?._id,
+        params: values,
+      });
       onClose();
     } catch (error) {
       console.error('Form doğrulama hatası:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -131,6 +132,8 @@ export default function EditGameModal({ isOpen, onClose, game, onSuccess }: Edit
     }
   };
 
+  const platforms = usePlatforms();
+
   return (
     <Modal
       title="Oyunu Düzenle"
@@ -138,20 +141,20 @@ export default function EditGameModal({ isOpen, onClose, game, onSuccess }: Edit
       onOk={handleOk}
       onCancel={handleCancel}
       width={800}
-      confirmLoading={loading}
+      confirmLoading={updateIsPending}
     >
       <Form
         form={form}
         layout="vertical"
         initialValues={{
-          name: game?.name,
-          photo: game?.photo,
-          platform: game?.platform,
-          rating: game?.rating,
-          status: game?.status,
-          playTime: game?.playTime,
-          lastPlay: game?.lastPlay ? dayjs(game.lastPlay) : undefined,
-          review: game?.review,
+          name: selectedGame?.name,
+          photo: selectedGame?.photo,
+          platform: selectedGame?.platform,
+          rating: selectedGame?.rating,
+          status: selectedGame?.status,
+          playTime: selectedGame?.playTime,
+          lastPlay: selectedGame?.lastPlay ? dayjs(selectedGame.lastPlay) : undefined,
+          review: selectedGame?.review,
         }}
       >
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
@@ -190,13 +193,7 @@ export default function EditGameModal({ isOpen, onClose, game, onSuccess }: Edit
           )}
 
           <Form.Item name="photo" label="Oyun Fotoğrafı">
-            <Input
-              prefix={
-                form.getFieldValue('photo') && (
-                  <Avatar src={form.getFieldValue('photo')} size={40} style={{ marginRight: 8 }} />
-                )
-              }
-            />
+            <Input prefix={photo && <Avatar src={photo} size={40} style={{ marginRight: 8 }} />} />
           </Form.Item>
 
           <Row gutter={16}>
@@ -216,10 +213,11 @@ export default function EditGameModal({ isOpen, onClose, game, onSuccess }: Edit
                 rules={[{ required: true, message: 'Lütfen platform seçiniz!' }]}
               >
                 <Select>
-                  <Select.Option value="PC">PC</Select.Option>
-                  <Select.Option value="PS5">PS5</Select.Option>
-                  <Select.Option value="Xbox">Xbox</Select.Option>
-                  <Select.Option value="Nintendo">Nintendo</Select.Option>
+                  {platforms.map(platform => (
+                    <Select.Option key={platform.value} value={platform.value}>
+                      {platform.label}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -242,10 +240,11 @@ export default function EditGameModal({ isOpen, onClose, game, onSuccess }: Edit
                 rules={[{ required: true, message: 'Lütfen durum seçiniz!' }]}
               >
                 <Select>
-                  <Select.Option value="playing">Oynuyorum</Select.Option>
-                  <Select.Option value="completed">Tamamlandı</Select.Option>
-                  <Select.Option value="dropped">Bırakıldı</Select.Option>
-                  <Select.Option value="planToPlay">Oynanacak</Select.Option>
+                  {Object.values(Status).map(status => (
+                    <Select.Option key={status} value={status}>
+                      {t(status)}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>

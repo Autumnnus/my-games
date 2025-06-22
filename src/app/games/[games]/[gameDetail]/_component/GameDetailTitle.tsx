@@ -2,26 +2,13 @@
 import GameDetailRow from '@/app/games/[games]/[gameDetail]/_component/GameDetailRow';
 import { useUserGameDetail } from '@/hooks/useGames';
 import useAppStore from '@/store/appStore';
+import useGameDetailStore from '@/store/gameDetail';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Image, Row, Skeleton, Space, Typography } from 'antd';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import EditGameModal from '../../../../../components/modals/EditGameModal';
 import DeleteGameModal from './DeleteGameModal';
-import EditGameModal from './EditGameModal';
-
-interface Game {
-  _id: string;
-  name: string;
-  photo: string;
-  platform: string;
-  rating: number;
-  status: string;
-  playTime: number;
-  lastPlay: string;
-  review?: string;
-  createdAt: string;
-  userId: string;
-}
 
 export default function GameDetailTitle() {
   const me = useAppStore(state => state.me);
@@ -30,26 +17,19 @@ export default function GameDetailTitle() {
   const { data: game, isLoading } = useUserGameDetail(gameId);
   const isOwner = true;
   const loadingGameDetail = isLoading;
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const toggleEditGameModal = useGameDetailStore(state => state.toggleEditGameModal);
 
   const handleEdit = () => {
-    setIsEditModalOpen(true);
+    toggleEditGameModal();
   };
 
   const handleDelete = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleEditSuccess = () => {
-    // Burada gerekli güncellemeleri yapabilirsiniz
-    console.log('Oyun başarıyla güncellendi');
-  };
-
   const handleDeleteSuccess = async () => {
     try {
-      // API çağrısı burada yapılacak
-      console.log('Oyun siliniyor:', gameId);
       // Silme işlemi başarılı olduktan sonra yönlendirme yapılabilir
     } catch (error) {
       console.error('Silme işlemi başarısız:', error);
@@ -74,7 +54,7 @@ export default function GameDetailTitle() {
                 <Typography.Title level={5}>{game.name}</Typography.Title>
               )}
             </Col>
-            {!me?.access_token && isOwner && (
+            {me?.access_token && isOwner && (
               <Col>
                 <Space>
                   <Button
@@ -138,12 +118,7 @@ export default function GameDetailTitle() {
         </Row>
       </Card>
 
-      <EditGameModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        game={game}
-        onSuccess={handleEditSuccess}
-      />
+      <EditGameModal game={game} />
 
       <DeleteGameModal
         isOpen={isDeleteModalOpen}

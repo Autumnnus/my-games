@@ -50,8 +50,6 @@ export default function Screenshots() {
     setIsEditModalOpen(true);
   };
   const handleEditModalOk = async (values: { name: string; url: string }) => {
-    // TODO: API çağrısı yapılacak
-    console.log('Form values:', values);
     setIsEditModalOpen(false);
   };
   const handleEditModalCancel = () => {
@@ -63,8 +61,6 @@ export default function Screenshots() {
   const handleAddModalOk = async (values: {
     items: { url?: string; file?: File; name?: string }[];
   }) => {
-    // TODO: API çağrısı yapılacak
-    console.log('Form values:', values);
     setIsAddModalOpen(false);
   };
   const handleAddModalCancel = () => {
