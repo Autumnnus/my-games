@@ -1,5 +1,5 @@
 'use client';
-import { useForgotPassword } from '@/hooks/useAuth';
+import { useForgotPassword } from '@/api/queries/useAuth';
 import { AuthForgotPasswordData } from '@/types/auth';
 import { LockOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Form, Input, Row, Space, Typography } from 'antd';

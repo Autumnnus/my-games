@@ -1,6 +1,6 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useUsers } from '@/hooks/useUsers';
+import { useUsers } from '@/api/queries/useUsers';
 import { User } from '@/types/users';
 import type { GetProp, TableProps } from 'antd';
 import { Image, Table } from 'antd';

@@ -1,4 +1,4 @@
-import { GamesData } from '@/types/games';
+import { GamesData, IGDBGamesResponse } from '@/types/games';
 import { apiClient } from './apiClient';
 
 const baseUrl = '/games';
@@ -17,6 +17,12 @@ export const userGameDetail = async (id: string): Promise<GamesData> => {
 
 export const updateGame = async (id: string, game: GamesData): Promise<GamesData> => {
   const { data } = await apiClient().put(`${baseUrl}/edit/${id}`, game);
+
+  return data.data;
+};
+
+export const igdbGames = async (search: string): Promise<IGDBGamesResponse[]> => {
+  const { data } = await apiClient().get(`/igdb?search=${search}`);
 
   return data.data;
 };

@@ -25,3 +25,11 @@ export const useUpdateGame = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['game-update'] }),
   });
 };
+
+export const useIgdbGames = (search: string) => {
+  return useQuery({
+    queryKey: ['igdbGames', search],
+    queryFn: () => gamesService.igdbGames(search),
+    enabled: !!search,
+  });
+};

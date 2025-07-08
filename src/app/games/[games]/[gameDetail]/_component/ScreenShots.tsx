@@ -1,5 +1,5 @@
 'use client';
-import { useScreenshots } from '@/hooks/useScreenshots';
+import { useScreenshots } from '@/api/queries/useScreenshots';
 import { Screenshot } from '@/types/screenshot';
 import { EditOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Grid, Image, List, Pagination, Popover, Typography } from 'antd';

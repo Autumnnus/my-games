@@ -2,7 +2,7 @@
 import { LockOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Form, Input, Row, Space, Typography } from 'antd';
 
-import { useResetPassword } from '@/hooks/useAuth';
+import { useResetPassword } from '@/api/queries/useAuth';
 import { AuthResetPasswordData } from '@/types/auth';
 import { useTranslations } from 'next-intl';
 import toast from 'react-hot-toast';

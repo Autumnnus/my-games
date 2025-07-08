@@ -1,5 +1,5 @@
 'use client';
-import { useUpdateGame } from '@/hooks/useGames';
+import { useIgdbGames, useUpdateGame } from '@/api/queries/useGames';
 import usePlatforms from '@/hooks/usePlatforms';
 import useGameDetailStore from '@/store/gameDetail';
 import { GamesData, Status } from '@/types/games';
@@ -18,7 +18,6 @@ import {
   Switch,
   Typography,
 } from 'antd';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -48,13 +47,13 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
   const [form] = Form.useForm();
   const [isIGDBAPIOpen, setIsIGDBAPIOpen] = useState(true);
   const [selectedGameData, setSelectedGameData] = useState<IGDBGameData | null>(null);
-  const [searchResults, setSearchResults] = useState<
-    { value: string; label: string; data: IGDBGameData }[]
-  >([]);
 
   const gameStore = useGameDetailStore(state => state.selectedGame);
   const [selectedGame, setSelectedGame] = useState(game);
 
+  const [search, setSearch] = useState('');
+  const { data: igdbGames } = useIgdbGames(search);
+  console.log('igdbGames', igdbGames);
   useEffect(() => {
     if (gameStore) {
       setSelectedGame(gameStore);
@@ -107,22 +106,11 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
   const handleGameSearch = async (value: string) => {
     if (!value) return;
 
-    try {
-      const response = await axios.get(`/api/igdb/search?query=${value}`);
-      setSearchResults(
-        response.data.map((game: IGDBGameData) => ({
-          value: game.name,
-          label: game.name,
-          data: game,
-        }))
-      );
-    } catch (error) {
-      console.error('IGDB arama hatası:', error);
-    }
+    setSearch(value);
   };
 
   const handleGameSelect = (value: string) => {
-    const selectedGame = searchResults.find(result => result.value === value)?.data;
+    const selectedGame = igdbGames?.find(result => result.name === value);
     if (selectedGame) {
       setSelectedGameData(selectedGame);
       form.setFieldsValue({
@@ -136,7 +124,7 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
 
   return (
     <Modal
-      title="Oyunu Düzenle"
+      title={t('edit_game')}
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -178,9 +166,13 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
                 placeholder="Oyun ara..."
                 onSearch={handleGameSearch}
                 onChange={handleGameSelect}
-                options={searchResults}
-                filterOption={false}
-              />
+              >
+                {igdbGames?.map(game => (
+                  <Select.Option key={game.id} value={game.name}>
+                    {game.name}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           ) : (
             <Form.Item
@@ -255,7 +247,7 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
             label="Son Oynama Tarihi"
             rules={[{ required: true, message: 'Lütfen son oynama tarihini seçiniz!' }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
           </Form.Item>
 
           <Form.Item name="review" label="İnceleme">

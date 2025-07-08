@@ -1,6 +1,6 @@
 'use client';
+import { useUserGameDetail } from '@/api/queries/useGames';
 import Tags from '@/app/games/[games]/[gameDetail]/_component/GameDetailTags';
-import { useUserGameDetail } from '@/hooks/useGames';
 import { Card, Col, Row } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';

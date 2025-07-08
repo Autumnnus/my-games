@@ -1,6 +1,6 @@
 'use client';
+import { useUserGameDetail } from '@/api/queries/useGames';
 import GameDetailRow from '@/app/games/[games]/[gameDetail]/_component/GameDetailRow';
-import { useUserGameDetail } from '@/hooks/useGames';
 import useAppStore from '@/store/appStore';
 import useGameDetailStore from '@/store/gameDetail';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';

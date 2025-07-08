@@ -1,6 +1,6 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useUserGames } from '@/hooks/useGames';
+import { useUserGames } from '@/api/queries/useGames';
 import useAppStore from '@/store/appStore';
 import useGameDetailStore from '@/store/gameDetail';
 import { GamesData } from '@/types/games';
@@ -212,13 +212,7 @@ export default function GamesDataTable() {
           onChange={e => setSearchText(e.target.value)}
           style={{ width: 300 }}
         />
-        <Button
-          type="primary"
-          onClick={() => {
-            toggleEditGameModal();
-          }}
-          icon={<PlusOutlined />}
-        >
+        <Button type="primary" onClick={toggleEditGameModal} icon={<PlusOutlined />}>
           {t('add_game')}
         </Button>
       </div>

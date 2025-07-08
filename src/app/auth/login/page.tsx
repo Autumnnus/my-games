@@ -1,5 +1,5 @@
 'use client';
-import { useLogin } from '@/hooks/useAuth';
+import { useLogin } from '@/api/queries/useAuth';
 import useAppStore from '@/store/appStore';
 import { AuthLoginData } from '@/types/auth';
 import { LockOutlined } from '@ant-design/icons';
