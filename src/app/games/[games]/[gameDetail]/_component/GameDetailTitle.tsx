@@ -1,14 +1,13 @@
 'use client';
 import { useUserGameDetail } from '@/api/queries/useGames';
 import GameDetailRow from '@/app/games/[games]/[gameDetail]/_component/GameDetailRow';
+import DeleteGameModal from '@/components/modals/DeleteGameModal';
 import useAppStore from '@/store/appStore';
 import useGameDetailStore from '@/store/gameDetail';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Image, Row, Skeleton, Space, Typography } from 'antd';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
 import EditGameModal from '../../../../../components/modals/EditGameModal';
-import DeleteGameModal from './DeleteGameModal';
 
 export default function GameDetailTitle() {
   const me = useAppStore(state => state.me);
@@ -17,24 +16,17 @@ export default function GameDetailTitle() {
   const { data: game, isLoading } = useUserGameDetail(gameId);
   const isOwner = true;
   const loadingGameDetail = isLoading;
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const toggleEditGameModal = useGameDetailStore(state => state.toggleEditGameModal);
+  const toggleDeleteModal = useGameDetailStore(state => state.toggleDeleteModal);
+  const setSelectedGame = useGameDetailStore(state => state.setSelectedGame);
 
   const handleEdit = () => {
     toggleEditGameModal();
   };
 
   const handleDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleDeleteSuccess = async () => {
-    try {
-      // Silme işlemi başarılı olduktan sonra yönlendirme yapılabilir
-    } catch (error) {
-      console.error('Silme işlemi başarısız:', error);
-      throw error;
-    }
+    toggleDeleteModal();
+    setSelectedGame(game || null);
   };
 
   if (!game) {
@@ -119,13 +111,7 @@ export default function GameDetailTitle() {
       </Card>
 
       <EditGameModal game={game} />
-
-      <DeleteGameModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        gameName={game.name}
-        onConfirm={handleDeleteSuccess}
-      />
+      <DeleteGameModal />
     </>
   );
 }

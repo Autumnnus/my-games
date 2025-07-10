@@ -1,6 +1,7 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useUserGames } from '@/api/queries/useGames';
+import DeleteGameModal from '@/components/modals/DeleteGameModal';
 import useAppStore from '@/store/appStore';
 import useGameDetailStore from '@/store/gameDetail';
 import { GamesData } from '@/types/games';
@@ -34,6 +35,7 @@ export default function GamesDataTable() {
   const me = useAppStore(state => state.me);
   const toggleAddGameModal = useGameDetailStore(state => state.toggleAddGameModal);
   const toggleEditGameModal = useGameDetailStore(state => state.toggleEditGameModal);
+  const toggleDeleteModal = useGameDetailStore(state => state.toggleDeleteModal);
   const setSelectedGame = useGameDetailStore(state => state.setSelectedGame);
   const t = useTranslations();
   const params = useParams();
@@ -57,14 +59,6 @@ export default function GamesDataTable() {
     return games.filter(game => game.name.toLowerCase().includes(searchText.toLowerCase()));
   }, [searchText, games]);
 
-  const handleDelete = (id: string) => {};
-
-  const handleEdit = (id: string) => {
-    toggleEditGameModal();
-    const game = games?.find(game => game._id === id);
-    setSelectedGame(game || null);
-  };
-
   const handleTableChange: TableProps<GamesData>['onChange'] = (pagination, filters, sorter) => {
     setTableParams({
       pagination,
@@ -78,6 +72,20 @@ export default function GamesDataTable() {
       //   setData([]);
     }
   };
+
+  function handleDelete(id: string) {
+    const game = games?.find(game => game._id === id);
+    if (game) {
+      setSelectedGame(game);
+      toggleDeleteModal();
+    }
+  }
+
+  function handleEdit(id: string) {
+    toggleEditGameModal();
+    const game = games?.find(game => game._id === id);
+    setSelectedGame(game || null);
+  }
 
   const columns: ColumnsType<GamesData> = [
     {
@@ -185,13 +193,8 @@ export default function GamesDataTable() {
                 handleEdit(record._id);
               };
 
-              const handleMenuClick: MenuProps['onClick'] = () => {
-                handleEdit(record._id);
-              };
-
               const menuProps = {
                 items,
-                onClick: handleMenuClick,
               };
 
               return (
@@ -206,36 +209,39 @@ export default function GamesDataTable() {
   ];
 
   return (
-    <Card style={{ marginBottom: 16 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Input.Search
-          placeholder={t('search_games')}
-          prefix={<SearchOutlined />}
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-          style={{ width: 300 }}
+    <>
+      <Card style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+          <Input.Search
+            placeholder={t('search_games')}
+            prefix={<SearchOutlined />}
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            style={{ width: 300 }}
+          />
+          <Button type="primary" onClick={toggleAddGameModal} icon={<PlusOutlined />}>
+            {t('add_game')}
+          </Button>
+        </div>
+        <Table<GamesData>
+          columns={columns}
+          dataSource={filteredGames}
+          rowKey={record => record._id}
+          onChange={handleTableChange}
+          loading={isFetching}
+          pagination={tableParams.pagination}
+          scroll={{
+            x: columns.reduce(
+              (acc, column) => acc + (typeof column.width === 'number' ? column.width : 0),
+              0
+            ),
+            y: 'calc(100vh - 200px)',
+          }}
+          locale={{ emptyText: t('no_data') }}
+          sticky
         />
-        <Button type="primary" onClick={toggleAddGameModal} icon={<PlusOutlined />}>
-          {t('add_game')}
-        </Button>
-      </div>
-      <Table<GamesData>
-        columns={columns}
-        dataSource={filteredGames}
-        rowKey={record => record._id}
-        onChange={handleTableChange}
-        loading={isFetching}
-        pagination={tableParams.pagination}
-        scroll={{
-          x: columns.reduce(
-            (acc, column) => acc + (typeof column.width === 'number' ? column.width : 0),
-            0
-          ),
-          y: 'calc(100vh - 200px)',
-        }}
-        locale={{ emptyText: t('no_data') }}
-        sticky
-      />
-    </Card>
+      </Card>
+      <DeleteGameModal />
+    </>
   );
 }
