@@ -2,13 +2,16 @@
 import { useIgdbGames, useUpdateGame } from '@/api/queries/useGames';
 import usePlatforms from '@/hooks/usePlatforms';
 import useGameDetailStore from '@/store/gameDetail';
-import { GamesData, Status } from '@/types/games';
+import { GamesData, IGDBGamesData, Status } from '@/types/games';
+import { useQueryClient } from '@tanstack/react-query';
+import { useDebounce } from '@uidotdev/usehooks';
 import {
   Avatar,
   Col,
   Collapse,
   DatePicker,
   Form,
+  Image,
   Input,
   InputNumber,
   Modal,
@@ -20,48 +23,37 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const { Panel } = Collapse;
 
-interface IGDBGameData {
-  name: string;
-  summary?: string;
-  cover?: {
-    url: string;
-  };
-  release_dates?: {
-    date: number;
-  }[];
-  aggregated_rating?: number;
-  developers?: { name: string }[];
-  publishers?: { name: string }[];
-  genres?: { name: string }[];
-  themes?: { name: string }[];
-  player_perspectives?: { name: string }[];
-  game_modes?: { name: string }[];
-}
-
 export default function EditGameModal({ game }: { game?: GamesData | undefined }) {
-  const t = useTranslations();
-  const [form] = Form.useForm();
-  const [isIGDBAPIOpen, setIsIGDBAPIOpen] = useState(true);
-  const [selectedGameData, setSelectedGameData] = useState<IGDBGameData | null>(null);
-
+  const isOpen = useGameDetailStore(state => state.isEditGameModalOpen);
+  const onClose = useGameDetailStore(state => state.toggleEditGameModal);
   const gameStore = useGameDetailStore(state => state.selectedGame);
+
+  const [form] = Form.useForm();
+  const photo = Form.useWatch(['photo'], form);
+
   const [selectedGame, setSelectedGame] = useState(game);
+  const [isIGDBAPIOpen, setIsIGDBAPIOpen] = useState(!!game?.igdb?.id);
+  const [selectedIGDBGame, setSelectedIGDBGame] = useState<IGDBGamesData | null>(null);
 
   const [search, setSearch] = useState('');
-  const { data: igdbGames } = useIgdbGames(search);
-  console.log('igdbGames', igdbGames);
+  const debouncedSearch = useDebounce(search, 500);
+
+  const { data: igdbGames } = useIgdbGames(debouncedSearch);
+  const { mutateAsync: updateMutate, isPending: updateIsPending } = useUpdateGame();
+  const platforms = usePlatforms();
+  const queryClient = useQueryClient();
+  const t = useTranslations();
+
   useEffect(() => {
     if (gameStore) {
       setSelectedGame(gameStore);
+      setIsIGDBAPIOpen(!!gameStore?.igdb?.id);
     }
   }, [gameStore]);
-
-  const isOpen = useGameDetailStore(state => state.isEditGameModalOpen);
-  const onClose = useGameDetailStore(state => state.toggleEditGameModal);
 
   useEffect(() => {
     if (selectedGame) {
@@ -78,49 +70,58 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
     }
   }, [selectedGame, form]);
 
-  const photo = Form.useWatch(['photo'], form);
-  const { mutateAsync: updateMutate, isPending: updateIsPending } = useUpdateGame();
+  const handleGameSearch = useCallback((value: string) => {
+    setSearch(value);
+  }, []);
 
-  const handleOk = async () => {
+  async function handleOk() {
     if (!selectedGame?._id) {
       return;
     }
 
     try {
       const values = await form.validateFields();
-      updateMutate({
-        id: selectedGame?._id,
-        params: values,
-      });
-      onClose();
+      await updateMutate(
+        {
+          id: selectedGame?._id,
+          params: values,
+        },
+        {
+          onSuccess: () => {
+            if (game) {
+              queryClient.invalidateQueries({ queryKey: ['userGameDetail'] });
+            } else {
+              queryClient.invalidateQueries({ queryKey: ['userGames'] });
+            }
+
+            onClose();
+          },
+        }
+      );
     } catch (error) {
       console.error('Form doğrulama hatası:', error);
     }
-  };
+  }
 
-  const handleCancel = () => {
+  function handleCancel() {
+    if (updateIsPending) {
+      return;
+    }
+
     onClose();
     form.resetFields();
-  };
+  }
 
-  const handleGameSearch = async (value: string) => {
-    if (!value) return;
-
-    setSearch(value);
-  };
-
-  const handleGameSelect = (value: string) => {
+  function handleGameSelect(value: string) {
     const selectedGame = igdbGames?.find(result => result.name === value);
     if (selectedGame) {
-      setSelectedGameData(selectedGame);
+      setSelectedIGDBGame(selectedGame);
       form.setFieldsValue({
         name: selectedGame.name,
         photo: selectedGame.cover?.url?.replace('t_thumb', 't_1080p'),
       });
     }
-  };
-
-  const platforms = usePlatforms();
+  }
 
   return (
     <Modal
@@ -130,6 +131,7 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
       onCancel={handleCancel}
       width={800}
       confirmLoading={updateIsPending}
+      cancelButtonProps={{ disabled: updateIsPending }}
     >
       <Form
         form={form}
@@ -166,10 +168,31 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
                 placeholder="Oyun ara..."
                 onSearch={handleGameSearch}
                 onChange={handleGameSelect}
+                optionLabelProp="label" // ← make sure the selected value shows the label
               >
                 {igdbGames?.map(game => (
-                  <Select.Option key={game.id} value={game.name}>
-                    {game.name}
+                  <Select.Option
+                    key={game.id}
+                    value={game.name}
+                    label={game.name} // ← used by optionLabelProp
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      {game.cover?.url && (
+                        <Image
+                          src={`https:${game.cover.url}`} // ← prefix the protocol
+                          alt={game.name}
+                          preview={false}
+                          style={{
+                            width: 32,
+                            height: 32,
+                            objectFit: 'cover',
+                            marginRight: 8,
+                            borderRadius: 4,
+                          }}
+                        />
+                      )}
+                      <span>{game.name}2</span>
+                    </div>
                   </Select.Option>
                 ))}
               </Select>
@@ -254,98 +277,98 @@ export default function EditGameModal({ game }: { game?: GamesData | undefined }
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          {selectedGameData && (
+          {selectedIGDBGame && (
             <Collapse>
               <Panel header="Oyun Detayları" key="1">
                 <Space direction="vertical" style={{ width: '100%' }}>
-                  {selectedGameData.summary && (
+                  {selectedIGDBGame.summary && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Özet:{' '}
                       </Typography.Text>
-                      <Typography.Text>{selectedGameData.summary}</Typography.Text>
+                      <Typography.Text>{selectedIGDBGame.summary}</Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.release_dates?.[0] && (
+                  {selectedIGDBGame.release_dates?.[0] && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Çıkış Tarihi:{' '}
                       </Typography.Text>
                       <Typography.Text>
                         {new Date(
-                          selectedGameData.release_dates[0].date * 1000
+                          selectedIGDBGame.release_dates[0].date * 1000
                         ).toLocaleDateString()}
                       </Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.aggregated_rating && (
+                  {selectedIGDBGame.aggregated_rating && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         IGDB Puanı:{' '}
                       </Typography.Text>
                       <Typography.Text>
-                        {selectedGameData.aggregated_rating.toFixed(2)}
+                        {selectedIGDBGame.aggregated_rating.toFixed(2)}
                       </Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.developers && selectedGameData.developers.length > 0 && (
+                  {selectedIGDBGame.developers && selectedIGDBGame.developers.length > 0 && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Geliştiriciler:{' '}
                       </Typography.Text>
                       <Typography.Text>
-                        {selectedGameData.developers.map(d => d.name).join(', ')}
+                        {selectedIGDBGame.developers.map(d => d.name).join(', ')}
                       </Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.publishers && selectedGameData.publishers.length > 0 && (
+                  {selectedIGDBGame.publishers && selectedIGDBGame.publishers.length > 0 && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Yayıncılar:{' '}
                       </Typography.Text>
                       <Typography.Text>
-                        {selectedGameData.publishers.map(p => p.name).join(', ')}
+                        {selectedIGDBGame.publishers.map(p => p.name).join(', ')}
                       </Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.genres && selectedGameData.genres.length > 0 && (
+                  {selectedIGDBGame.genres && selectedIGDBGame.genres.length > 0 && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Türler:{' '}
                       </Typography.Text>
                       <Typography.Text>
-                        {selectedGameData.genres.map(g => g.name).join(', ')}
+                        {selectedIGDBGame.genres.map(g => g.name).join(', ')}
                       </Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.themes && selectedGameData.themes.length > 0 && (
+                  {selectedIGDBGame.themes && selectedIGDBGame.themes.length > 0 && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Temalar:{' '}
                       </Typography.Text>
                       <Typography.Text>
-                        {selectedGameData.themes.map(t => t.name).join(', ')}
+                        {selectedIGDBGame.themes.map(t => t.name).join(', ')}
                       </Typography.Text>
                     </div>
                   )}
-                  {selectedGameData.player_perspectives &&
-                    selectedGameData.player_perspectives.length > 0 && (
+                  {selectedIGDBGame.player_perspectives &&
+                    selectedIGDBGame.player_perspectives.length > 0 && (
                       <div>
                         <Typography.Text strong style={{ color: '#ff3030' }}>
                           Oyuncu Perspektifleri:{' '}
                         </Typography.Text>
                         <Typography.Text>
-                          {selectedGameData.player_perspectives.map(p => p.name).join(', ')}
+                          {selectedIGDBGame.player_perspectives.map(p => p.name).join(', ')}
                         </Typography.Text>
                       </div>
                     )}
-                  {selectedGameData.game_modes && selectedGameData.game_modes.length > 0 && (
+                  {selectedIGDBGame.game_modes && selectedIGDBGame.game_modes.length > 0 && (
                     <div>
                       <Typography.Text strong style={{ color: '#ff3030' }}>
                         Oyun Modları:{' '}
                       </Typography.Text>
                       <Typography.Text>
-                        {selectedGameData.game_modes.map(m => m.name).join(', ')}
+                        {selectedIGDBGame.game_modes.map(m => m.name).join(', ')}
                       </Typography.Text>
                     </div>
                   )}

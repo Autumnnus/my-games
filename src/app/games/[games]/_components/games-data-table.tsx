@@ -82,9 +82,9 @@ export default function GamesDataTable() {
     {
       title: null,
       dataIndex: 'photo',
-      width: 50,
+      width: 80,
       fixed: 'left',
-      render: photo => <Image src={photo} alt="avatar" style={{ width: 50 }} />,
+      render: photo => <Image src={photo} alt="avatar" />,
     },
     {
       title: t('name'),
