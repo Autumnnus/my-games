@@ -15,18 +15,33 @@ export const userGameDetail = async (id: string): Promise<GamesData> => {
   return data.data;
 };
 
+export const addGame = async (game: GamesData): Promise<GamesData> => {
+  const { data } = await apiClient().post(`${baseUrl}/add`, game);
+
+  return data.data;
+};
+
 export const updateGame = async (id: string, game: GamesData): Promise<GamesData> => {
   const { data } = await apiClient().put(`${baseUrl}/edit/${id}`, game);
 
   return data.data;
 };
 
+export const deleteGame = async (id: string): Promise<GamesData> => {
+  const { data } = await apiClient().delete(`${baseUrl}/delete/${id}`);
+
+  return data.data;
+};
+
 export const igdbGames = async (search: string): Promise<IGDBGamesData[]> => {
   const { data } = (await apiClient().get(`/igdb?search=${search}`)) as {
-    data: IGDBGamesResponse[];
+    data: {
+      data: IGDBGamesResponse[];
+    };
   };
+  console.log('data', data);
 
-  return data.map(game => ({
+  return data?.data?.map(game => ({
     id: game.id,
     name: game.name,
     cover: game.cover,

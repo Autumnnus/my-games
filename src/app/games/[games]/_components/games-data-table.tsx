@@ -32,6 +32,7 @@ interface TableParams {
 export default function GamesDataTable() {
   const locale = useAppStore(state => state.locale);
   const me = useAppStore(state => state.me);
+  const toggleAddGameModal = useGameDetailStore(state => state.toggleAddGameModal);
   const toggleEditGameModal = useGameDetailStore(state => state.toggleEditGameModal);
   const setSelectedGame = useGameDetailStore(state => state.setSelectedGame);
   const t = useTranslations();
@@ -180,11 +181,13 @@ export default function GamesDataTable() {
                 },
               ];
 
-              const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+              const handleButtonClick = () => {
                 handleEdit(record._id);
               };
 
-              const handleMenuClick: MenuProps['onClick'] = e => {};
+              const handleMenuClick: MenuProps['onClick'] = () => {
+                handleEdit(record._id);
+              };
 
               const menuProps = {
                 items,
@@ -212,7 +215,7 @@ export default function GamesDataTable() {
           onChange={e => setSearchText(e.target.value)}
           style={{ width: 300 }}
         />
-        <Button type="primary" onClick={toggleEditGameModal} icon={<PlusOutlined />}>
+        <Button type="primary" onClick={toggleAddGameModal} icon={<PlusOutlined />}>
           {t('add_game')}
         </Button>
       </div>

@@ -1,5 +1,5 @@
 import { GamesData } from '@/types/games';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as gamesService from '../services/gamesService';
 
 export const useUserGames = (id: string) => {
@@ -16,11 +16,25 @@ export const useUserGameDetail = (id: string) => {
   });
 };
 
+export const useAddGame = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ params }: { params: GamesData }) => gamesService.addGame(params),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['userGames'] }),
+  });
+};
+
 export const useUpdateGame = () => {
   return useMutation({
     mutationFn: ({ id, params }: { id: string; params: GamesData }) =>
       gamesService.updateGame(id, params),
-    onSuccess: () => {},
+  });
+};
+
+export const useDeleteGame = () => {
+  return useMutation({
+    mutationFn: ({ id }: { id: string }) => gamesService.deleteGame(id),
   });
 };
 
